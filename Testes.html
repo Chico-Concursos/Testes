@@ -3298,10 +3298,15 @@ document.getElementById("focoSelect").style.display = "none";
           savePositionToBackend();
       }, 5000); // 5000 milissegundos = 5 segundos
 	  // Atualiza a régua de altura para o editor
-const helper = document.getElementById('height-helper') || document.createElement('div');
-helper.id = 'height-helper';
-document.body.appendChild(helper);
-helper.textContent = "Altura atual: " + document.body.scrollHeight + "px";
+    const helper = document.getElementById('height-helper') || document.createElement('div');
+    helper.id = 'height-helper';
+    document.body.appendChild(helper);
+// Calcula a altura real do conteúdo interno
+      const alturaInterna = document.documentElement.scrollHeight;
+      helper.textContent = "AJUSTE O BLOCO PARA: " + alturaInterna + "px";
+      helper.style.background = "red"; // Vermelho para destacar que é uma instrução
+      helper.style.color = "white";
+      helper.style.fontWeight = "bold";
     } 
 
     function updateAccuracyButtons() {
