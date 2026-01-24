@@ -252,21 +252,28 @@ body {
    }
 
    /* CONFIGURAÇÃO PARA TELAS PEQUENAS (Responde à limitação do Google Sites) */
-   @media (max-width: 768px) {
-      #card-container {
-         /* Força o card a ocupar 92% da altura da tela do celular do aluno */
-         min-height: 92vh !important; 
-         width: 100% !important;
-         margin: 0 !important;
-         border-radius: 0 !important;
-      }
-
-      /* Aumenta a fonte automaticamente para leitura confortável no celular */
-      #flashcard-content {
-         font-size: 1.5em !important; 
-         line-height: 1.6;
-      }
+@media (max-width: 768px) {
+   body {
+      background-color: #121212 !important; /* Mantém o fundo escuro padrão */
    }
+
+   #card-container {
+      /* Em vez de forçar a altura da tela, deixamos o card crescer naturalmente */
+      min-height: 350px !important; 
+      height: auto !important; 
+      width: 95% !important;
+      margin: 10px auto !important;
+      border-radius: 8px !important;
+      overflow: visible !important;
+   }
+
+   #flashcard-content {
+      /* Ajuste de fonte mais moderado para não empurrar os botões para fora */
+      font-size: 1.25em !important; 
+      line-height: 1.4;
+      padding-bottom: 80px !important; /* Cria um espaço no fundo para os botões não sumirem */
+   }
+}
     #flashcard-content {
       text-align: center;
       width: 100%;
