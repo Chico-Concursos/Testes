@@ -251,33 +251,20 @@ body {
       overscroll-behavior: contain; 
    }
 
-   /* CONFIGURAÇÃO EXCLUSIVA PARA CELULAR (MODO APP) */
+   /* CONFIGURAÇÃO PARA TELAS PEQUENAS (Responde à limitação do Google Sites) */
    @media (max-width: 768px) {
-      body {
-         background-color: #ffffff !important; /* Faz o fundo da página ser branco para sumir a borda do card */
-      }
-
       #card-container {
-         /* Ocupa a altura real da tela do celular, ignorando o "corte" do Google Sites */
+         /* Força o card a ocupar 92% da altura da tela do celular do aluno */
          min-height: 92vh !important; 
          width: 100% !important;
          margin: 0 !important;
          border-radius: 0 !important;
-         box-shadow: none !important; /* Remove sombra para parecer tela cheia */
-         border: none !important;
       }
 
+      /* Aumenta a fonte automaticamente para leitura confortável no celular */
       #flashcard-content {
-         /* Aumenta a letra para leitura confortável sem dar zoom */
          font-size: 1.5em !important; 
          line-height: 1.6;
-         padding-top: 20px;
-         color: #000000;
-      }
-      
-      /* Ajusta botões para não ficarem colados no teto */
-      .top-bar {
-         padding: 15px 10px !important;
       }
    }
     #flashcard-content {
