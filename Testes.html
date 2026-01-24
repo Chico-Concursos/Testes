@@ -3302,8 +3302,14 @@ document.getElementById("focoSelect").style.display = "none";
     helper.id = 'height-helper';
     document.body.appendChild(helper);
 // Calcula a altura real do conteúdo interno
-      const alturaInterna = document.documentElement.scrollHeight;
-      helper.textContent = "AJUSTE O BLOCO PARA: " + alturaInterna + "px";
+      // Mede a altura real do container de conteúdo, ignorando a janela externa
+      const containerPrincipal = document.getElementById('card-container');
+      const alturaReal = containerPrincipal ? containerPrincipal.offsetHeight + 150 : 800;
+      
+      helper.textContent = "ALTURA IDEAL PARA ESTE CARD: " + alturaReal + "px";
+      helper.style.background = "red";
+      helper.style.color = "white";
+      helper.style.fontSize = "14px";
       helper.style.background = "red"; // Vermelho para destacar que é uma instrução
       helper.style.color = "white";
       helper.style.fontWeight = "bold";
