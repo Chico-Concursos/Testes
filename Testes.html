@@ -252,27 +252,40 @@ body {
    }
 
    /* CONFIGURAÇÃO PARA TELAS PEQUENAS (Responde à limitação do Google Sites) */
+/* CONFIGURAÇÃO SEGURA PARA CELULAR - EVITA CORTES */
 @media (max-width: 768px) {
    body {
-      background-color: #121212 !important; /* Mantém o fundo escuro padrão */
+      background-color: #121212 !important;
    }
 
    #card-container {
-      /* Em vez de forçar a altura da tela, deixamos o card crescer naturalmente */
+      /* Altura automática: o card cresce o quanto o Google Sites permitir */
       min-height: 350px !important; 
       height: auto !important; 
-      width: 95% !important;
+      width: 96% !important;
       margin: 10px auto !important;
       border-radius: 8px !important;
       overflow: visible !important;
    }
 
    #flashcard-content {
-      /* Ajuste de fonte mais moderado para não empurrar os botões para fora */
-      font-size: 1.25em !important; 
-      line-height: 1.4;
-      padding-bottom: 80px !important; /* Cria um espaço no fundo para os botões não sumirem */
+      font-size: 1.3em !important; 
+      line-height: 1.5;
+      padding-bottom: 90px !important; /* Espaço para o botão não cobrir o texto */
    }
+}
+
+/* RÉGUA VISUAL (Aparece no topo para te ajudar a esticar no Google Sites) */
+#height-helper {
+    position: fixed;
+    top: 0;
+    right: 0;
+    background: rgba(255, 215, 0, 0.8);
+    color: black;
+    font-size: 10px;
+    padding: 2px 5px;
+    z-index: 999999;
+    pointer-events: none;
 }
     #flashcard-content {
       text-align: center;
@@ -3284,6 +3297,11 @@ document.getElementById("focoSelect").style.display = "none";
       savePositionTimer = setTimeout(() => {
           savePositionToBackend();
       }, 5000); // 5000 milissegundos = 5 segundos
+	  // Atualiza a régua de altura para o editor
+const helper = document.getElementById('height-helper') || document.createElement('div');
+helper.id = 'height-helper';
+document.body.appendChild(helper);
+helper.textContent = "Altura atual: " + document.body.scrollHeight + "px";
     } 
 
     function updateAccuracyButtons() {
