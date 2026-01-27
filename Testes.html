@@ -7061,5 +7061,30 @@ window.sendUserMessage = async function() {
     pointer-events: none; 
 ">
 </div>
+<script>
+  (function() {
+    let resizeTimer;
+    const ruler = document.getElementById('ghostRuler');
+    
+    window.addEventListener('resize', function() {
+      // 1. Mostra a régua
+      ruler.style.display = 'block';
+      
+      // 2. Atualiza os números (Largura x Altura)
+      ruler.textContent = `📏 ${window.innerWidth}px x ${window.innerHeight}px`;
+      
+      // 3. Adiciona borda para ajudar a ver os limites
+      document.body.style.border = "4px dashed #FFD700";
+      document.body.style.boxSizing = "border-box";
+
+      // 4. Limpa e reinicia o timer
+      clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(function() {
+        ruler.style.display = 'none';
+        document.body.style.border = "none"; 
+      }, 2000);
+    });
+  })();
+</script>
 </body>
 </html>
