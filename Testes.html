@@ -235,58 +235,28 @@ body {
       position: relative;
       background-color: white;
       color: black;
-      width: 98%;
-      max-width: none;
-      min-height: 325px;
-      height: auto;
-      margin: 0px auto;
+      
+      /* --- AJUSTE FINAL PC: LARGURA TOTAL / ALTURA TRAVADA --- */
+      width: 98%;             /* VOLTOU: Ocupa quase toda a largura da tela */
+      max-width: none;        /* VOLTOU: Sem limite de largura */
+      
+      /* --- ALTERAÇÃO: EXPANSÃO AUTOMÁTICA --- */
+      min-height: 325px;      /* Define a altura MÍNIMA (Padrão) */
+      height: auto;           /* Permite crescer se o texto for grande */
+      /* max-height removido para permitir expansão total */
+      margin: 0px auto;       /* Centralizado */
+      
       padding: 10px 10px;
       border-radius: 10px;
       box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
       display: flex;
       justify-content: center;
       align-items: flex-start;
-      overflow: visible; 
+      overflow-y: visible;    /* ALTERADO: Remove a barra de rolagem interna */
+      overflow-x: hidden;
       white-space: pre-wrap;
       overscroll-behavior: contain; 
-   }
-
-   /* CONFIGURAÇÃO PARA TELAS PEQUENAS (Responde à limitação do Google Sites) */
-/* CONFIGURAÇÃO SEGURA PARA CELULAR - EVITA CORTES */
-@media (max-width: 768px) {
-   body {
-      background-color: #121212 !important;
-   }
-
-   #card-container {
-      /* Altura automática: o card cresce o quanto o Google Sites permitir */
-      min-height: 350px !important; 
-      height: auto !important; 
-      width: 96% !important;
-      margin: 10px auto !important;
-      border-radius: 8px !important;
-      overflow: visible !important;
-   }
-
-   #flashcard-content {
-      font-size: 1.3em !important; 
-      line-height: 1.5;
-      padding-bottom: 90px !important; /* Espaço para o botão não cobrir o texto */
-   }
-}
-
-/* RÉGUA VISUAL (Aparece no topo para te ajudar a esticar no Google Sites) */
-#height-helper {
-    position: fixed;
-    top: 0;
-    right: 0;
-    background: rgba(255, 215, 0, 0.8);
-    color: black;
-    font-size: 10px;
-    padding: 2px 5px;
-    z-index: 999999;
-    pointer-events: none;
-}
+    }
     #flashcard-content {
       text-align: center;
       width: 100%;
@@ -1072,19 +1042,28 @@ body {
       /* === 2. VISUAL "TELA CHEIA" === */
       #card-container {
         width: 100% !important;
-        /* Define altura MÍNIMA, mas deixa crescer se o texto for grande */
-        min-height: calc(100vh - 120px) !important; 
+        
+        /* ALTERAÇÃO SEGURA: */
+        /* Define um tamanho mínimo fixo (300px) para o card nunca ficar "fino demais" */
+        min-height: 300px !important; 
+        
+        /* Permite crescer automaticamente se o texto for longo */
         height: auto !important; 
         
+        /* Padding para não colar no botão de resposta no celular */
+        padding-bottom: 80px !important; 
+
         margin: 0 !important;
         border-radius: 0 !important;
         box-shadow: none !important;
         background-color: white; 
         border-bottom: 1px solid #333;
         display: flex;
-        align-items: flex-start; /* Centraliza verticalmente se o texto for pequeno */
         
-        /* IMPORTANTE: Remove a rolagem interna e deixa a página rolar */
+        /* Garante que o texto comece do topo, facilitando a leitura em iframes */
+        align-items: flex-start !important;
+        justify-content: center !important;
+        
         overflow: visible !important; 
       }
 
@@ -1886,7 +1865,7 @@ body {
     <div id="flashcard-content">
       </div>
     <div id="end-screen">
-      <div id="end-message">Chico Concursos<br>Fim</div>
+      <div id="end-message">Chico Concursos<br>Bloco de estudo concluído</div>
       <button id="restart-button">RECOMEÇAR</button>
 	  <div id="accuracy-results" style="font-size: 1.5em;"></div>
       <button id="review-errors-button" class="review-button" style="margin-top: 15px; display: none;">REVISAR ERROS</button>
@@ -2144,6 +2123,7 @@ body {
                     <input type="checkbox" id="enableFocusMode" style="transform: scale(1.3); margin-right: 10px;"> 
                     <span style="color: gold; font-weight: bold;">ATIVAR MODO FOCO 🧠</span>
                 </label>
+               <span class="info-icon" tabindex="0" data-tooltip="Monitora seu tempo de resposta. Se demorar, insere automaticamente cards de reforço sobre o tema.">?</span>
             </div>
 
             <div class="clean-option-row">
@@ -2151,18 +2131,21 @@ body {
                   <input type="radio" name="weightMode" value="sequencial" onchange="switchWeightMode(this.value)"> 
                   Sequencial (Fixo)
                 </label>
+                <span class="info-icon" tabindex="0" data-tooltip="Segue a ordem exata da planilha (Linha 1, 2, 3...). Ideal para o primeiro contato com a matéria.">?</span>
             </div>
             <div class="clean-option-row">
                 <label>
                   <input type="radio" name="weightMode" value="ponderado" onchange="switchWeightMode(this.value)"> 
                   Aleatório Ponderado
                 </label>
+                <span class="info-icon" tabindex="0" data-tooltip="Sorteio inteligente: Assuntos com maior peso (ou mais difíceis) aparecem com mais frequência.">?</span>
             </div>
             <div class="clean-option-row">
                 <label>
                   <input type="radio" name="weightMode" value="minimo" onchange="switchWeightMode(this.value)"> 
                   Peso Mínimo
                 </label>
+                <span class="info-icon" tabindex="0" data-tooltip="Filtro avançado: Estuda apenas os cards que tenham peso igual ou maior que o valor escolhido.">?</span>
             </div>
             
             <div id="pesoMinimoOptions" style="display: none; margin-top: 10px; padding: 10px; background: #333; border-radius: 5px;">
@@ -3297,22 +3280,6 @@ document.getElementById("focoSelect").style.display = "none";
       savePositionTimer = setTimeout(() => {
           savePositionToBackend();
       }, 5000); // 5000 milissegundos = 5 segundos
-	  // Atualiza a régua de altura para o editor
-    const helper = document.getElementById('height-helper') || document.createElement('div');
-    helper.id = 'height-helper';
-    document.body.appendChild(helper);
-// Calcula a altura real do conteúdo interno
-      // Mede a altura real do container de conteúdo, ignorando a janela externa
-      const containerPrincipal = document.getElementById('card-container');
-      const alturaReal = containerPrincipal ? containerPrincipal.offsetHeight + 150 : 800;
-      
-      helper.textContent = "ALTURA IDEAL PARA ESTE CARD: " + alturaReal + "px";
-      helper.style.background = "red";
-      helper.style.color = "white";
-      helper.style.fontSize = "14px";
-      helper.style.background = "red"; // Vermelho para destacar que é uma instrução
-      helper.style.color = "white";
-      helper.style.fontWeight = "bold";
     } 
 
     function updateAccuracyButtons() {
@@ -3431,17 +3398,28 @@ document.getElementById("focoSelect").style.display = "none";
     }
 
     function markAsCorrect() {
-	triggerVisualFeedback('success');
+      triggerVisualFeedback('success');
       if (!requireAuth() || isFinished) return;
       
-      const currentOriginalCard = initialCards.indexOf(cards[currentCard]);
+      const card = cards[currentCard];
+      // Usa o ID original fixo
+      const realIndex = (card._originalIndex !== undefined) ? card._originalIndex : initialCards.indexOf(card);
       
-      if (currentOriginalCard !== -1) {
-        if (!cardAccuracy[currentOriginalCard]) {
-          cardAccuracy[currentOriginalCard] = { correct: 0, incorrect: 0 };
+      if (realIndex !== -1) {
+        if (!cardAccuracy[realIndex]) {
+          cardAccuracy[realIndex] = { correct: 0, incorrect: 0 };
         }
         
-        cardAccuracy[currentOriginalCard].correct++;
+        cardAccuracy[realIndex].correct++; 
+
+        // --- CORREÇÃO: REDENÇÃO (Limpa o erro se acertar) ---
+        // Se este card tinha erros registrados, remove 1 erro.
+        // Assim, se você corrigir o erro na revisão, ele sai da lista.
+        if (cardAccuracy[realIndex].incorrect > 0) {
+            cardAccuracy[realIndex].incorrect--;
+        }
+        // -----------------------------------------------------
+        
         updateAccuracyButtons();
         nextCard();
         saveFlashcardState();
@@ -3449,20 +3427,22 @@ document.getElementById("focoSelect").style.display = "none";
     }
 
     function markAsIncorrect() {
-	triggerVisualFeedback('error');
+      triggerVisualFeedback('error');
       if (!requireAuth() || isFinished) return;
       
-      const currentOriginalCard = initialCards.indexOf(cards[currentCard]);
+      const card = cards[currentCard];
+      // CORREÇÃO: Usa o ID original fixo
+      const realIndex = (card._originalIndex !== undefined) ? card._originalIndex : initialCards.indexOf(card);
       
       // Verifica Sanguessuga e contabiliza erro
-      if (currentOriginalCard !== -1) {
-        checkLeech(currentOriginalCard);
+      if (realIndex !== -1) {
+        checkLeech(realIndex); // Mantém a lógica de sanguessuga
 
-        if (!cardAccuracy[currentOriginalCard]) {
-          cardAccuracy[currentOriginalCard] = { correct: 0, incorrect: 0 };
+        if (!cardAccuracy[realIndex]) {
+          cardAccuracy[realIndex] = { correct: 0, incorrect: 0 };
         }
         
-        cardAccuracy[currentOriginalCard].incorrect++;
+        cardAccuracy[realIndex].incorrect++; // Soma o erro
         updateAccuracyButtons();
         nextCard();
         saveFlashcardState();
@@ -4203,11 +4183,39 @@ function setFontMode(mode) {
     function restartFlashcards() {
       if (!requireAuth()) return;
       
+      // 1. Limpeza Visual
       document.getElementById('end-screen').style.display = 'none';
       document.getElementById('flashcard-content').style.display = 'block';
+      
+      // 2. Reset de Variáveis de Controle
+      isFinished = false;
+      isReviewErrorsMode = false; // Sai do modo de revisão de erros
+      
+      // Esconde o botão de "olho" da revisão de erros se estiver visível
+      const reviewBtn = document.getElementById('reviewErrorsButton');
+      if (reviewBtn) {
+          reviewBtn.style.color = 'white';
+          reviewBtn.style.textShadow = 'none';
+          reviewBtn.style.display = 'none'; // Esconde pois recomeçamos tudo
+      }
+
+      // 3. RESTAURAÇÃO DO BARALHO (A Correção do Loop)
+      // Se estava filtrado por categoria, mantém a categoria, mas traz todos os cards dela de volta
+      if (currentCategory === "Todas") {
+        cards = [...initialCards];
+      } else {
+        cards = initialCards.filter(card => card.category === currentCategory);
+      }
+      
+      // 4. Se o modo aleatório estava ligado, reembaralha tudo
+      if (isShuffleActive) {
+         // Lógica simples ou smart shuffle dependendo do seu gosto
+         cards.sort(() => Math.random() - 0.5);
+      }
+
+      // 5. Reinicia navegação
       currentCard = 0;
       showingFront = true;
-      isFinished = false;
       updateCard();
       saveFlashcardState();
     }
@@ -5944,17 +5952,15 @@ function startCustomStudy() {
     }
 
     // 3. Função dos Botões SRS (Errei, Difícil, Bom, Fácil)
-    // 3. Função dos Botões SRS (Atualizada com Animação)
-    function rateCardSRS(rating, btnElement, colorHex) {
-	if (rating === 'again' || rating === 'hard') {
+  function rateCardSRS(rating, btnElement, colorHex) {
+      if (rating === 'again' || rating === 'hard') {
           triggerVisualFeedback('error');
       } else {
           triggerVisualFeedback('success');
       }
-      // ----------------------------
+      
       if (!requireAuth() || cards.length === 0) return;
 
-      // --- ANIMAÇÃO VISUAL (PISCAR) ---
       if (btnElement) {
         btnElement.style.setProperty('--blink-color', colorHex);
         btnElement.classList.add('blink-active');
@@ -5965,87 +5971,81 @@ function startCustomStudy() {
 
       const card = cards[currentCard];
       const cardId = generateCardId(card.front);
-      
-      // Pega estado atual
+      const realIndex = (card._originalIndex !== undefined) ? card._originalIndex : initialCards.indexOf(card);
+
+      if (realIndex !== -1) {
+          if (!cardAccuracy[realIndex]) cardAccuracy[realIndex] = { correct: 0, incorrect: 0 };
+          
+          if (rating === 'again') {
+              cardAccuracy[realIndex].incorrect++; 
+          } else {
+              cardAccuracy[realIndex].correct++;
+              
+              // --- CORREÇÃO: REDENÇÃO NO SRS ---
+              // Se marcou Difícil/Bom/Fácil, abate um erro antigo
+              if (cardAccuracy[realIndex].incorrect > 0) {
+                  cardAccuracy[realIndex].incorrect--;
+              }
+              // ---------------------------------
+          }
+      }
+
       let state = userSRSProgress[cardId] || { interval: 0, easeFactor: 2.5, nextReview: null };
-      
       let newInterval = 0;
       let newEase = state.easeFactor;
       let nextReviewDate = new Date(); 
 
-      // --- Lógica SM-2 Melhorada com "Fuzzing" (Variação Aleatória) ---
-      
-      // Função interna para aplicar variação e evitar picos de revisão no mesmo dia
       const applyFuzz = (val) => {
-          if (val < 3) return val; // Intervalos curtos não sofrem variação
-          const fuzz = Math.ceil(val * 0.05); // Variação de +/- 5%
+          if (val < 3) return val; 
+          const fuzz = Math.ceil(val * 0.05); 
           const shift = Math.floor(Math.random() * (fuzz * 2 + 1)) - fuzz;
           return val + shift;
       };
 
       if (rating === 'again') { 
-        // 1. Proteção contra Sanguessugas
-        const realIndex = initialCards.indexOf(cards[currentCard]);
-        if (realIndex !== -1) checkLeech(realIndex);
+        const realIndexRef = initialCards.indexOf(cards[currentCard]);
+        if (realIndexRef !== -1) checkLeech(realIndexRef);
         
-        // 2. Banco de Dados: Agenda para "Agora" (Reset)
         newInterval = 0; 
         newEase = Math.max(1.3, newEase - 0.2);
         nextReviewDate.setMinutes(nextReviewDate.getMinutes() + 10); 
 
-        // 3. ESTRATÉGIA HÍBRIDA (Inteligente)
         const cardToRepeat = cards[currentCard];
-        
-        // CÁLCULO: Queremos rever em 10 minutos. 
-        // Se levamos 30s por card, precisamos pular 20 cards.
         const offset = 20; 
         const targetIndex = currentCard + 1 + offset;
 
-        // CENÁRIO A: A fila é longa (temos mais de 20 cards pela frente)
-        // Inserimos o card "furando a fila" na posição 20.
         if (targetIndex < cards.length) {
             cards.splice(targetIndex, 0, cardToRepeat);
             showFeedback("↺ Reagendado para daqui a ~10 min", colorHex);
-        } 
-        // CENÁRIO B: A fila é curta (acaba antes de 10 min)
-        // Jogamos para o final, senão perderíamos a revisão.
-        else if (cards.length > 1) { 
+        } else { 
             cards.push(cardToRepeat);
             showFeedback("↺ Reagendado para o FINAL da fila", colorHex);
         }
       } else if (rating === 'hard') {
-        // Multiplicador 1.2 (Padrão)
         newInterval = state.interval === 0 ? 1 : Math.round(state.interval * 1.2);
         newEase = Math.max(1.3, newEase - 0.15);
-        newInterval = applyFuzz(newInterval); // Aplica Fuzz
+        newInterval = applyFuzz(newInterval); 
         nextReviewDate.setDate(nextReviewDate.getDate() + Math.max(1, newInterval)); 
       } else if (rating === 'good') {
-        // Usa o Ease Factor real do card. Se for a 1ª vez, usa 2.5 (padrão)
         let multiplier = state.easeFactor || 2.5; 
         newInterval = state.interval === 0 ? 1 : Math.round(state.interval * multiplier);
-        newInterval = applyFuzz(newInterval); // Aplica Fuzz
+        newInterval = applyFuzz(newInterval); 
         nextReviewDate.setDate(nextReviewDate.getDate() + Math.max(1, newInterval)); 
       } else if (rating === 'easy') {
-        // Multiplicador Ease * 1.3 (Padrão) + Bonus
         newInterval = state.interval === 0 ? 4 : Math.round(state.interval * newEase * 1.3);
         newEase += 0.15;
-        newInterval = applyFuzz(newInterval); // Aplica Fuzz
+        newInterval = applyFuzz(newInterval); 
         nextReviewDate.setDate(nextReviewDate.getDate() + Math.max(4, newInterval)); 
       }
 
-      // Atualiza Memória Local
       userSRSProgress[cardId] = {
         interval: newInterval,
         easeFactor: newEase,
         nextReview: nextReviewDate.toISOString()
       };
 
-      console.log(`SRS Atualizado: ${rating} | Próxima: ${nextReviewDate.toLocaleString()}`);
-
-      // Envia para o Backend
       saveSRSToBackend(cardId, nextReviewDate.toISOString(), newInterval, newEase);
 
-      // Pequeno delay para ver a animação antes de trocar o card
       setTimeout(() => {
           nextCard();
       }, 200);
