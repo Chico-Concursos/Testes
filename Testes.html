@@ -7047,36 +7047,35 @@ window.sendUserMessage = async function() {
     font-size: 16px;
     font-weight: bold;
     padding: 8px 12px;
-    z-index: 2147483647; /* Z-index máximo para garantir visibilidade */
+    z-index: 2147483647;
     border-top-left-radius: 8px;
     box-shadow: -2px -2px 10px rgba(0,0,0,0.5);
     pointer-events: none;
-">
-</div>
+"></div>
 
 <script>
   (function() {
-    let resizeTimer;
-    const ruler = document.getElementById('ghostRuler');
+    var resizeTimer;
+    var ruler = document.getElementById('ghostRuler');
     
-    // Função que roda quando a janela muda de tamanho
     window.addEventListener('resize', function() {
       if (!ruler) return;
 
-      // 1. Mostra a régua
+      // 1. Força o texto a ser atualizado antes de mostrar
+      // Usamos concatenação simples (+) para evitar erros de interpretação
+      var w = window.innerWidth;
+      var h = window.innerHeight;
+      ruler.textContent = "📏 " + w + "px x " + h + "px";
+
+      // 2. Mostra a régua
       ruler.style.display = 'block';
       
-      // 2. Atualiza os números (Largura x Altura)
-      ruler.textContent = `📏 ${window.innerWidth}px x ${window.innerHeight}px`;
-      
-      // 3. Adiciona borda dourada pontilhada na tela toda
+      // 3. Adiciona borda visual
       document.body.style.border = "4px dashed #FFD700";
       document.body.style.boxSizing = "border-box";
 
-      // 4. Limpa o timer anterior e prepara para esconder
+      // 4. Timer para esconder
       clearTimeout(resizeTimer);
-      
-      // Esconde tudo após 2 segundos sem mexer
       resizeTimer = setTimeout(function() {
         ruler.style.display = 'none';
         document.body.style.border = "none"; 
