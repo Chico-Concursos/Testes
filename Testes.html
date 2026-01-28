@@ -1044,8 +1044,8 @@ body {
         width: 100% !important;
         
         /* ALTERAÇÃO SEGURA: */
-        /* Define um tamanho mínimo fixo (500px) para o card nunca ficar "fino demais" */
-        min-height: 500px !important; 
+        /* Define um tamanho mínimo fixo (800px) para o card nunca ficar "fino demais" */
+        min-height: 800px !important; 
         
         /* Permite crescer automaticamente se o texto for longo */
         height: auto !important; 
@@ -2299,7 +2299,7 @@ body {
       <button class="login-button" onclick="location.reload()">Fazer Login Novamente</button>
     </div>
   </div>
-  <div id="concurrentSessionModal" style="
+ <div id="concurrentSessionModal" style="
       position: fixed;
       top: 0;
       left: 0;
@@ -2309,7 +2309,9 @@ body {
       z-index: 2147483647; 
       display: none;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start; /* ◄--- Mudou de center para flex-start (Topo) */
+      padding-top: 30px;      /* ◄--- Adicionado espaçamento do teto */
+      overflow-y: auto;        /* ◄--- Adicionado rolagem se necessário */
       backdrop-filter: blur(5px);">
       
     <div class="session-expired-container" style="border: 1px solid #ff4d4d; box-shadow: 0 0 40px rgba(255, 77, 77, 0.4);">
