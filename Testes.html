@@ -2458,13 +2458,13 @@ body {
     // --- CONFIGURAÇÃO INICIAL ---
 // --- CONFIGURAÇÃO INICIAL ---
      // Usuário e Senha
-    let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbygpm7cU5NAgkVWt_X9swlS2ta7WhZoGL7Mjt0heaHEDe_WBzkymmGBdAazsMCcraHD/exec";
+    let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyM10CNRiMOvuO0BpiBZgjLvqho3sgbeicPmAHefyVAOeunCivhRMATJHKKuo7tMKr7/exec";
 	// Acesso aos Cards
     let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbxy_sanjZc0AL-kMIu5LJEqjrFLAVeHIJsWtQq_l5XEqOR5E38xsOzJyHzprjJCHh15/exec"; 
 	// URL do Backend das Anotações (Copiado do seu arquivo anotações.html)
     let NOTES_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyeWFpisAExqCY5FscF_tF5c_WUWavp3Y-8MPkgPhL3Mj0RoDikM4432hmnDhc-g79Y/exec"; 
 	// Professor IA
-	let AI_BACKEND_URL = "https://script.google.com/macros/s/AKfycbwFMKTkfugr7381WQfLRAbLjmM-gxRGCfmXi9pLaudhktN30L84_dBYsykzNHG14RJC/exec"; 
+	let AI_BACKEND_URL = "https://script.google.com/macros/s/AKfycbygSW2z33jnRiVq8S_PAcucOSXkKHsLSZ6DKXYSfP4O9XdziYuHo7yGBF4iCNUv5No6sA/exec"; 
 	
     let isAuthenticated = false;
     let userEmail = '';
@@ -6895,8 +6895,11 @@ async function callGroqAPI(messagesContext) {
             email: userEmail || 'anonymous',
             sessionToken: localStorage.getItem('sessionToken') || '',
             messages: JSON.stringify(messagesContext),
-            cardContext: cardContext, 
+            cardContext: cardContext,
             timestamp: Date.now(),
+            // --- NOVO: ENVIANDO O CRACHÁ PARA O PROFESSOR IA ---
+            originUrl: window.location.href 
+            // ---------------------------------------------------
         };
 
         const formData = new URLSearchParams();
