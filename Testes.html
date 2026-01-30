@@ -2458,11 +2458,13 @@ body {
     // --- CONFIGURAÇÃO INICIAL ---
 // --- CONFIGURAÇÃO INICIAL ---
      // Usuário e Senha
-    let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxfeIybUQvl-cb_VEBITzKF9Nbw97FgWMGWVF6pW-McV5MwVpJOoytWcVKl5dIApOjGZw/exec";
+    let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbygpm7cU5NAgkVWt_X9swlS2ta7WhZoGL7Mjt0heaHEDe_WBzkymmGBdAazsMCcraHD/exec";
 	// Acesso aos Cards
     let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbxy_sanjZc0AL-kMIu5LJEqjrFLAVeHIJsWtQq_l5XEqOR5E38xsOzJyHzprjJCHh15/exec"; 
 	// URL do Backend das Anotações (Copiado do seu arquivo anotações.html)
     let NOTES_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyeWFpisAExqCY5FscF_tF5c_WUWavp3Y-8MPkgPhL3Mj0RoDikM4432hmnDhc-g79Y/exec"; 
+	// Professor IA
+	let AI_BACKEND_URL = "https://script.google.com/macros/s/AKfycbwFMKTkfugr7381WQfLRAbLjmM-gxRGCfmXi9pLaudhktN30L84_dBYsykzNHG14RJC/exec"; 
 	
     let isAuthenticated = false;
     let userEmail = '';
@@ -2817,6 +2819,9 @@ let lastAutoAdvanceDelay = localStorage.getItem('lastAutoAdvanceDelay')
     const formData = new URLSearchParams();
     formData.append('email', email);
     formData.append('password', password);
+	// --- NOVO: ENVIANDO O CRACHÁ (URL DE ORIGEM) ---
+    formData.append('originUrl', window.location.href); 
+    // ----------------------------------------------
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 10000);
     const response = await fetch(WEB_APP_URL, {
@@ -2941,6 +2946,9 @@ function startSessionHeartbeat() {
             formData.append('action', 'checkStatus');
             formData.append('email', email);
             formData.append('sessionToken', token);
+			// --- NOVO: ENVIANDO O CRACHÁ ---
+            formData.append('originUrl', window.location.href);
+            // -------------------------------
 
             // Usa fetch com 'no-cors' não funciona para ler resposta, então usamos normal.
             // O App Script já tem headers CORS configurados.
@@ -6874,28 +6882,62 @@ function addMessageToChat(sender, message) {
 }
 
 // 4. API Groq
+// --- FUNÇÃO SEGURA: Comunicação com Backend de IA Isolado ---
 async function callGroqAPI(messagesContext) {
-    const part1 = "gsk_cl1TddotvtLXhhuPmAIkW"; 
-    const part2 = "Gdyb3FYSLgkfpv26DOzYa16yGOkhoPj";
-    const apiKey = part1 + part2;
-    const url = "https://api.groq.com/openai/v1/chat/completions";
-
     try {
-        const response = await fetch(url, {
+        // Prepara payload seguro (não expõe chave API)
+        const cardData = cards[currentCard];
+        const cardContext = cardData ? 
+            (showingFront ? cardData.front : cardData.back).substring(0, 100) : '';
+        
+        const payload = {
+            action: 'askAI',
+            email: userEmail || 'anonymous',
+            sessionToken: localStorage.getItem('sessionToken') || '',
+            messages: JSON.stringify(messagesContext),
+            cardContext: cardContext, 
+            timestamp: Date.now(),
+        };
+
+        const formData = new URLSearchParams();
+        for (const key in payload) {
+            formData.append(key, payload[key]);
+        }
+
+        // Chama backend seguro (isolated) - chave API fica apenas no servidor
+        const response = await fetch(AI_BACKEND_URL, {
             method: "POST",
-            headers: { "Content-Type": "application/json", "Authorization": "Bearer " + apiKey },
-            body: JSON.stringify({
-                messages: [{role: "system", content: "Você é um professor didático."}, ...messagesContext],
-                model: "llama-3.3-70b-versatile",
-                temperature: 0.5,
-                max_tokens: 1024
-            })
+            headers: { 
+                "Content-Type": "application/x-www-form-urlencoded"
+            },
+            body: formData,
+            signal: AbortSignal.timeout(30000) // 30s timeout
         });
-        if (!response.ok) throw new Error("Erro API");
-        const data = await response.json();
-        return data.choices[0].message.content;
+
+        if (!response.ok) {
+            throw new Error(`HTTP ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        if (!result.success) {
+            console.error("Erro do backend IA:", result.error);
+            return `❌ ${result.error || "Erro no serviço de IA"}`;
+        }
+        
+        return result.response;
+        
     } catch (error) {
-        return "❌ Erro de conexão. Verifique sua internet.";
+        console.error("Erro na comunicação com IA:", error);
+        
+        if (error.name === 'AbortError' || error.name === 'TimeoutError') {
+            return "⏱️ A IA demorou muito para responder. Ela pode estar ocupada. Tente novamente.";
+        }
+        if (error.message?.includes('Failed to fetch')) {
+            return "🌐 Erro de conexão. Verifique sua internet ou tente recarregar a página.";
+        }
+        
+        return "❌ Serviço de IA temporariamente indisponível. Tente novamente em alguns instantes.";
     }
 }
 
@@ -7179,4 +7221,3 @@ window.sendUserMessage = async function() {
 </script>
 </body>
 </html>
-
