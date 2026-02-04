@@ -2459,8 +2459,8 @@ body {
 // --- CONFIGURAÇÃO INICIAL ---
      // Usuário e Senha
     let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyM10CNRiMOvuO0BpiBZgjLvqho3sgbeicPmAHefyVAOeunCivhRMATJHKKuo7tMKr7/exec";
-	// Acesso aos Cards
-    let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbxy_sanjZc0AL-kMIu5LJEqjrFLAVeHIJsWtQq_l5XEqOR5E38xsOzJyHzprjJCHh15/exec"; 
+	// Suporte acesso aos Cards
+    let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbxeWOiSc_fUrtMaZX11oqw365UaObz3hjAzXedN_BXSuWBqkhNSsyMSP6nOrywz6y2fwA/exec"; 
 	// URL do Backend das Anotações (Copiado do seu arquivo anotações.html)
     let NOTES_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyeWFpisAExqCY5FscF_tF5c_WUWavp3Y-8MPkgPhL3Mj0RoDikM4432hmnDhc-g79Y/exec"; 
 	// Professor IA
@@ -2910,9 +2910,6 @@ let lastAutoAdvanceDelay = localStorage.getItem('lastAutoAdvanceDelay')
       loadAllDataFromBackend(userEmail).then(async () => {
           
           console.log("Progresso baixado. Aguardando servidor esfriar...");
-          // PAUSA DE 1.5 SEGUNDOS (Evita o erro "Muitas Requisições")
-          await new Promise(resolve => setTimeout(resolve, 1500));
-
           // 2. Baixa os Cards
           return loadFlashcardsFromGoogleSheet(SHEET_ID, GID);
       }).then(() => {
@@ -3175,7 +3172,12 @@ function startSessionHeartbeat() {
 
         if (loadedCards.length > 0) {
             // SUCESSO: Atualiza o Cache e a tela
-            localStorage.setItem(cacheKey, JSON.stringify(loadedCards));
+            try {
+                localStorage.setItem(cacheKey, JSON.stringify(loadedCards));
+            } catch (e) {
+                console.warn("Memória local cheia (Cache), seguindo sem salvar offline.", e);
+            }
+
             processLoadedCards(loadedCards, false);
             
             if (hasLoadedLocal) {
@@ -3236,7 +3238,8 @@ function startSessionHeartbeat() {
                 btn.classList.add("settings-highlight");
                 setTimeout(() => btn.classList.remove("settings-highlight"), 10000);
             }
-            updateCard();
+           // ALTERAÇÃO: Passamos 'true' para NÃO disparar o salvamento automático logo ao abrir
+            updateCard(true);
         }
     }
 
@@ -3277,7 +3280,8 @@ document.getElementById("focoSelect").style.display = "none";
       }
     }
 
-    function updateCard() {
+    // Alteração: Aceita parâmetro para pular o salvamento automático
+function updateCard(skipAutoSave = false) {
 	if (typeof handsFreeTimer !== 'undefined') clearTimeout(handsFreeTimer);
 	stopSpeech();
       if (!requireAuth() || cards.length === 0 || isFinished) return;
@@ -3376,16 +3380,17 @@ document.getElementById("focoSelect").style.display = "none";
       const shuffleBtn = document.getElementById('shuffleButton');
       if (shuffleBtn) shuffleBtn.style.display = 'inline-block';
 
-      // --- NOVO: SALVAR POSIÇÃO AUTOMATICAMENTE A CADA CARD ---
-    // --- NOVO: SALVAMENTO INTELIGENTE (Espera o tempo definido em segundos antes de enviar) ---
+    // --- NOVO: SALVAR POSIÇÃO AUTOMATICAMENTE A CADA CARD ---
       // Se o usuário clicar de novo antes do tempo definido, cancela o envio anterior
       clearTimeout(savePositionTimer); 
       
-      savePositionTimer = setTimeout(() => {
-          savePositionToBackend();
-      }, 5000); // 5000 milissegundos = 5 segundos
-    } 
-
+      // SÓ AGENDA O SALVAMENTO SE NÃO FOR SOLICITADO O PULO (skipAutoSave)
+      if (!skipAutoSave) {
+          savePositionTimer = setTimeout(() => {
+              savePositionToBackend();
+          }, 5000); // 5000 milissegundos = 5 segundos
+      }
+    }
     function updateAccuracyButtons() {
       const correctButton = document.getElementById('correctButton');
       const incorrectButton = document.getElementById('incorrectButton');
@@ -4741,12 +4746,21 @@ function populateVoiceList(attempt = 0) {
 
 // --- INICIALIZAÇÃO SEGURA ---
 // Remove listeners existentes para evitar duplicação
+// --- OTIMIZAÇÃO: CARREGAR VOZES APENAS UMA VEZ ---
+// Evita que o navegador fique recarregando a lista e travando o console
+let voicesLoaded = false; 
+
 if (window.speechSynthesis.onvoiceschanged) {
     window.speechSynthesis.onvoiceschanged = null;
 }
 
-// Garante que as vozes carreguem (Chrome precisa disso)
-window.speechSynthesis.onvoiceschanged = populateVoiceList;
+window.speechSynthesis.onvoiceschanged = function() {
+    if (voicesLoaded) return; // Se já carregou, o "Porteiro" barra a repetição
+    
+    console.log("🔊 Carregando vozes do sistema (Tentativa Única)...");
+    populateVoiceList();
+    voicesLoaded = true; // Marca na prancheta que já foi feito
+};
 
 // Força carregamento inicial com múltiplas tentativas seguras
 let loadAttempts = 0;
@@ -6890,18 +6904,37 @@ async function callGroqAPI(messagesContext) {
         const cardContext = cardData ? 
             (showingFront ? cardData.front : cardData.back).substring(0, 100) : '';
         
+        // --- OTIMIZAÇÃO: JANELA DESLIZANTE (LÓGICA SENIOR) ---
+        // Objetivo: Enviar apenas o essencial para não travar a memória da IA.
+        
+        let messagesToSend = messagesContext;
+        const LIMIT = 6; // Mantém a 1ª (Contexto) + as 5 últimas (Conversa Recente)
+
+        if (messagesContext.length > LIMIT) {
+            console.log("Otimizando histórico do chat...");
+            
+            // 1. A Regra de Ouro: Nunca perca a primeira mensagem (index 0),
+            // pois ela contém o comando "Aja como um Professor" e os dados do Card.
+            const firstMsg = messagesContext[0];
+            
+            // 2. Pega apenas as últimas mensagens recentes (LIMIT - 1)
+            // O slice(-(LIMIT-1)) pega do fim para o começo.
+            const recentMsgs = messagesContext.slice(-(LIMIT - 1));
+            
+            // 3. Reconstrói o histórico limpo
+            messagesToSend = [firstMsg, ...recentMsgs];
+        }
+        // -----------------------------------------------------
+
         const payload = {
             action: 'askAI',
             email: userEmail || 'anonymous',
             sessionToken: localStorage.getItem('sessionToken') || '',
-            messages: JSON.stringify(messagesContext),
+            messages: JSON.stringify(messagesToSend), // <--- AGORA USAMOS A LISTA OTIMIZADA
             cardContext: cardContext,
             timestamp: Date.now(),
-            // --- NOVO: ENVIANDO O CRACHÁ PARA O PROFESSOR IA ---
             originUrl: window.location.href 
-            // ---------------------------------------------------
         };
-
         const formData = new URLSearchParams();
         for (const key in payload) {
             formData.append(key, payload[key]);
