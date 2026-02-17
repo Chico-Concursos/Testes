@@ -1163,9 +1163,11 @@
       background: rgba(0, 0, 0, 0.5);
       display: flex;
       justify-content: center;
-      align-items: center;
+      align-items: flex-start; /* ALTERADO: Alinha ao topo em vez do centro */
+      padding-top: 50px;       /* ADICIONADO: Espaço para não colar no teto */
       z-index: 999;
       display: none;
+      overflow-y: auto;        /* ADICIONADO: Garante rolagem se a tela for pequena */
     }
 
     .modal-backdrop#confirmModal {
@@ -2105,14 +2107,15 @@
         color: #fff !important;
         margin-bottom: 6px;
       }
-
-      /* Botões dentro do menu: largura total, layout vertical */
+      /* Botões dentro do menu: largura total, layout vertical ajustado */
       #mainTopBar .left-buttons {
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
-        gap: 6px !important;
+        gap: 8px !important;        /* Reduzi levemente o espaço entre botões */
         overflow-x: visible !important;
+        padding-top: 0 !important;  /* REMOVIDO: Remove o espaço extra no topo */
+        margin-top: 0 !important;   /* GARANTIA: Cola logo abaixo do cabeçalho */
       }
 
       #mainTopBar .left-buttons button {
@@ -3295,8 +3298,8 @@
 
     @media (min-height: 600px) {
       #loginModal {
-        justify-content: center;
-        padding-top: 0;
+        justify-content: flex-start; /* MUDANÇA: Alinha ao topo, não ao centro */
+        padding-top: 50px;           /* MUDANÇA: Espaço para não colar no teto */
       }
     }
 
@@ -3864,65 +3867,70 @@
       }
     }
 	/* ==========================================
-       CORREÇÃO FINAL: AGENDA MOBILE LIMPA + SCROLL
+       CORREÇÃO FINAL: AGENDA MOBILE (IDs Corrigidos)
        ========================================== */
     @media (max-width: 768px) {
       
-      /* 1. LIMPEZA VISUAL DO CABEÇALHO */
-      /* Esconde Timer, Barra de Progresso e Abas no celular */
+      /* 1. LIMPEZA VISUAL (IDs Corrigidos) */
+      /* Oculta Timer, Barra e Abas */
       #focus-timer-container, 
       #chico-progress-bar-container,
-      .agenda-tabs {
+      .agenda-tabs,
+      #agenda-tabs { 
         display: none !important;
       }
 
-      /* Ajusta o cabeçalho para focar no Título e Botão Fechar */
-      #agendaModal .modal-header {
+      /* 2. CABEÇALHO DO MODAL (Corrigido para #agenda-modal) */
+      #agenda-modal .modal-header {
         flex-direction: row !important;
         justify-content: space-between !important;
         align-items: center !important;
         padding-bottom: 5px !important;
         border-bottom: 1px solid #333 !important;
-        gap: 10px !important;
+        display: flex !important;
       }
 
-      #agendaModal h3 {
-        font-size: 1.1rem !important;
+      /* Ajuste do Título */
+      #agenda-modal h3 {
+        font-size: 1.2rem !important;
         margin: 0 !important;
-        white-space: nowrap; /* Impede que o título quebre linha feio */
-      }
-
-      /* 2. CORREÇÃO DA ROLAGEM HORIZONTAL */
-      
-      /* O Container Pai (Janela) */
-      .week-grid-container {
-        overflow-x: auto !important; /* ATIVA O SCROLL LATERAL */
-        width: 100% !important;
+        white-space: nowrap !important;
         display: block !important;
-        padding-bottom: 15px !important; /* Espaço para o dedo rodar a barra */
-        -webkit-overflow-scrolling: touch; /* Rolagem suave no iPhone */
       }
 
-      /* A Tabela Interna (Grade) */
-      /* Forçamos ela a ser LARGÃO (900px) para "vazar" da tela */
+      /* 3. SCROLL HORIZONTAL (A Mágica) */
+      /* O Container Pai */
+      .week-grid-container {
+        display: block !important;
+        width: 100% !important;
+        overflow-x: auto !important; /* Ativa a rolagem */
+        padding-bottom: 15px !important;
+      }
+
+      /* A Grade Gigante (Forçamos 900px) */
       .week-grid {
-        min-width: 900px !important;  /* O segredo: largura fixa grande */
         display: grid !important;
-        /* Garante que as colunas mantenham o tamanho */
-        grid-template-columns: 80px repeat(7, 1fr) !important; 
-      }
-
-      /* Ajuste dos cabeçalhos para não ficarem espremidos */
-      .day-header, .period-header {
-        font-size: 0.85rem !important;
-        padding: 8px !important;
+        min-width: 900px !important; /* O segredo: maior que a tela */
+        width: 900px !important;
+        grid-template-columns: 60px repeat(7, 1fr) !important;
+        gap: 5px !important;
       }
       
-      /* Garante que o container da agenda ocupe a tela bem */
-      .agenda-content {
+      /* Ajuste de Texto para caber */
+      .day-header, .period-header {
+        font-size: 0.8rem !important;
         padding: 5px !important;
+        word-wrap: break-word !important;
+      }
+
+      /* Ajuste do corpo do modal para não cortar */
+      #agenda-modal .modal-content {
+        padding: 5px !important;
+        width: 98% !important;
+        max-width: 98% !important;
       }
     }
+
   </style>
 </head>
 
