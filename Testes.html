@@ -1976,7 +1976,13 @@
         padding: 6px 0;
         margin-bottom: 8px;
       }
-
+/* CORREÇÃO: Força a caixa de busca a abrir para a direita no celular */
+      #expandableSearchMobile .search-input-modal {
+        right: auto !important; /* Desliga o alinhamento à direita (que estava cortando) */
+        left: -5px !important;  /* Alinha à esquerda (leve ajuste para centralizar com o ícone) */
+        top: 45px !important;   /* Garante que abra logo abaixo do ícone */
+        width: 250px !important; /* Largura segura para ver o texto */
+      }
       .mobile-menu-btn {
         display: flex !important;
         background: transparent !important;
@@ -4025,8 +4031,8 @@
          <div class="top-bar" id="mainTopBar">
     
     <button id="btnXFecharMobile" class="mobile-close-menu-btn" onclick="toggleMobileMenu()" style="margin-bottom: 0;">
-        <i class="fas fa-times"></i> FECHAR MENU
-    </button>
+    FECHAR MENU
+</button>
 
     <div class="left-buttons">
       <button onclick="showProgressOverviewWithLoading()"><i class="fas fa-chart-bar"></i> Visão Geral</button>
