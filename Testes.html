@@ -1996,21 +1996,25 @@
       }
 
       /* O menu hambúrguer: escondido por padrão, abre como dropdown */
-      /* O menu hambúrguer: escondido por padrão, abre como dropdown */
       #mainTopBar {
         display: none !important;
         flex-direction: column !important;
-        background: #0d0d0d !important; /* Fundo mais escuro para leitura */
-        position: fixed !important; /* Fixado na tela para não rolar junto */
-        top: 0 !important; /* Cola no topo */
+        
+        /* CORREÇÃO AQUI: Alinha tudo no TOPO */
+        justify-content: flex-start !important; 
+        
+        background: #0d0d0d !important; 
+        position: fixed !important; 
+        top: 0 !important; 
         left: 0 !important;
         right: 0 !important;
-        bottom: 0 !important; /* Ocupa tela toda */
+        bottom: 0 !important; 
         width: 100% !important;
         height: 100vh !important;
         padding: 20px !important;
-        z-index: 9999 !important; /* Fica acima de tudo */
+        z-index: 9999 !important; 
         overflow-y: auto !important;
+        gap: 10px !important; /* Espaço pequeno fixo entre o X e os botões */
       }
 
       /* Estilo do novo botão de fechar menu */
@@ -4020,7 +4024,9 @@
           <!-- MENU HAMBÚRGUER (abre/fecha via botão ☰) -->
          <div class="top-bar" id="mainTopBar">
     
-    <button id="btnXFecharMobile" class="btn-fechar-novo" onclick="toggleMobileMenu()" style="align-self: flex-end; margin-bottom: 10px; display: none;">X</button>
+    <button id="btnXFecharMobile" class="mobile-close-menu-btn" onclick="toggleMobileMenu()" style="margin-bottom: 0;">
+        <i class="fas fa-times"></i> FECHAR MENU
+    </button>
 
     <div class="left-buttons">
       <button onclick="showProgressOverviewWithLoading()"><i class="fas fa-chart-bar"></i> Visão Geral</button>
