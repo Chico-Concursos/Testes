@@ -405,11 +405,10 @@
       background: #000000;
     }
 
-    /* 4. Ícone de edição sempre visível */
     .topic-item {
       padding: 10px 12px;
-     border-bottom: 1px solid rgba(210, 172, 71, 0.3) !important;
-      cursor: pointer;
+      border-bottom: 1px solid rgba(210, 172, 71, 0.3) !important;
+      cursor: default; /* MUDANÇA: 'pointer' para 'default' (seta normal) */
       transition: all 0.2s ease;
       color: #eee;
       font-size: 0.85rem;
@@ -1978,10 +1977,13 @@
       }
 /* CORREÇÃO: Força a caixa de busca a abrir para a direita no celular */
       #expandableSearchMobile .search-input-modal {
-        right: auto !important; /* Desliga o alinhamento à direita (que estava cortando) */
-        left: -5px !important;  /* Alinha à esquerda (leve ajuste para centralizar com o ícone) */
-        top: 45px !important;   /* Garante que abra logo abaixo do ícone */
-        width: 250px !important; /* Largura segura para ver o texto */
+        right: auto !important; 
+        left: -5px !important;  
+        top: 45px !important;   
+        
+        /* AJUSTE FINO AQUI: */
+        width: 220px !important;    /* Reduzido de 250px para 220px */
+        max-width: 75vw !important; /* SEGURANÇA: Nunca ocupará mais que 75% da tela do celular */
       }
       .mobile-menu-btn {
         display: flex !important;
@@ -2122,22 +2124,27 @@
         display: flex !important;
         flex-direction: column !important;
         width: 100% !important;
-        gap: 8px !important;        /* Reduzi levemente o espaço entre botões */
+        gap: 5px !important;        /* MUDANÇA: Reduzido de 8px para 5px (mais compactos) */
         overflow-x: visible !important;
-        padding-top: 0 !important;  /* REMOVIDO: Remove o espaço extra no topo */
-        margin-top: 0 !important;   /* GARANTIA: Cola logo abaixo do cabeçalho */
+        padding-top: 0 !important;
+        margin-top: 0 !important;
       }
 
       #mainTopBar .left-buttons button {
         width: 100% !important;
         max-width: none !important;
-        height: 40px !important;
+        
+        /* MUDANÇA: Altura reduzida para economizar tela */
+        height: 30px !important;      
+        min-height: 30px !important;
         max-height: none !important;
-        min-height: 40px !important;
-        padding: 8px 16px !important;
-        font-size: 0.95rem !important;
+        
+        /* MUDANÇA: Padding vertical removido para centralizar no espaço menor */
+        padding: 0 16px !important;   
+        
+        font-size: 0.95rem !important; /* Fonte mantida */
         justify-content: flex-start !important;
-        border-radius: 8px !important;
+        border-radius: 6px !important; /* Leve ajuste na borda para a nova altura */
       }
 
       /* Estilo do Bloco Selecionado (Toque para Mover) */
@@ -3637,307 +3644,122 @@
       }
     }
 	/* =======================================================
-       CORREÇÃO FINAL: DESKTOP (Telas acima de 768px)
-       ======================================================= */
-    @media (min-width: 769px) {
-
-      /* 1. DESTRAVAR ROLAGEM E CORPO */
-      html, body {
-        height: auto !important;
-        overflow-y: auto !important; /* Devolve a barra de rolagem */
-        overflow-x: hidden !important;
-        position: static !important;
-      }
-
-      /* 2. ESTRUTURA PRINCIPAL (LADO A LADO) */
-      /* Isso obriga o Menu e o Conteúdo a ficarem vizinhos */
-      .container {
-        display: flex !important;
-        flex-direction: row !important;
-        height: auto !important;
-        overflow: visible !important;
-      }
-
-      /* 3. MENU LATERAL (DISCIPLINAS) */
-      .sidebar {
-        position: relative !important; /* Tira o modo flutuante/fixed */
-        width: 300px !important;       /* Largura fixa */
-        min-width: 300px !important;   /* Garante que não encolha */
-        height: auto !important;       /* Altura automática */
-        display: block !important;
-        transform: none !important;    /* Garante que está visível */
-        left: 0 !important;
-        z-index: 10 !important;
-        box-shadow: none !important;
-        border-right: 1px solid #ddd;  /* Uma linha sutil para separar */
-      }
-
-      /* 4. SOMEM OS ITENS DE CELULAR */
-      .mobile-menu-toggle,       /* Botão Hamburguer */
-      .close-sidebar-btn,        /* Botão X de fechar */
-      #mobile-menu-overlay {     /* Fundo escuro */
-        display: none !important;
-      }
-
-      /* Garante que o título "Disciplinas" apareça */
-      .sidebar-header {
-        display: block !important;
-      }
-
-      /* 5. CONSERTO DOS CHECKBOXES (LINHA) */
-      /* AQUI ESTÁ A MÁGICA: FORÇA ROW (LINHA) */
-      .topic-checkbox-group {
-        display: flex !important;
-        flex-direction: row !important; 
-        align-items: center !important;
-        justify-content: flex-end !important;
-        gap: 15px !important;
-        width: auto !important;
-        margin-top: 0 !important;
-        border: none !important;
-        background: transparent !important;
-      }
-
-      /* Ajuste dos botões individuais */
-      .topic-checkbox-group label {
-        width: auto !important;
-        margin-bottom: 0 !important;
-        padding: 4px 10px !important;
-      }
-
-      /* 6. PAINEL DE CONTROLE GERAL */
-      .quick-controls {
-        flex-direction: row !important;
-        flex-wrap: nowrap !important;
-      }
-      
-      /* Ajuste da área principal para não ficar por baixo do menu */
-      .main-content {
-        flex: 1 !important; /* Ocupa o resto do espaço */
-        width: calc(100% - 300px) !important;
-        margin-left: 0 !important;
-      }
-    }
-	/* } <--- ESSA CHAVE É A SEGURANÇA (Fecha blocos anteriores esquecidos) */
-    }
-
-    /* =======================================================
        CORREÇÃO BLINDADA: DESKTOP (COMPUTADOR > 768px)
        ======================================================= */
-   @media (min-width: 769px) {
-   /* GARANTIA: O botão X some no PC */
-      #btnXFecharMobile {
-        display: none !important;
-      }
-	  
-      /* ATIVANDO A ETIQUETA: O que tiver 'mobile-only-hide-pc' some no computador */
-      .mobile-only-hide-pc {
-        display: none !important;
-      }
-      /* 1. SUMIR COM OS BOTÕES DE CELULAR (REGRA FORTE) */
-      .mobile-menu-toggle, 
-      .close-sidebar-btn,
-      .mobile-close-menu-btn, /* ADICIONADO AQUI: Esconde o botão Fechar Menu no PC */
-      #mobile-menu-overlay {
-        display: none !important;
-      }
-      /* 2. DESTRAVAR BARRA DE ROLAGEM */
-      html, body {
-        height: auto !important;
-        overflow-y: visible !important;
-        overflow-x: hidden !important;
-        position: static !important;
-      }
-
-      /* 3. ALINHAR MENU E CONTEÚDO (LADO A LADO) */
-      .container {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: flex-start !important; /* Alinha no topo */
-        width: 100% !important;
-      }
-
-      /* 4. TRAVAR O MENU NA ESQUERDA */
-      .sidebar {
-        display: block !important;
-        position: sticky !important; /* Menu acompanha a rolagem suavemente */
-        top: 0 !important;
-        width: 300px !important;
-        min-width: 300px !important;
-        height: 100vh !important;
-        z-index: 100 !important;
-        border-right: 1px solid #ddd !important;
-        box-shadow: 2px 0 5px rgba(0,0,0,0.1) !important;
-      }
-
-      /* Garante que o cabeçalho do menu apareça */
-      .sidebar-header {
-        display: block !important;
-      }
-
-      /* 5. EMPURRAR O CONTEÚDO PARA A DIREITA */
-      .main-content {
-        flex-grow: 1 !important;
-        width: calc(100% - 300px) !important;
-        margin-left: 0 !important;
-        padding: 20px !important;
-      }
-
-      /* 6. CONSERTAR OS CHECKBOXES (LINHA) */
-      .topic-checkbox-group {
-        display: flex !important;
-        flex-direction: row !important;
-        align-items: center !important;
-        justify-content: flex-end !important;
-        gap: 10px !important;
-        width: auto !important;
-        border: none !important;
-        background: transparent !important;
-      }
-
-      .topic-checkbox-group label {
-        width: auto !important;
-        margin-bottom: 0 !important;
-        padding: 5px 10px !important;
-      }
-      
-      .topic-right-panel {
-         flex-wrap: nowrap !important;
-      }
-    }
-	/* =======================================================
-       CORREÇÃO FINAL DE SEGURANÇA: Esconde X no Computador
-       ======================================================= */
     @media (min-width: 769px) {
-      #btnXFecharMobile {
-        display: none !important;
-      }
-    }
-	/* =======================================================
-       CORREÇÃO VISUAL DEFINITIVA: CONTAINER ACOMPANHA LISTA
-       ======================================================= */
-   @media (min-width: 769px) {
 
-      /* --- 1. SEGURANÇA: ESCONDE BOTÕES DE CELULAR --- */
-      #btnXFecharMobile, 
+      /* 1. Ocultar Elementos de Celular */
+      #btnXFecharMobile,
+      .mobile-menu-toggle,
+      .close-sidebar-btn,
+      .mobile-close-menu-btn,
+      #mobile-menu-overlay,
+      .mobile-top-row,
+      .mobile-menu-btn,
       #btnSairMobile,
       .mobile-only-btn {
         display: none !important;
       }
 
-      /* --- 2. DESTRAVA A ROLAGEM GERAL --- */
+      /* 2. Layout Geral: Habilita Rolagem e Flexbox */
       html, body {
         height: auto !important;
         overflow-y: auto !important;
+        overflow-x: hidden !important;
+        position: static !important;
       }
 
-      /* --- 3. CONTAINER PRINCIPAL (A caixa com borda) --- */
+      /* Container Principal Lado a Lado */
       .container {
         display: flex !important;
-        flex-direction: column !important;
-        height: auto !important;       /* Cresce conforme o conteúdo */
-        min-height: 100vh !important;  /* No mínimo a altura da tela */
-        overflow: visible !important;  /* Deixa o conteúdo expandir */
-        padding-bottom: 40px !important; 
+        flex-direction: row !important;
+        /* MUDANÇA 1: 'stretch' força os filhos a terem a altura total do pai */
+        align-items: stretch !important; 
+        width: 100% !important;
+        max-width: 1200px !important;
+        margin: 0 auto;
+        height: auto !important;
+        min-height: 100vh !important;
+        /* MUDANÇA 2: Removemos o padding de baixo para encostar no fundo */
+        padding-bottom: 0 !important; 
       }
 
-      /* --- 4. CONTAINERS INTERMEDIÁRIOS --- */
-      .app-container, 
-      .progress-app {
-        height: auto !important;
-        display: block !important;
-        overflow: visible !important;
-        flex: none !important;
-      }
-
-      /* --- 5. ÁREA DE CONTEÚDO --- */
-      #main-container {
-        height: auto !important;
-        display: block !important;
-        overflow: visible !important;
-        min-height: unset !important;
-      }
-      
-      .content-area {
-        height: auto !important;
-        display: flex !important;
-        align-items: stretch !important;
-      }
-
-      /* --- 6. LISTA DE TÓPICOS (O que empurra tudo) --- */
-      #topics-list-container {
-        height: auto !important;
-        overflow: visible !important;
-        flex: 1 !important;
-      }
-      
-      #topics-list {
-        height: auto !important;
-        overflow: visible !important;
-      }
-    }
-	/* ==========================================
-       CORREÇÃO FINAL: AGENDA MOBILE (IDs Corrigidos)
-       ========================================== */
-    @media (max-width: 768px) {
-      
-      /* 1. LIMPEZA VISUAL (IDs Corrigidos) */
-      /* Oculta Timer, Barra e Abas */
-      #focus-timer-container, 
-      #chico-progress-bar-container,
-      .agenda-tabs,
-      #agenda-tabs { 
+      /* 3. Coluna da Esquerda (Menu/Sidebar) */
+      .sidebar {
         display: none !important;
       }
 
-      /* 2. CABEÇALHO DO MODAL (Corrigido para #agenda-modal) */
-      #agenda-modal .modal-header {
-        flex-direction: row !important;
-        justify-content: space-between !important;
-        align-items: center !important;
-        padding-bottom: 5px !important;
-        border-bottom: 1px solid #333 !important;
-        display: flex !important;
-      }
-
-      /* Ajuste do Título */
-      #agenda-modal h3 {
-        font-size: 1.2rem !important;
-        margin: 0 !important;
-        white-space: nowrap !important;
-        display: block !important;
-      }
-
-      /* 3. SCROLL HORIZONTAL (A Mágica) */
-      /* O Container Pai */
-      .week-grid-container {
-        display: block !important;
+      /* 4. Ajuste para os filhos esticarem (Cascata de altura) */
+      .app-container {
+        flex: 1 !important;
         width: 100% !important;
-        overflow-x: auto !important; /* Ativa a rolagem */
-        padding-bottom: 15px !important;
+        display: flex !important;      /* Torna este também um container flex */
+        flex-direction: column !important;
+        margin-bottom: 0 !important;   /* Garante sem margem no fundo */
       }
 
-      /* A Grade Gigante (Forçamos 900px) */
-      .week-grid {
-        display: grid !important;
-        min-width: 900px !important; /* O segredo: maior que a tela */
-        width: 900px !important;
-        grid-template-columns: 60px repeat(7, 1fr) !important;
-        gap: 5px !important;
+      /* Força o .progress-app a ocupar todo o espaço vertical disponível */
+      .progress-app {
+        flex: 1 !important;            /* Ocupa o espaço restante */
+        display: flex !important;
+        flex-direction: column !important;
+        height: auto !important;
+        min-height: unset !important;  /* Remove altura mínima fixa se houver */
+        margin-bottom: 0 !important;
+        border-bottom-left-radius: 0 !important;  /* Opcional: retira curva inferior */
+        border-bottom-right-radius: 0 !important; /* Opcional: retira curva inferior */
+      }
+
+      .main-content, 
+      #main-container {
+        flex: 1 !important;
+        width: 100% !important;
+        height: auto !important;
+        overflow: visible !important;
+        display: block !important;
+      }
+
+      .content-area {
+        height: auto !important;
+        display: flex !important;
+        gap: 20px; /* Espaço entre a lista e o detalhe */
+      }
+
+      /* 5. Lista de Tópicos */
+      #topics-list-container {
+        flex: 1 !important;
+        height: auto !important;
+        max-height: 80vh !important; /* Limita altura para ter rolagem interna se quiser */
+        overflow-y: auto !important;
+      }
+
+      /* 6. CORREÇÃO ESPECÍFICA DO ALINHAMENTO DOS CHECKBOXES */
+      .topic-right-panel {
+         display: flex !important;
+         align-items: center !important;
+         gap: 15px !important;
+         flex-wrap: nowrap !important;
+      }
+
+      .topic-checkbox-group {
+        display: flex !important;
+        flex-direction: column !important; /* Letras em cima, Caixas embaixo */
+        align-items: center !important;    /* Centraliza o bloco */
+        justify-content: center !important;
+        gap: 0px !important;               /* Remove vão vertical extra */
+        width: auto !important;
+        border: none !important;
+        background: transparent !important;
+        margin-top: 0 !important;
+      }
+
+      /* Garante que o container das letras e das caixas tenham o mesmo comportamento */
+      .topic-checkbox-group > div {
+         justify-content: center !important;
       }
       
-      /* Ajuste de Texto para caber */
-      .day-header, .period-header {
-        font-size: 0.8rem !important;
-        padding: 5px !important;
-        word-wrap: break-word !important;
-      }
-
-      /* Ajuste do corpo do modal para não cortar */
-      #agenda-modal .modal-content {
-        padding: 5px !important;
-        width: 98% !important;
-        max-width: 98% !important;
+      .quick-controls {
+        gap: 6px !important; /* Garante que o CSS respeite o gap de 6px */
       }
     }
 
@@ -4776,6 +4598,10 @@
 
           document.getElementById('loginModal').style.display = 'none';
           document.getElementById('app-content').style.display = 'block';
+          
+          /* CORREÇÃO: Força a tela a rolar para o topo absoluto */
+          window.scrollTo(0, 0);
+
           showNotification(`Bem-vindo ao ${userCourseName || 'Sistema'}!`);
 
           await loadAllData();
@@ -5056,29 +4882,36 @@
                   </div>
               </div>
 
-              <div class="topic-checkbox-group">
-                <div style="display: flex; gap: 8px; font-size: 0.7rem; color: #FFF; font-weight: bold; margin-bottom: 2px; justify-content: center; width: 100%;">
-                  <span style="width: 22px; text-align: center;" title="Estudo">E</span>
-                  <span style="width: 28px; text-align: center;" title="Revisões">R</span>
-                  <span style="width: 22px; text-align: center;" title="Questões">Q</span>
-                  <span style="width: 22px; text-align: center;" title="Flashcards">F</span>
-                  <span style="width: 22px; text-align: center;" title="Dificuldade SRS">D</span>
+              <div class="topic-checkbox-group" style="display: flex; flex-direction: column; align-items: center; gap: 0;">
+                
+                <div style="display: flex; gap: 6px; font-size: 0.7rem; color: #FFF; font-weight: bold; margin-bottom: 2px; justify-content: center; width: auto;">
+                  <span style="width: 22px; text-align: center; display: inline-block;" title="Estudo">E</span>
+                  <span style="width: 28px; text-align: center; display: inline-block;" title="Revisões">R</span>
+                  <span style="width: 22px; text-align: center; display: inline-block;" title="Questões">Q</span>
+                  <span style="width: 22px; text-align: center; display: inline-block;" title="Flashcards">F</span>
+                  <span style="width: 22px; text-align: center; display: inline-block;" title="Dificuldade SRS">D</span>
                 </div>
 
-                <div class="quick-controls" onclick="event.stopPropagation()" style="display: flex; gap: 8px; justify-content: center;">
+                <div class="quick-controls" onclick="event.stopPropagation()" style="display: flex; gap: 6px; justify-content: center; width: auto; margin: 0; padding: 0;">
+                  
                   <div class="quick-checkbox ${estudoStatus ? 'checked-estudo' : ''}" 
+                       style="width: 22px; height: 22px; min-width: 22px; display: flex; justify-content: center; align-items: center; margin: 0;"
                        onclick="quickToggleEstudo('${topic.Seq}', ${index}, this)">${estudoStatus ? '✓' : ''}</div>
                   
                   <div class="quick-revisao-counter ${revisaoStatus ? 'has-revisoes' : ''}" 
+                       style="width: 28px; height: 22px; min-width: 28px; display: flex; justify-content: center; align-items: center; margin: 0; padding: 0;"
                        onclick="openRevisaoPopup(event, '${topic.Seq}', ${index}, ${revisaoCount})">${revisaoCount}</div>
                   
                   <div class="quick-checkbox ${questoesStatus ? 'checked-questoes' : ''}" 
+                       style="width: 22px; height: 22px; min-width: 22px; display: flex; justify-content: center; align-items: center; margin: 0;"
                        onclick="quickToggleQuestoes('${topic.Seq}', this)">${questoesStatus ? '✓' : ''}</div>
                   
                   <div class="quick-checkbox ${flashcardsStatus ? 'checked-flashcards' : ''}" 
+                       style="width: 22px; height: 22px; min-width: 22px; display: flex; justify-content: center; align-items: center; margin: 0;"
                        onclick="quickToggleFlashcards('${topic.Seq}', this)">${flashcardsStatus ? '✓' : ''}</div>
 
                   <div class="quick-difficulty-btn ${diffClass}" 
+                       style="width: 22px; height: 22px; min-width: 22px; display: flex; justify-content: center; align-items: center; margin: 0; padding: 0;"
                        onclick="quickCycleDifficulty(event, '${topic.Seq}', '${nivelDiff || ''}', this)"
                        title="Dificuldade: ${nivelDiff || 'Definir Dificuldade'}">
                        ${diffIcon}
@@ -5093,13 +4926,21 @@
           listItem.innerHTML = topicContent;
 
           // Event Listeners
-          listItem.addEventListener("click", (e) => {
-            if (!e.target.classList.contains('edit-icon') && !e.target.closest('.edit-icon')) {
-              showTopicDetails(topic.Seq);
-            }
-          });
+          listItem.innerHTML = topicContent;
+
+          // MUDANÇA: O bloco "listItem.addEventListener..." foi removido daqui.
+          // Agora o clique no texto não faz nada.
 
           const editIcon = listItem.querySelector('.edit-icon');
+          editIcon.addEventListener("click", (e) => {
+            e.stopPropagation();
+            showTopicDetails(topic.Seq);
+            setTimeout(() => {
+              if (!isEditMode) {
+                toggleEditMode();
+              }
+            }, 100);
+          });
           editIcon.addEventListener("click", (e) => {
             e.stopPropagation();
             showTopicDetails(topic.Seq);
