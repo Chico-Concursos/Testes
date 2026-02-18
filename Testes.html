@@ -3661,79 +3661,153 @@
         display: none !important;
       }
 
-      /* 2. Layout Geral: Habilita Rolagem e Flexbox */
+      /* 2. TRAVAR A TELA (Para não ter rolagem dupla) */
       html, body {
-        height: auto !important;
-        overflow-y: auto !important;
-        overflow-x: hidden !important;
-        position: static !important;
+        height: 100vh !important; /* Altura fixa da tela */
+        margin: 0 !important;
+        overflow: hidden !important; /* Remove rolagem da página inteira */
       }
 
-      /* Container Principal Lado a Lado */
+      /* 3. O CONTAINER PRINCIPAL (AVÔ) */
       .container {
         display: flex !important;
         flex-direction: row !important;
-        /* MUDANÇA 1: 'stretch' força os filhos a terem a altura total do pai */
-        align-items: stretch !important; 
+        align-items: stretch !important; /* OBRIGATÓRIO: Estica tudo até o chão */
         width: 100% !important;
         max-width: 1200px !important;
         margin: 0 auto;
-        height: auto !important;
+        height: 100vh !important;       /* Ocupa exatamente a tela toda */
         min-height: 100vh !important;
-        /* MUDANÇA 2: Removemos o padding de baixo para encostar no fundo */
-        padding-bottom: 0 !important; 
+        padding-bottom: 0 !important;   /* Sem espaço no fundo */
+        overflow: hidden !important;
+        box-shadow: none !important;    /* Opcional: remove sombra externa */
+        border: none !important;
       }
 
-      /* 3. Coluna da Esquerda (Menu/Sidebar) */
-      .sidebar {
-        display: none !important;
-      }
+      .sidebar { display: none !important; }
 
-      /* 4. Ajuste para os filhos esticarem (Cascata de altura) */
+      /* 4. O PAI (Coluna Central) */
       .app-container {
-        flex: 1 !important;
-        width: 100% !important;
-        display: flex !important;      /* Torna este também um container flex */
-        flex-direction: column !important;
-        margin-bottom: 0 !important;   /* Garante sem margem no fundo */
-      }
-
-      /* Força o .progress-app a ocupar todo o espaço vertical disponível */
-      .progress-app {
-        flex: 1 !important;            /* Ocupa o espaço restante */
         display: flex !important;
         flex-direction: column !important;
-        height: auto !important;
-        min-height: unset !important;  /* Remove altura mínima fixa se houver */
+        flex: 1 !important;
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;
+      }
+
+      /* 5. A CAIXA DO APLICATIVO */
+      .progress-app {
+        flex: 1 !important;             /* Cresce para ocupar o espaço */
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;        /* Força altura total */
+        overflow: hidden !important;
         margin-bottom: 0 !important;
-        border-bottom-left-radius: 0 !important;  /* Opcional: retira curva inferior */
-        border-bottom-right-radius: 0 !important; /* Opcional: retira curva inferior */
+        border-radius: 0 !important;    /* Remove cantos arredondados inferiores */
+        padding-bottom: 0 !important;
+      }
+
+      #app-content {
+        flex: 1 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        height: 100% !important;
+        overflow: hidden !important;
       }
 
       .main-content, 
       #main-container {
         flex: 1 !important;
-        width: 100% !important;
-        height: auto !important;
-        overflow: visible !important;
-        display: block !important;
-      }
-
-      .content-area {
-        height: auto !important;
         display: flex !important;
-        gap: 20px; /* Espaço entre a lista e o detalhe */
+        flex-direction: column !important;
+        height: 100% !important;
+        overflow: hidden !important;
+        padding-bottom: 0 !important;
+        margin-bottom: 0 !important;
       }
 
-      /* 5. Lista de Tópicos */
+      /* 6. ÁREA DE CONTEÚDO (Lista + Detalhes) */
+   .content-area {
+        position: relative !important;   /* Define o limite para o posicionamento */
+        display: block !important;       
+        width: 100% !important;
+        height: 100% !important;
+        overflow: hidden !important;     /* Garante que nada saia da tela */
+        padding: 0 !important;
+      }
+
+      /* 7. O CONTAINER DA LISTA (Fica Sempre no Fundo) */
       #topics-list-container {
-        flex: 1 !important;
-        height: auto !important;
-        max-height: 80vh !important; /* Limita altura para ter rolagem interna se quiser */
-        overflow-y: auto !important;
+        width: 100% !important;
+        height: 100% !important;
+        display: flex !important;
+        flex-direction: column !important;
+        background: #000 !important;
+        border: 1px solid #333 !important;
+        margin: 0 !important;
+        z-index: 1 !important;           /* Camada Base */
       }
 
-      /* 6. CORREÇÃO ESPECÍFICA DO ALINHAMENTO DOS CHECKBOXES */
+      /* 8. A LISTA UL */
+      #topics-list {
+        flex: 1 !important;
+        overflow-y: auto !important;
+        height: auto !important;
+        padding-bottom: 50px !important;
+      }
+
+      /* 9. O CONTAINER DE DETALHES (EDITOR FLUTUANTE NO TOPO) */
+      #topic-detail-container {
+        /* POSICIONAMENTO: Centralizado Horizontalmente, Travado no Topo */
+        position: absolute !important;
+        top: 20px !important;            
+        bottom: auto !important;
+        
+        left: 50% !important;
+        transform: translateX(-50%) !important;
+        
+        z-index: 10 !important; 
+        
+        /* --- MUDANÇA AQUI: AUMENTANDO A LARGURA --- */
+        width: 65% !important;           /* Era 60%. Agora ocupa quase toda a largura */
+        max-width: 900px !important;    /* Era 800px. Agora permite telas wide */
+        /* ------------------------------------------ */
+        
+        height: auto !important;
+        max-height: 90vh !important;
+        
+        background: #0d0d0d !important;
+        border: 2px solid #D2AC47 !important;
+        border-radius: 15px !important;
+        box-shadow: 0 0 50px rgba(0,0,0, 0.95) !important;
+        
+        display: none;
+        flex-direction: column !important;
+        padding: 15px 25px !important;
+        overflow-y: auto !important;
+        right: auto !important;
+      }
+
+      /* Botões de Ação (Salvar/Excluir) */
+      .topic-actions {
+        display: flex !important;
+        
+        /* O SEGREDO: Mudamos de 'flex-end' para 'center' */
+        justify-content: center !important; 
+        
+        align-items: center !important;
+        gap: 20px !important;            /* Espaço entre o botão Salvar e Cancelar */
+        
+        margin-top: auto !important;     /* Empurra para o final se sobrar altura */
+        padding-top: 20px !important;
+        padding-bottom: 10px !important; /* Um respiro no fundo */
+        
+        border-top: 1px solid #333 !important; /* Linha divisória sutil acima dos botões */
+        width: 100% !important;
+      }
+
+      /* 10. CORREÇÃO DOS CHECKBOXES NA LISTA */
       .topic-right-panel {
          display: flex !important;
          align-items: center !important;
@@ -3743,23 +3817,17 @@
 
       .topic-checkbox-group {
         display: flex !important;
-        flex-direction: column !important; /* Letras em cima, Caixas embaixo */
-        align-items: center !important;    /* Centraliza o bloco */
+        flex-direction: column !important;
+        align-items: center !important;
         justify-content: center !important;
-        gap: 0px !important;               /* Remove vão vertical extra */
         width: auto !important;
         border: none !important;
         background: transparent !important;
         margin-top: 0 !important;
       }
 
-      /* Garante que o container das letras e das caixas tenham o mesmo comportamento */
       .topic-checkbox-group > div {
          justify-content: center !important;
-      }
-      
-      .quick-controls {
-        gap: 6px !important; /* Garante que o CSS respeite o gap de 6px */
       }
     }
 
