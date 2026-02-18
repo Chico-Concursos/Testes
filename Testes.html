@@ -142,16 +142,17 @@
       border: 1px solid #333;
     }
 
-    header {
+   header {
       text-align: center;
-      padding: 08px 0;
+      padding: 0;           /* Removido espaço interno */
+      margin-top: -05px;      /* Pequeno respiro do teto */
+      margin-bottom: 0px;   /* Cola o título nos botões abaixo */
       color: #F7EF8A;
-      margin-bottom: 10px;
     }
 
     header h1 {
       font-size: 1.6rem;
-      margin-bottom: 5px;
+      margin-bottom: 10px;   /* Zerado para o menu subir */
       text-shadow: 0 1px 2px rgba(0, 0, 0, 0.3);
       background: linear-gradient(to right, #D2AC47, #F7EF8A, #AE8625);
       -webkit-background-clip: text;
@@ -3184,7 +3185,8 @@
       width: auto !important;
       max-width: 140px;
       padding: 0 8px !important;
-      /* Espaço lateral para o texto não colar */
+      text-align-last: center; /* Centraliza o nome da disciplina selecionada */
+      text-align: center;      /* Garante a centralização em diferentes navegadores */
       border-radius: 50px !important;
     }
 
@@ -3761,7 +3763,7 @@
       #topic-detail-container {
         /* POSICIONAMENTO: Centralizado Horizontalmente, Travado no Topo */
         position: absolute !important;
-        top: 20px !important;            
+        top: 0px !important;            
         bottom: auto !important;
         
         left: 50% !important;
@@ -3941,7 +3943,7 @@
       
       <select id="disciplineFilter" onchange="filterTopics()" 
               style="max-width: 140px; height: 32px; padding: 0 8px; margin-right: 10px;">
-        <option value="">Todas as Disciplinas</option>
+        <option value="">Disciplinas</option>
       </select>
 
       <div class="search-wrapper" id="expandableSearch">
