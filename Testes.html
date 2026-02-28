@@ -4089,26 +4089,23 @@
       stopSpeech();
       if (!requireAuth() || cards.length === 0 || isFinished) return;
 
-      /// --- INÍCIO DA ROLAGEM AUTOMÁTICA (TRUQUE DO FOCO) ---
-      // 1. Cria um pontinho invisível no topo extremo da tela (se não existir)
-      let topAnchor = document.getElementById('top-focus-anchor');
-      if (!topAnchor) {
-        topAnchor = document.createElement('div');
-        topAnchor.id = 'top-focus-anchor';
-        topAnchor.tabIndex = -1; // Permite receber foco via código
-        topAnchor.style.position = 'absolute';
-        topAnchor.style.top = '0';
-        topAnchor.style.left = '0';
-        topAnchor.style.opacity = '0'; // Totalmente invisível
-        topAnchor.style.height = '1px';
-        topAnchor.style.width = '1px';
-        topAnchor.style.pointerEvents = 'none'; // Impede cliques acidentais
-        document.body.prepend(topAnchor);
-      }
-      // 2. Foca no pontinho. O navegador é obrigado a puxar a tela principal (Google Sites) para cima
-      topAnchor.focus({ preventScroll: false });
-      // 3. Remove o foco rápido para não atrapalhar os atalhos do teclado
-      topAnchor.blur();
+      /// --- INÍCIO DA ROLAGEM AUTOMÁTICA (PLANO C - FOCO REAL COM ATRASO) ---
+      setTimeout(() => {
+        try {
+          // 1. Tenta usar o comando suave na barra superior inteira
+          const topBar = document.querySelector('.top-bar');
+          if (topBar) {
+            topBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
+          }
+          // 2. Tira a "teimosia" do Google Sites focando no botão de menu real
+          const menuBtn = document.querySelector('.hamburger-btn');
+          if (menuBtn) {
+            menuBtn.focus({ preventScroll: false });
+          }
+        } catch (e) {
+          console.log("Rolagem ignorada pela segurança do iframe");
+        }
+      }, 50); // Atraso imperceptível de 50 milissegundos para o navegador "respirar"
       // --- FIM DA ROLAGEM AUTOMÁTICA ---
 
       const card = cards[currentCard];
