@@ -1589,44 +1589,47 @@
         border-top: 3px solid #00ff00 !important;
       }
 
-      /* === AJUSTE CRÍTICO DE LOGIN MOBILE (NOVO) === */
+      /* === AJUSTE CRÍTICO DE LOGIN MOBILE === */
+      /* === AJUSTE CRÍTICO DE LOGIN MOBILE (CORREÇÃO DO LOOP) === */
       #loginModal {
         align-items: flex-start !important;
         padding-top: 20px !important;
         padding-bottom: 20px !important;
         overflow-y: auto !important;
+        /* REMOVIDO O !important DAQUI PARA O JS PODER FECHAR A JANELA */
         display: flex;
         z-index: 2147483647 !important;
       }
 
-      .login-container-clean {
+      .login-container {
         margin: 0 auto 50px auto !important;
+        /* Centraliza e dá espaço no fundo para rolar */
         width: 90% !important;
-        padding: 25px 20px !important;
+        /* Largura segura */
+        padding: 15px !important;
+        /* Compacta o conteúdo interno */
         max-width: 400px !important;
+        /* Evita que fique largo demais em tablets */
         position: relative !important;
-        background-color: #050505 !important;
-        box-shadow: 0 0 30px rgba(255, 215, 0, 0.4) !important;
+        /* Garante que o z-index funcione */
+        background-color: #111 !important;
+        /* Fundo sólido para cobrir o que está atrás */
+        box-shadow: 0 0 50px rgba(0, 0, 0, 1) !important;
+        /* Sombra forte para destacar */
       }
 
-      .login-logo-clean {
-        font-size: 1.4rem !important;
+      /* Compacta os campos de input para caber mais na tela */
+      .login-container .form-group {
         margin-bottom: 10px !important;
       }
 
-      .login-badge {
-        margin-bottom: 20px !important;
-        font-size: 0.65rem !important;
+      .login-container input {
+        padding: 8px !important;
       }
 
-      .login-container-clean input {
-        height: 40px !important;
-        font-size: 0.85rem !important;
-      }
-
-      .login-button-clean {
-        height: 40px !important;
-        font-size: 0.85rem !important;
+      .login-container h2 {
+        margin-bottom: 15px !important;
+        font-size: 1.5em !important;
       }
     }
 
@@ -2954,7 +2957,7 @@
           Filtros (Ver Tudo)</button>
 
         <button onclick="closeFilterModal()"
-          style="background: transparent; border: none; color: #888; margin-top: 5px; cursor: pointer; text-decoration: underline;">Cancelar</button>
+          style="background: transparent; border: none; color: #888; margin-top: 5px; cursor: pointer; text-decoration: underline;">Fechar</button>
       </div>
     </div>
   </div>
@@ -3174,11 +3177,10 @@
   </div>
   <script>
     // --- CONFIGURAÇÃO INICIAL ---
-    // --- CONFIGURAÇÃO INICIAL ---
     // Usuário e Senha
     let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzYpyzD80XnRBr_PpBYHALEYJyjuD9Y0Yx2dlzZvtA6ePM8ihcqMMInlgtorEB_I0_-sw/exec";
     // Suporte acesso aos Cards
-    let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbyk6bPv7IIGBO6fef50xFnPU95krGUA-huwJiOr3TiC4ammvPaS93ryhzXy8CbRnIQftg/exec";
+    let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbyBRzGi8N8MGTWwonEIEAAOQTMM4Ik2QjLIt9NGQ2I7baavk9njpPjRmSmKUBJWhqcm/exec";
     // URL do Backend das Anotações (Copiado do seu arquivo anotações.html)
     let NOTES_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyeWFpisAExqCY5FscF_tF5c_WUWavp3Y-8MPkgPhL3Mj0RoDikM4432hmnDhc-g79Y/exec";
     // Professor IA
@@ -3220,13 +3222,14 @@
     let currentCategory = "Todas";
     // Variável para lembrar o último filtro usado
     let lastFilterSelections = { discipline: "", topic: "", foco: "" };
+    let savedMainProgressIndex = -1; // Marcador de página invisível
+    let isTemporaryFilterActive = false; // Escudo de salvamento
     let cardViewStartTime = 0;
     let isAutoAdvancePaused = false;
     let savePositionTimer = null;
     // --- VARIÁVEIS DO APRENDIZADO ADAPTATIVO ---
     let userLearningStats = {
-      totalCharsRead: 0,
-      totalTimeRead: 0,
+      recentSpeeds: [], // Nova fila para Média Móvel (Guarda as últimas 20 velocidades)
       topicWeights: {} // Ex: { "Direito Const": 2, "Português": 1 }
     };
     // -------------------------------------------
@@ -3549,6 +3552,9 @@
 
     async function login(event) {
       if (event) event.preventDefault();
+
+      // 🧹 LIXEIRA DE FANTASMAS: Limpa qualquer "mochila" velha deste navegador antes de começar
+      localStorage.removeItem('chicoSaveQueue_v2');
       const email = document.getElementById('loginEmail').value.trim();
       const password = document.getElementById('loginPassword').value;
       if (!email || !password) {
@@ -3599,13 +3605,15 @@
           void cardContainer.offsetWidth;
           cardContainer.style.animation = 'pulseSuccess 2s';
 
-          // Carrega dados do SRS em paralelo
-          loadAllDataFromBackend(userEmail);
-
-          await loadFlashcardsFromGoogleSheet(SHEET_ID, GID);
+          // Carrega dados do SRS e os Cards AO MESMO TEMPO
+          await Promise.all([
+            loadAllDataFromBackend(userEmail),
+            loadFlashcardsFromGoogleSheet(SHEET_ID, GID)
+          ]);
+          
           hideLoadingIndicator();
 
-          // Tenta recuperar a posição após carregar tudo
+          // Tenta recuperar a posição após ter certeza que baixou tudo
           checkForSavedPosition();
           // INICIA O MONITORAMENTO
           startSessionHeartbeat();
@@ -3647,14 +3655,12 @@
         startSessionTimer();
         showLoadingIndicator();
 
-        // --- ORDEM DE CARREGAMENTO CORRIGIDA (COM PAUSA ANTI-FLOOD) ---
-        // 1. Baixa seu progresso (Armazém + SRS)
-        loadAllDataFromBackend(userEmail).then(async () => {
-
-          console.log("Progresso baixado. Aguardando servidor esfriar...");
-          // 2. Baixa os Cards
-          return loadFlashcardsFromGoogleSheet(SHEET_ID, GID);
-        }).then(() => {
+        // --- ORDEM DE CARREGAMENTO PARALELA (PISTA DUPLA LIBERADA) ---
+        // Dispara as duas requisições ao mesmo tempo (Corta o tempo pela metade)
+        Promise.all([
+          loadAllDataFromBackend(userEmail),
+          loadFlashcardsFromGoogleSheet(SHEET_ID, GID)
+        ]).then(() => {
           // 3. Tudo pronto
           hideLoadingIndicator();
           checkForSavedPosition();
@@ -3812,6 +3818,41 @@
       return false;
     }
 
+    // --- NOVO: SISTEMA DE GALPÃO (IndexedDB) ---
+    const DB_NAME = "ChicoCardsDB";
+    const STORE_NAME = "cardsStore";
+
+    function initDB() {
+      return new Promise((resolve, reject) => {
+        const request = indexedDB.open(DB_NAME, 1);
+        request.onupgradeneeded = (e) => e.target.result.createObjectStore(STORE_NAME);
+        request.onsuccess = () => resolve(request.result);
+        request.onerror = () => reject(request.error);
+      });
+    }
+
+    async function saveToGalpao(key, data) {
+      try {
+        const db = await initDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, "readwrite");
+          tx.objectStore(STORE_NAME).put(data, key);
+          tx.oncomplete = () => resolve();
+        });
+      } catch (e) { console.warn("Erro ao salvar no galpão"); }
+    }
+
+    async function loadFromGalpao(key) {
+      try {
+        const db = await initDB();
+        return new Promise((resolve, reject) => {
+          const tx = db.transaction(STORE_NAME, "readonly");
+          const request = tx.objectStore(STORE_NAME).get(key);
+          request.onsuccess = () => resolve(request.result);
+        });
+      } catch (e) { return null; }
+    }
+
     async function loadFlashcardsFromGoogleSheet(sheetId, gid) {
       const cacheKey = `cachedCards_${sheetId}_${gid}`;
       const versionKey = `version_${sheetId}_${gid}`;
@@ -3820,9 +3861,9 @@
       const sessionToken = localStorage.getItem('sessionToken');
       const userEmail = localStorage.getItem('userEmail');
 
-      // Recupera o que temos guardado no celular
-      const localData = localStorage.getItem(cacheKey);
-      const localVersion = localStorage.getItem(versionKey);
+      // Recupera o que temos guardado no celular (AGORA DO GALPÃO ASSÍNCRONO)
+      const localData = await loadFromGalpao(cacheKey);
+      const localVersion = localStorage.getItem(versionKey); // Versão continua na mochila (é leve)
 
       let serverVersion = null;
       let shouldUseCache = false;
@@ -3941,12 +3982,12 @@
         if (loadedCards.length > 0) {
           // SUCESSO: Atualiza o Cache, a Versão e a Tela
           try {
-            localStorage.setItem(cacheKey, JSON.stringify(loadedCards));
+            await saveToGalpao(cacheKey, JSON.stringify(loadedCards));
             if (serverVersion) {
               localStorage.setItem(versionKey, serverVersion); // Atualiza a etiqueta de versão
             }
           } catch (e) {
-            console.warn("Memória local cheia, seguindo sem salvar offline.", e);
+            console.warn("Erro ao salvar no Galpão offline.", e);
           }
 
           processLoadedCards(loadedCards, false);
@@ -4042,12 +4083,18 @@
         saveFlashcardState();
       }
     }
-
     // Alteração: Aceita parâmetro para pular o salvamento automático
     function updateCard(skipAutoSave = false) {
       if (typeof handsFreeTimer !== 'undefined') clearTimeout(handsFreeTimer);
       stopSpeech();
       if (!requireAuth() || cards.length === 0 || isFinished) return;
+
+      // --- INÍCIO DA ROLAGEM AUTOMÁTICA ---
+      // Rola o iframe para o topo e "puxa" a janela do Google Sites junto
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+      document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      // --- FIM DA ROLAGEM AUTOMÁTICA ---
+
       const card = cards[currentCard];
       const contentElement = document.getElementById("flashcard-content");
       // --- LÓGICA DE CLOZE (OMISSÃO) ---
@@ -4056,10 +4103,20 @@
       // Segurança básica contra injeção de HTML (Sanitize)
       textToShow = textToShow.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
-      if (showingFront) {
+     if (showingFront) {
         // Na FRENTE: Substitui {{texto}} por uma caixa [...]
         // Regex explica: Pega tudo entre {{ e }}
         textToShow = textToShow.replace(/{{(.*?)}}/g, "<span style='background:#333; color:gold; padding:2px 6px; border-radius:4px; border:1px solid #555; cursor:help;' title='Tente lembrar...'>[...]</span>");
+
+        // --- NOVA LÓGICA: QUESTÕES DE MÚLTIPLA ESCOLHA ---
+        const regexAlternativas = /^([a-eA-E])[\)\.]\s+(.+)$/gm;
+        if (regexAlternativas.test(textToShow)) {
+          textToShow = textToShow.replace(regexAlternativas, function(match, letra, textoAlternativa) {
+             const letraUp = letra.toUpperCase();
+             return `<button class="mcq-btn" onclick="checkAnswer('${letraUp}', this)" style="display:block; width:100%; text-align:left; margin: 8px 0; padding: 12px 15px; background: #222; color: white; border: 1px solid #555; border-radius: 8px; cursor: pointer; font-size: 1em; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"><strong>${letraUp})</strong> ${textoAlternativa}</button>`;
+          });
+        }
+        // --------------------------------------------------
       } else {
         // No VERSO: Mostra o texto, destacando a resposta em verde
         // Remove as chaves e pinta o recheio
@@ -4154,6 +4211,62 @@
         }, 5000); // 5000 milissegundos = 5 segundos
       }
     }
+
+    // --- NOVA FUNÇÃO: CHECAR RESPOSTA DA MÚLTIPLA ESCOLHA ---
+    window.checkAnswer = function(letraClicada, btnElement) {
+      if (!showingFront) return; 
+
+      const card = cards[currentCard];
+      const respostaVerso = card.back.trim().toUpperCase();
+      
+      // O gabarito no verso deve começar com a letra. Ex: "B", "B)", "B - "
+      const regexGabarito = new RegExp(`^${letraClicada}[\\)\\-\\.\\s]|^${letraClicada}$`);
+      const isCorrect = regexGabarito.test(respostaVerso);
+
+      // Desativa todos os botões para evitar duplo clique e trapaça
+      const allBtns = document.querySelectorAll('.mcq-btn');
+      allBtns.forEach(b => b.style.pointerEvents = 'none');
+
+      // Feedback Visual de Acerto/Erro
+      if (isCorrect) {
+        btnElement.style.background = '#152b15';
+        btnElement.style.borderColor = '#00ff00';
+        btnElement.style.color = '#00ff00';
+        triggerVisualFeedback('success');
+        
+        // Registra acerto no sistema nativo
+        const realIndex = (card._originalIndex !== undefined) ? card._originalIndex : initialCards.indexOf(card);
+        if (realIndex !== -1) {
+          if (!cardAccuracy[realIndex]) cardAccuracy[realIndex] = { correct: 0, incorrect: 0 };
+          cardAccuracy[realIndex].correct++;
+          if (cardAccuracy[realIndex].incorrect > 0) cardAccuracy[realIndex].incorrect--;
+          updateAccuracyButtons();
+          saveFlashcardState();
+        }
+      } else {
+        btnElement.style.background = '#2b1515';
+        btnElement.style.borderColor = '#ff5555';
+        btnElement.style.color = '#ff5555';
+        triggerVisualFeedback('error');
+
+        // Registra erro no sistema nativo
+        const realIndex = (card._originalIndex !== undefined) ? card._originalIndex : initialCards.indexOf(card);
+        if (realIndex !== -1) {
+          checkLeech(realIndex);
+          if (!cardAccuracy[realIndex]) cardAccuracy[realIndex] = { correct: 0, incorrect: 0 };
+          cardAccuracy[realIndex].incorrect++;
+          updateAccuracyButtons();
+          saveFlashcardState();
+        }
+      }
+
+      // Vira o card automaticamente após quase 1 segundo para ler a explicação
+      setTimeout(() => {
+        flipCard();
+      }, 800);
+    };
+    // ----------------------------------------------------------
+
     function updateAccuracyButtons() {
       const correctButton = document.getElementById('correctButton');
       const incorrectButton = document.getElementById('incorrectButton');
@@ -4770,6 +4883,11 @@
           if (!userLearningStats.topicWeights) {
             userLearningStats.topicWeights = userLearningStats.disciplineWeights || {};
           }
+          // --- NOVA VACINA (MÉDIA MÓVEL) ---
+          // Garante que a fila exista para quem já tinha progresso salvo
+          if (!userLearningStats.recentSpeeds) {
+            userLearningStats.recentSpeeds = [];
+          }
         }
       } catch (e) {
         console.error("Erro ao carregar estatísticas:", e);
@@ -4809,12 +4927,20 @@
           const currentSpeed = timeSpent / charCount;
 
           if (!userLearningStats.topicWeights) userLearningStats.topicWeights = {};
+          if (!userLearningStats.recentSpeeds) userLearningStats.recentSpeeds = [];
 
-          userLearningStats.totalTimeRead += timeSpent;
-          userLearningStats.totalCharsRead += charCount;
+          // 1. Adiciona a velocidade atual no final da fila
+          userLearningStats.recentSpeeds.push(currentSpeed);
+          
+          // 2. Mantém o limite rígido de 20 posições (descarta a leitura mais antiga)
+          if (userLearningStats.recentSpeeds.length > 20) {
+            userLearningStats.recentSpeeds.shift();
+          }
 
-          const globalAvgSpeed = userLearningStats.totalCharsRead > 0
-            ? userLearningStats.totalTimeRead / userLearningStats.totalCharsRead
+          // 3. Calcula a Média Móvel (Soma tudo e divide pelo tamanho da fila atual)
+          const sumSpeeds = userLearningStats.recentSpeeds.reduce((a, b) => a + b, 0);
+          const globalAvgSpeed = userLearningStats.recentSpeeds.length > 0
+            ? sumSpeeds / userLearningStats.recentSpeeds.length
             : 0.5;
 
           if (currentTopic && userLearningStats.topicWeights[currentTopic] === undefined) {
@@ -6369,7 +6495,7 @@
           });
           // --- MODO 3: PROVAS ---
         } else {
-          filteredCards = initialCards.filter(card => card.tipo === 'Prova');
+          filteredCards = initialCards.filter(card => card.tipo === 'prova');
           const selectedYear = document.getElementById('provasAno').value;
           if (selectedYear !== 'todos') {
             cards = filteredCards.filter(card => card.ano === selectedYear);
@@ -6526,7 +6652,7 @@
     // Preenche a lista de seleção com os anos encontrados na planilha de provas
     function populateAnoDropdowns(allCards) {
       // Pega apenas os anos únicos dos cards de "Prova" e remove valores vazios
-      const anos = [...new Set(allCards.filter(c => c.tipo === 'Prova' && c.ano).map(card => card.ano))].sort((a, b) => b - a); // Ordena do mais novo para o mais antigo
+      const anos = [...new Set(allCards.filter(c => c.tipo === 'prova' && c.ano).map(card => card.ano))].sort((a, b) => b - a); // Ordena do mais novo para o mais antigo
       const select = document.getElementById('provasAno');
 
       // Limpa opções antigas, exceto a primeira ("Todos os Anos")
@@ -6662,9 +6788,19 @@
         topicSelect.appendChild(option);
       });
 
-      topicContainer.style.display = 'block';
+     topicContainer.style.display = 'block';
+      
+      // Força a abertura do Passo 3 com "Todos os Tópicos" pré-selecionado
+      modalHandleTopicChange('todos');
     }
 
+    // --- NOVA FUNÇÃO DE TROCA DO PASSO 3 ---
+    function toggleStep3FilterType(type) {
+      document.getElementById('modalFocoSelect').style.display = (type === 'foco') ? 'block' : 'none';
+      document.getElementById('modalPesoContainer').style.display = (type === 'peso') ? 'flex' : 'none';
+    }
+
+    // 4. Ao escolher Tópico -> Habilita Passo 3 (Refinar Busca)
     // --- NOVA FUNÇÃO DE TROCA DO PASSO 3 ---
     function toggleStep3FilterType(type) {
       document.getElementById('modalFocoSelect').style.display = (type === 'foco') ? 'block' : 'none';
@@ -6679,12 +6815,15 @@
 
       step3Container.style.display = 'none'; // Esconde por padrão
 
-      if (!selectedTopic || selectedTopic === 'todos') return;
+      if (!selectedTopic) return;
 
-      // Busca cards que batem com a Disciplina E com o Tópico
-      const cardsOfTopic = initialCards.filter(c =>
-        c.disciplina === selectedDisc && c.topico === selectedTopic
-      );
+      // Busca cards que batem com a Disciplina
+      let cardsOfTopic = initialCards.filter(c => c.disciplina === selectedDisc);
+      
+      // Se o usuário escolheu um tópico específico (diferente de 'todos'), filtra mais uma vez
+      if (selectedTopic !== 'todos') {
+        cardsOfTopic = cardsOfTopic.filter(c => c.topico === selectedTopic);
+      }
 
       // Extrai os Focos únicos
       const uniqueFocos = [...new Set(cardsOfTopic.map(c => c.foco).filter(f => f && f.trim() !== ""))].sort();
@@ -6708,6 +6847,13 @@
 
     // 5. Botão APLICAR (Executa o filtro e Salva Memória)
     function applyModalFilter() {
+      // --- MARCADOR DE PÁGINA (Grava onde o aluno estava antes de filtrar) ---
+      if (!isTemporaryFilterActive && cards.length > 0) {
+        const currentCardObj = cards[currentCard];
+        savedMainProgressIndex = (currentCardObj && currentCardObj._originalIndex !== undefined) ? currentCardObj._originalIndex : -1;
+        isTemporaryFilterActive = true;
+      }
+
       const disc = document.getElementById('modalDisciplineSelect').value;
       const topic = document.getElementById('modalTopicSelect').value;
 
@@ -6780,6 +6926,17 @@
       // 3. Reseta o Filtro real (Mostra todos os cards no fundo)
       currentCategory = "Todas";
       finishFilterApplication([...initialCards]);
+
+      // --- RESTAURA O MARCADOR DE PÁGINA ---
+      if (savedMainProgressIndex !== -1) {
+        const restoredIndex = cards.findIndex(c => c._originalIndex === savedMainProgressIndex);
+        if (restoredIndex !== -1) {
+          currentCard = restoredIndex;
+          updateCard(true); // Atualiza a tela voltando para o card exato
+        }
+        savedMainProgressIndex = -1; // Limpa o marcador
+      }
+      isTemporaryFilterActive = false; // Desliga o escudo de salvamento
 
       // 4. Reseta a cor do ícone da pasta
       const btn = document.getElementById('filterBtn');
@@ -6975,7 +7132,7 @@
     let saveQueue = JSON.parse(localStorage.getItem('chicoSaveQueue_v2') || '[]');
     let isSyncing = false;
 
-    // 2. Função genérica que adiciona à fila e tenta enviar
+    // 2. Função genérica que adiciona à fila (AGORA ACUMULA EM LOTES)
     function addToSaveQueue(endpoint, dataObj) {
       // Adiciona timestamp para controle
       dataObj._timestamp = Date.now();
@@ -6985,57 +7142,56 @@
       localStorage.setItem('chicoSaveQueue_v2', JSON.stringify(saveQueue));
 
       // Feedback visual discreto no console
-      console.log("Dado adicionado à fila de sincronização. Pendentes:", saveQueue.length);
+      console.log("Dado adicionado ao lote. Pendentes:", saveQueue.length);
 
-      // Tenta processar a fila imediatamente
-      processSaveQueue();
+      // O envio imediato foi REMOVIDO aqui. O relógio de 15s é quem vai enviar.
     }
 
-    // 3. Processador da Fila (O coração do Offline Sync)
+    // 3. Processador da Fila em Lotes (Atacado - Para 1000 alunos)
     async function processSaveQueue() {
-      // Se já está enviando, se a fila está vazia ou se está sem internet, para.
+      // Se já está enviando, fila vazia ou sem internet, para.
       if (isSyncing || saveQueue.length === 0 || !navigator.onLine) return;
 
       isSyncing = true;
-      const item = saveQueue[0]; // Pega o item mais antigo (FIFO)
+      
+      // Pega um lote de até 20 itens para enviar tudo de uma vez
+      const tamanhoLote = Math.min(saveQueue.length, 20);
+      const lote = saveQueue.slice(0, tamanhoLote);
 
       try {
-        // Converte o objeto de dados para o formato que o Google Scripts aceita
         const formData = new URLSearchParams();
-        for (const key in item.data) {
-          formData.append(key, item.data[key]);
-        }
+        formData.append('action', 'batchSync'); // 🚨 NOVO IDIOMA (O Backend precisará aprender)
+        formData.append('email', userEmail);
+        formData.append('sheetId', SHEET_ID);
+        formData.append('batchData', JSON.stringify(lote)); // Transforma o lote num pacote só
 
-        // Tenta enviar (Modo no-cors: Garante envio sem erro de rede)
-        await fetch(item.endpoint, {
-          method: 'POST',
-          mode: 'no-cors',
-          keepalive: true,
-          body: formData
-        });
+        const endpoint = lote[0].endpoint; // Usa a URL padrão
 
-        // No modo no-cors, assumimos sucesso se não houve erro de rede.
-        console.log("Item enviado para sincronização (Blind Save)!");
+            // NOVO CÓDIGO INÍCIO
+            const response = await fetch(endpoint, {
+              method: 'POST',
+              body: formData
+            });
 
-        // Remove o item da fila e atualiza o LocalStorage
-        saveQueue.shift();
-        localStorage.setItem('chicoSaveQueue_v2', JSON.stringify(saveQueue));
+            const result = await response.json();
 
+            // SÓ apaga da mochila SE o Google confirmar o sucesso!
+            if (result.result === "success") {
+              console.log(`🚀 Lote de ${tamanhoLote} itens enviado e CONFIRMADO pelo servidor!`);
+              
+              // Remove apenas os itens enviados e confirmados
+              saveQueue.splice(0, tamanhoLote);
+              localStorage.setItem('chicoSaveQueue_v2', JSON.stringify(saveQueue));
+            } else {
+              console.warn("⚠️ O servidor não confirmou a gravação. O lote será mantido na mochila para a próxima tentativa.");
+            }
+
+            isSyncing = false;
+            // NOVO CÓDIGO FIM
+
+          } catch (err) {
+        console.error("Erro na rede. O lote aguardará a próxima tentativa.", err);
         isSyncing = false;
-
-        // Se ainda tiver itens, processa o próximo em 500ms
-        if (saveQueue.length > 0) setTimeout(processSaveQueue, 500);
-        localStorage.setItem('chicoSaveQueue_v2', JSON.stringify(saveQueue));
-
-        isSyncing = false;
-
-        // Se ainda tiver itens, processa o próximo em 500ms
-        if (saveQueue.length > 0) setTimeout(processSaveQueue, 500);
-
-      } catch (err) {
-        console.error("Sem conexão. O dado permanecerá na fila e será tentado depois.", err);
-        isSyncing = false;
-        // Não removemos da fila. Ele tentará de novo na próxima chamada.
       }
     }
 
@@ -7058,11 +7214,15 @@
       }
     }
 
-    // Loop Inteligente: Processa a fila E atualiza o ícone a cada 2 segundos
+    // Loop Visual: Atualiza a nuvenzinha na tela a cada 2 segundos
     setInterval(() => {
-      processSaveQueue(); // Tenta enviar se tiver internet
-      updateSyncUI();     // Atualiza a cor da nuvem
+      updateSyncUI();
     }, 2000);
+
+    // Loop de Atacado: O caminhão de entregas só passa a cada 15 segundos
+    setInterval(() => {
+      processSaveQueue(); 
+    }, 15000);
 
     // Quando a internet voltar, força a sincronização e avisa o usuário
     window.addEventListener('online', () => {
@@ -7091,9 +7251,30 @@
       addToSaveQueue(SRS_BACKEND_URL, payload);
     }
 
-    // 5. Salvar Posição (Atualizado para usar a Fila)
+    /// 5. Salvar Posição (Atualizado para usar a Fila)
     function savePositionToBackend() {
       if (!userEmail || cards.length === 0) return;
+
+      // 🛡️ ESCUDO DE FILTRO: Bloqueia salvamento na nuvem se houver um filtro temporário ativo
+      if (typeof isTemporaryFilterActive !== 'undefined' && isTemporaryFilterActive) {
+        console.log("🛡️ Salvamento bloqueado: Filtro temporário de revisão ativo.");
+        return;
+      }
+
+      // 🛡️ ESCUDO ANTI-FALHA: Bloqueia o salvamento se o aluno ainda estiver no Login ou no Modal de Retorno
+      const resumeModal = document.getElementById('resumeModal');
+      const loginModal = document.getElementById('loginModal');
+      
+      // Se a janela de "Continuar de onde parou" estiver visível, aborta o salvamento
+      if (resumeModal && resumeModal.style.display === 'flex') {
+        console.log("🛡️ Salvamento bloqueado: Aguardando escolha do usuário no modal.");
+        return;
+      }
+      
+      // Se a tela de Login estiver visível, aborta o salvamento
+      if (loginModal && window.getComputedStyle(loginModal).display !== 'none') {
+        return;
+      }
 
       const currentCardObj = cards[currentCard];
       // CORREÇÃO: Usa a etiqueta permanente ou fallback para o método antigo
@@ -7117,21 +7298,44 @@
       console.log(`Salvando posição na fila: Card #${realIndex}`);
       addToSaveQueue(SRS_BACKEND_URL, payload);
     }
-    // 6. Verificar e Perguntar se quer continuar (Resume)
-    // 6. Verificar e Perguntar se quer continuar (Resume) - CORRIGIDO
-    // 6. Verificar e Perguntar se quer continuar (Resume) - VERSÃO MODAL DARK
+    // 6. Verificar e Perguntar se quer continuar (Resume) - VERSÃO INTELIGENTE COM MOCHILA LOCAL
     function checkForSavedPosition() {
-      console.log("Verificando posição salva...", window.savedPosition);
+      console.log("Verificando posição salva...");
 
-      // Verifica se existe algo salvo válido
-      if (window.savedPosition && typeof window.savedPosition.index === 'number') {
+      let targetIndex = null;
+      let targetMode = 'sequencial';
 
-        const savedIndex = window.savedPosition.index;
+      // --- 1. PRIMEIRO: Olha na "Mochila" (Fila local não enviada) ---
+      try {
+        const localQueue = JSON.parse(localStorage.getItem('chicoSaveQueue_v2') || '[]');
+        // Procura de trás para a frente (do mais recente para o mais antigo)
+        for (let i = localQueue.length - 1; i >= 0; i--) {
+          if (localQueue[i].data && localQueue[i].data.action === 'savePosition') {
+            targetIndex = localQueue[i].data.cardIndex;
+            targetMode = localQueue[i].data.modo || 'sequencial';
+            console.log("📍 Posição recuperada da mochila local:", targetIndex);
+            break; // Achou o mais recente, pára de procurar
+          }
+        }
+      } catch(e) {
+        console.log("Erro ao ler mochila local:", e);
+      }
 
+      // --- 2. SEGUNDO: Se a mochila não tiver posição, confia no Google ---
+      if (targetIndex === null && window.savedPosition && typeof window.savedPosition.index === 'number') {
+        targetIndex = window.savedPosition.index;
+        targetMode = window.savedPosition.modo;
+        console.log("☁️ Posição recuperada do servidor Google:", targetIndex);
+      }
+
+      // --- 3. EXIBE A MENSAGEM SE TIVERMOS UMA POSIÇÃO VÁLIDA ---
+      if (targetIndex !== null && targetIndex > 0) {
+        
         // Segurança: O índice salvo ainda existe no baralho atual?
-        if (savedIndex >= cards.length) return;
+        if (targetIndex > cards.length) return;
 
-        const card = cards[savedIndex];
+        // Como o targetIndex é o número "humano" (1, 2, 3...), temos de subtrair 1 para achar no código (0, 1, 2...)
+        const card = cards[targetIndex - 1]; 
         if (!card) return;
 
         // Texto curto para mostrar no modal
@@ -7141,13 +7345,16 @@
         const msgElement = document.getElementById('resumeMessage');
         if (msgElement) {
           msgElement.innerHTML = `
-                    Você parou no Card <strong>${savedIndex}</strong> de ${cards.length}:<br><br>
+                    Você parou no Card <strong>${targetIndex}</strong> de ${cards.length}:<br><br>
                     <em style="color: gold;">"${cardText}"</em><br><br>
                     Deseja continuar de onde parou?
                 `;
         }
 
-        // Mostra o Modal Personalizado (em vez do confirm feio)
+        // Atualiza a variável global do sistema para o botão "CONTINUAR" saber para onde ir
+        window.savedPosition = { index: targetIndex, modo: targetMode };
+
+        // Mostra o Modal Personalizado
         const modal = document.getElementById('resumeModal');
         if (modal) modal.style.display = 'flex';
       }
