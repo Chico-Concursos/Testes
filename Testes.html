@@ -4089,23 +4089,23 @@
       stopSpeech();
       if (!requireAuth() || cards.length === 0 || isFinished) return;
 
-      /// --- INÍCIO DA ROLAGEM AUTOMÁTICA (PLANO C - FOCO REAL COM ATRASO) ---
-      setTimeout(() => {
-        try {
-          // 1. Tenta usar o comando suave na barra superior inteira
-          const topBar = document.querySelector('.top-bar');
-          if (topBar) {
-            topBar.scrollIntoView({ behavior: 'smooth', block: 'start' });
-          }
-          // 2. Tira a "teimosia" do Google Sites focando no botão de menu real
-          const menuBtn = document.querySelector('.hamburger-btn');
-          if (menuBtn) {
-            menuBtn.focus({ preventScroll: false });
-          }
-        } catch (e) {
-          console.log("Rolagem ignorada pela segurança do iframe");
-        }
-      }, 50); // Atraso imperceptível de 50 milissegundos para o navegador "respirar"
+      /// Alteração: Aceita parâmetro para pular o salvamento automático
+    function updateCard(skipAutoSave = false) {
+      if (typeof handsFreeTimer !== 'undefined') clearTimeout(handsFreeTimer);
+      stopSpeech();
+      if (!requireAuth() || cards.length === 0 || isFinished) return;
+
+      // --- INÍCIO DA ROLAGEM AUTOMÁTICA (FORÇA BRUTA INSTANTÂNEA) ---
+      try {
+        // 1. Ataca todos os eixos internos possíveis de uma vez só
+        window.scrollTo(0, 0);
+        document.body.scrollTop = 0;
+        document.documentElement.scrollTop = 0;
+        
+        // 2. Exige o alinhamento da barra superior no topo absoluto (true = sem suavidade)
+        const topBar = document.querySelector('.top-bar');
+        if (topBar) topBar.scrollIntoView(true);
+      } catch (e) { }
       // --- FIM DA ROLAGEM AUTOMÁTICA ---
 
       const card = cards[currentCard];
