@@ -4089,10 +4089,26 @@
       stopSpeech();
       if (!requireAuth() || cards.length === 0 || isFinished) return;
 
-      // --- INÍCIO DA ROLAGEM AUTOMÁTICA ---
-      // Rola o iframe para o topo e "puxa" a janela do Google Sites junto
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-      document.body.scrollIntoView({ behavior: 'smooth', block: 'start' });
+      /// --- INÍCIO DA ROLAGEM AUTOMÁTICA (TRUQUE DO FOCO) ---
+      // 1. Cria um pontinho invisível no topo extremo da tela (se não existir)
+      let topAnchor = document.getElementById('top-focus-anchor');
+      if (!topAnchor) {
+        topAnchor = document.createElement('div');
+        topAnchor.id = 'top-focus-anchor';
+        topAnchor.tabIndex = -1; // Permite receber foco via código
+        topAnchor.style.position = 'absolute';
+        topAnchor.style.top = '0';
+        topAnchor.style.left = '0';
+        topAnchor.style.opacity = '0'; // Totalmente invisível
+        topAnchor.style.height = '1px';
+        topAnchor.style.width = '1px';
+        topAnchor.style.pointerEvents = 'none'; // Impede cliques acidentais
+        document.body.prepend(topAnchor);
+      }
+      // 2. Foca no pontinho. O navegador é obrigado a puxar a tela principal (Google Sites) para cima
+      topAnchor.focus({ preventScroll: false });
+      // 3. Remove o foco rápido para não atrapalhar os atalhos do teclado
+      topAnchor.blur();
       // --- FIM DA ROLAGEM AUTOMÁTICA ---
 
       const card = cards[currentCard];
