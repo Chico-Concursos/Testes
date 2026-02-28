@@ -324,9 +324,8 @@
     #flashcard-content {
       text-align: center;
       width: 100%;
-      /* max-height removido */
-      overflow-y: visible;
-      /* ALTERADO: Texto flui livremente */
+      max-height: 60vh; /* O texto não passa de 60% da tela */
+      overflow-y: auto; /* ROBA A BARRA DE ROLAGEM PARA DENTRO */
       overflow-x: hidden;
       padding: 10px;
       box-sizing: border-box;
@@ -1391,9 +1390,9 @@
       #card-container {
         width: 100% !important;
 
-        /* ALTERAÇÃO SEGURA: */
-        /* Define um tamanho mínimo fixo (900px) para o card nunca ficar "fino demais" */
-        min-height: 900px !important;
+        /* ALTERAÇÃO SEGURA (ROLAGEM INTERNA): */
+        min-height: auto !important; /* Deixa o card compacto na tela */
+        height: auto !important;
 
         /* Permite crescer automaticamente se o texto for longo */
         height: auto !important;
@@ -1423,15 +1422,14 @@
 
       #flashcard-content {
         padding: 20px 15px 100px 15px !important;
-        /* Padding extra embaixo p/ não bater no botão */
         font-size: 1.5em;
         color: black;
         line-height: 1.6;
         font-weight: 500;
 
-        /* Solta o conteúdo para ocupar o espaço necessário */
-        max-height: none !important;
-        overflow: visible !important;
+        /* ROLAGEM INTERNA ATIVADA */
+        max-height: 65vh !important; /* Limita a altura da caixa de texto */
+        overflow-y: auto !important; /* Cria a barra de rolagem própria */
       }
 
       #flashcard-content img {
@@ -4095,17 +4093,9 @@
       stopSpeech();
       if (!requireAuth() || cards.length === 0 || isFinished) return;
 
-      // --- INÍCIO DA ROLAGEM AUTOMÁTICA (FORÇA BRUTA INSTANTÂNEA) ---
-      try {
-        // 1. Ataca todos os eixos internos possíveis de uma vez só
-        window.scrollTo(0, 0);
-        document.body.scrollTop = 0;
-        document.documentElement.scrollTop = 0;
-        
-        // 2. Exige o alinhamento da barra superior no topo absoluto (true = sem suavidade)
-        const topBar = document.querySelector('.top-bar');
-        if (topBar) topBar.scrollIntoView(true);
-      } catch (e) { }
+      // --- INÍCIO DA ROLAGEM AUTOMÁTICA (MÉTODO INTERNO INFALÍVEL) ---
+      const contentBox = document.getElementById('flashcard-content');
+      if (contentBox) contentBox.scrollTop = 0;
       // --- FIM DA ROLAGEM AUTOMÁTICA ---
 
       const card = cards[currentCard];
