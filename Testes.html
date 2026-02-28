@@ -324,8 +324,9 @@
     #flashcard-content {
       text-align: center;
       width: 100%;
-      max-height: 60vh; /* O texto não passa de 60% da tela */
-      overflow-y: auto; /* ROBA A BARRA DE ROLAGEM PARA DENTRO */
+      /* max-height removido */
+      overflow-y: visible;
+      /* ALTERADO: Texto flui livremente */
       overflow-x: hidden;
       padding: 10px;
       box-sizing: border-box;
@@ -1390,9 +1391,9 @@
       #card-container {
         width: 100% !important;
 
-        /* ALTERAÇÃO SEGURA (ROLAGEM INTERNA): */
-        min-height: auto !important; /* Deixa o card compacto na tela */
-        height: auto !important;
+        /* ALTERAÇÃO SEGURA: */
+        /* Define um tamanho mínimo fixo (900px) para o card nunca ficar "fino demais" */
+        min-height: 900px !important;
 
         /* Permite crescer automaticamente se o texto for longo */
         height: auto !important;
@@ -1422,14 +1423,15 @@
 
       #flashcard-content {
         padding: 20px 15px 100px 15px !important;
+        /* Padding extra embaixo p/ não bater no botão */
         font-size: 1.5em;
         color: black;
         line-height: 1.6;
         font-weight: 500;
 
-        /* ROLAGEM INTERNA ATIVADA */
-        max-height: 65vh !important; /* Limita a altura da caixa de texto */
-        overflow-y: auto !important; /* Cria a barra de rolagem própria */
+        /* Solta o conteúdo para ocupar o espaço necessário */
+        max-height: none !important;
+        overflow: visible !important;
       }
 
       #flashcard-content img {
@@ -4087,15 +4089,26 @@
       stopSpeech();
       if (!requireAuth() || cards.length === 0 || isFinished) return;
 
-      /// Alteração: Aceita parâmetro para pular o salvamento automático
-    function updateCard(skipAutoSave = false) {
-      if (typeof handsFreeTimer !== 'undefined') clearTimeout(handsFreeTimer);
-      stopSpeech();
-      if (!requireAuth() || cards.length === 0 || isFinished) return;
-
-      // --- INÍCIO DA ROLAGEM AUTOMÁTICA (MÉTODO INTERNO INFALÍVEL) ---
-      const contentBox = document.getElementById('flashcard-content');
-      if (contentBox) contentBox.scrollTop = 0;
+      /// --- INÍCIO DA ROLAGEM AUTOMÁTICA (TRUQUE DO FOCO) ---
+      // 1. Cria um pontinho invisível no topo extremo da tela (se não existir)
+      let topAnchor = document.getElementById('top-focus-anchor');
+      if (!topAnchor) {
+        topAnchor = document.createElement('div');
+        topAnchor.id = 'top-focus-anchor';
+        topAnchor.tabIndex = -1; // Permite receber foco via código
+        topAnchor.style.position = 'absolute';
+        topAnchor.style.top = '0';
+        topAnchor.style.left = '0';
+        topAnchor.style.opacity = '0'; // Totalmente invisível
+        topAnchor.style.height = '1px';
+        topAnchor.style.width = '1px';
+        topAnchor.style.pointerEvents = 'none'; // Impede cliques acidentais
+        document.body.prepend(topAnchor);
+      }
+      // 2. Foca no pontinho. O navegador é obrigado a puxar a tela principal (Google Sites) para cima
+      topAnchor.focus({ preventScroll: false });
+      // 3. Remove o foco rápido para não atrapalhar os atalhos do teclado
+      topAnchor.blur();
       // --- FIM DA ROLAGEM AUTOMÁTICA ---
 
       const card = cards[currentCard];
