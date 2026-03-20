@@ -4421,7 +4421,67 @@
       mostrarNotificacao("Piper desativado. Usando voz nativa.", "normal");
     }
 
-    // --- SINTETIZAR COM PIPER (via AudioContext — funciona no mobile!) ---
+    // --- PARSER MANUAL DE WAV → AudioBuffer (bypassa limitações de formato do mobile) ---
+    function parseWavToAudioBuffer(rawData, audioCtx) {
+      // Converte para ArrayBuffer se necessário
+      let arrayBuf;
+      if (rawData instanceof ArrayBuffer) {
+        arrayBuf = rawData;
+      } else if (rawData.buffer && rawData.buffer instanceof ArrayBuffer) {
+        arrayBuf = rawData.buffer.slice(rawData.byteOffset, rawData.byteOffset + rawData.byteLength);
+      } else {
+        arrayBuf = new Uint8Array(rawData).buffer;
+      }
+
+      const view = new DataView(arrayBuf);
+
+      // Lê cabeçalho WAV
+      const numChannels = view.getUint16(22, true);
+      const sampleRate = view.getUint32(24, true);
+      const bitsPerSample = view.getUint16(34, true);
+
+      // Encontra o chunk "data" (pula sub-chunks extras)
+      let dataOffset = 12; // Depois de "RIFF" + size + "WAVE"
+      while (dataOffset < view.byteLength - 8) {
+        const chunkId = String.fromCharCode(
+          view.getUint8(dataOffset), view.getUint8(dataOffset + 1),
+          view.getUint8(dataOffset + 2), view.getUint8(dataOffset + 3)
+        );
+        const chunkSize = view.getUint32(dataOffset + 4, true);
+        if (chunkId === 'data') {
+          dataOffset += 8;
+          break;
+        }
+        dataOffset += 8 + chunkSize;
+      }
+
+      // Calcula número de samples
+      const bytesPerSample = bitsPerSample / 8;
+      const totalSamples = Math.floor((arrayBuf.byteLength - dataOffset) / bytesPerSample / numChannels);
+
+      // Cria AudioBuffer com o sampleRate correto
+      const audioBuffer = audioCtx.createBuffer(numChannels, totalSamples, sampleRate);
+
+      // Preenche cada canal com os dados PCM convertidos para Float32 [-1, 1]
+      for (let ch = 0; ch < numChannels; ch++) {
+        const channelData = audioBuffer.getChannelData(ch);
+        for (let i = 0; i < totalSamples; i++) {
+          const sampleOffset = dataOffset + (i * numChannels + ch) * bytesPerSample;
+          if (sampleOffset + bytesPerSample > arrayBuf.byteLength) break;
+          if (bitsPerSample === 16) {
+            channelData[i] = view.getInt16(sampleOffset, true) / 32768.0;
+          } else if (bitsPerSample === 32) {
+            channelData[i] = view.getFloat32(sampleOffset, true);
+          } else if (bitsPerSample === 8) {
+            channelData[i] = (view.getUint8(sampleOffset) - 128) / 128.0;
+          }
+        }
+      }
+
+      return audioBuffer;
+    }
+
+    // --- SINTETIZAR COM PIPER (AudioContext + parser manual de WAV) ---
     async function speakWithPiper(text) {
       if (!piperModule || !piperReady) return;
 
@@ -4447,11 +4507,16 @@
         // 4. Garante que o AudioContext existe e está desbloqueado
         ensurePiperAudioCtx();
 
-        // 5. Decodifica o WAV para AudioBuffer
-        const wavData = (wav instanceof ArrayBuffer) ? wav : wav.buffer || new Uint8Array(wav).buffer;
-        const audioBuffer = await piperAudioCtx.decodeAudioData(wavData.slice(0));
+        // 5. Converte WAV → AudioBuffer manualmente (sem depender de decodeAudioData do browser)
+        let rawData;
+        if (wav instanceof Blob) {
+          rawData = await wav.arrayBuffer();
+        } else {
+          rawData = wav;
+        }
+        const audioBuffer = parseWavToAudioBuffer(rawData, piperAudioCtx);
 
-        // 6. Verifica novamente após decodificação
+        // 6. Verifica novamente após conversão
         if (!ttsAtivo || expectedParagraph !== ttsCurrentParagraph) {
           return;
         }
@@ -4462,7 +4527,7 @@
           piperSourceNode = null;
         }
 
-        // 8. Cria um BufferSource e toca
+        // 8. Cria BufferSource e toca
         piperSourceNode = piperAudioCtx.createBufferSource();
         piperSourceNode.buffer = audioBuffer;
 
