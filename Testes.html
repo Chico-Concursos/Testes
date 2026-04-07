@@ -2279,42 +2279,6 @@
       margin-top: 10px !important;
       padding-top: 10px !important;
     }
-
-    /* =================================================================
-       CONTENÇÃO PARA DESKTOP — Resolve o excesso de espaço quando
-       o iframe do Google Sites está em 2500px.
-       No celular, o Google Sites comprime tudo, então não afeta.
-       No desktop (viewport real > 768px), limita o conteúdo.
-       ================================================================= */
-    @media (min-width: 769px) {
-
-      /* Barra superior: limita largura e centraliza */
-      .top-bar {
-        max-width: 1100px;
-        margin-left: auto;
-        margin-right: auto;
-        border-radius: 0 0 10px 10px;
-      }
-
-      /* Card: limita largura máxima para leitura confortável */
-      #card-container {
-        max-width: 1100px !important;
-        margin-left: auto !important;
-        margin-right: auto !important;
-      }
-
-      /* Barra inferior: acompanha a contenção */
-      .bottom-bar {
-        max-width: 1100px;
-        margin-left: auto;
-        margin-right: auto;
-      }
-
-      /* Garante que o fundo preto preencha toda a sobra */
-      body {
-        background-color: #121212;
-      }
-    }
   </style>
 </head>
 
@@ -4181,6 +4145,17 @@
       }
 
       contentElement.innerHTML = textToShow;
+
+      // --- SCROLL AUTOMÁTICO PARA O TOPO (Google Sites iframe fix) ---
+      // Quando o card muda, rola a página para o topo.
+      // scrollIntoView() dentro de um iframe também move a barra de
+      // rolagem do Google Sites (página pai) para mostrar o topo do iframe.
+      try {
+        const topBar = document.querySelector('.top-bar');
+        if (topBar) {
+          topBar.scrollIntoView({ block: 'start', behavior: 'smooth' });
+        }
+      } catch (e) { /* Silencia erros de cross-origin */ }
       // ---------------------------------
       // --- ALTERAÇÃO: Contador Relativo (Mostra posição no filtro atual) ---
       // Ex: Mostra "1 / 15" (sendo 15 o total do tópico filtrado)
