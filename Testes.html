@@ -4402,6 +4402,37 @@
         // No VERSO: Mostra o texto, destacando a resposta em verde
         // Remove as chaves e pinta o recheio
         textToShow = textToShow.replace(/{{(.*?)}}/g, "<span style='color:#00ff00; font-weight:bold; border-bottom:1px solid #00ff00;'>$1</span>");
+
+        // --- DESTAQUE DAS RESPOSTAS TRADICIONAIS NO TEXTO DO VERSO ---
+        if (isCurrentCardMCQ) {
+          const respostaVerso = card.back.trim().toUpperCase();
+          const regexExtrair = /(?:^|GABARITO[\s:]*|RESP(?:OSTA)?[\s:]*|LETRA[\s:]*)([A-E])(?:[\)\-\.\s]|$)/i;
+          const matchGabarito = respostaVerso.match(regexExtrair);
+          const gabaritoLetra = matchGabarito ? matchGabarito[1].toUpperCase() : respostaVerso.charAt(0).toUpperCase();
+          
+          // Regex definitiva de Força Bruta:
+          // Engole silenciosamente qualquer tipo de espaço, tag escapada ou entidade HTML de indentação (mesmo as de duplo escape como &amp;nbsp;)
+          // que costumam empurrar as alternativas para a direita (como no caso de A, B, C do print) escondendo a Letra do código.
+          const regexAlternativasVerso = /^((?:\s|&[a-zA-Z0-9#]+;|&amp;[a-zA-Z0-9#]+;|<[^>]+>|&lt;.*?&gt;)*)([a-eA-E])([\)\.])(.*)$/gim;
+          
+          textToShow = textToShow.replace(regexAlternativasVerso, function(match, espacosInicio, letra, divisor, resto) {
+             const letraUp = letra.toUpperCase();
+             let style = 'padding: 4px 8px; border-radius: 4px; display: inline-block; box-sizing: border-box; margin: 4px 0; word-wrap: break-word; max-width: 100%;';
+             
+             // Fundo verde para a correta
+             if (letraUp === gabaritoLetra) {
+                 style += ' background: #152b15; border: 1px solid #00ff00; color: #00ff00; font-weight: bold;';
+             } 
+             // Fundo vermelho para a alternativa que o usuário escolheu e errou
+             else if (typeof window.lastMCQClickedOption !== 'undefined' && window.lastMCQClickedOption === letraUp) {
+                 style += ' background: #2b1515; border: 1px solid #ff5555; color: #ff5555; opacity: 0.9;';
+             } else {
+                 return match; // Devolve puro, sem marcações
+             }
+             
+             return `${espacosInicio}<span style="${style}"><strong>${letraUp}${divisor}</strong>${resto}</span>`;
+          });
+        }
       }
 
       // --- SALVAGUARDA DA NAV BAR ANTES DE LIMPAR O HTML ---
@@ -4532,6 +4563,7 @@
 
     // --- NOVA FUNÇÃO: CHECAR RESPOSTA DA MÚLTIPLA ESCOLHA ---
     let isMCQAnswered = false; // Flag: card já foi avaliado via alternativa MCQ
+    window.lastMCQClickedOption = null;
 
     window.checkAnswer = function(letraClicada, btnElement) {
       if (!showingFront) return;
@@ -4539,6 +4571,7 @@
       if (typeof isMCQAnswered !== 'undefined' && isMCQAnswered) return;
       
       isMCQAnswered = true; // Marca que este card já foi avaliado via MCQ
+      window.lastMCQClickedOption = letraClicada; // Rastreia o clique para uso no verso
 
       const card = cards[currentCard];
       const respostaVerso = card.back.trim().toUpperCase();
@@ -4645,6 +4678,7 @@
       currentCard = (currentCard - 1 + cards.length) % cards.length;
       showingFront = true;
       if (typeof isMCQAnswered !== 'undefined') isMCQAnswered = false; // Reset flag ao mudar de card
+      window.lastMCQClickedOption = null;
       updateCard();
       saveFlashcardState();
     }
@@ -4687,6 +4721,7 @@
         }
         showingFront = false;
         if (typeof isMCQAnswered !== 'undefined') isMCQAnswered = false; // Reset flag ao mudar de card
+        window.lastMCQClickedOption = null;
         updateCard();
       }
       saveFlashcardState();
