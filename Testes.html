@@ -2503,134 +2503,6 @@
       box-shadow: -2px -2px 10px rgba(0,0,0,0.5);
       pointer-events: none;
     }
-
-    /* --- ESTILOS EXTRAÍDOS DE BOTÕES E MENUS --- */
-    .menu-select {
-      background: #000; 
-      color: white; 
-      border: 1px solid #555; 
-      width: 100%;
-    }
-
-    .eval-menu-btn {
-      color: gold; 
-      border: 1px solid #444; 
-      border-radius: 5px; 
-      padding: 0 10px; 
-      margin-right: 5px;
-    }
-
-    #srsButtons {
-      display: none; 
-      gap: 8px; 
-      justify-content: center; 
-      align-items: center;
-    }
-    
-    .srs-btn {
-      position: relative; 
-      border-radius: 5px; 
-      font-size: 1em; 
-      padding: 0px 10px; 
-      min-width: 70px;
-    }
-    .srs-btn-dontknow { color: #d8bfd8; border: 1px solid #d8bfd8; }
-    .srs-btn-again    { color: #ff5555; border: 1px solid #ff5555; }
-    .srs-btn-hard     { color: #ffa500; border: 1px solid #ffa500; }
-    .srs-btn-good     { color: #90ee90; border: 1px solid #90ee90; }
-    .srs-btn-easy     { color: #00ff00; border: 1px solid #00ff00; }
-
-    #mobileCardCounter {
-      display: none; 
-      font-size: 0.9em; 
-      margin: 0 8px; 
-      color: gold; 
-      font-weight: bold;
-    }
-
-    .tip-box-blue {
-      margin-top: 8px; 
-      margin-bottom: 8px; 
-      background: rgba(0, 120, 215, 0.2); 
-      border: 1px solid #0078d7; 
-      padding: 10px; 
-      border-radius: 5px; 
-      font-size: 0.95em; 
-      color: #e1f0ff;
-    }
-
-    .full-width-table {
-      width: 100%; 
-      border-collapse: collapse; 
-      margin-bottom: 20px;
-    }
-
-    .btn-understand {
-      background: gold; 
-      color: black; 
-      border: none; 
-      padding: 10px 25px; 
-      border-radius: 5px; 
-      font-weight: bold; 
-      cursor: pointer;
-    }
-
-    .modal-title-gold {
-      margin-top: 0; 
-      margin-bottom: 15px; 
-      text-align: center; 
-      color: gold;
-    }
-
-    .modal-section-title {
-      color: #FFD700; 
-      border-bottom: 1px solid #444; 
-      padding-bottom: 5px; 
-      margin-bottom: 10px;
-    }
-
-    .settings-group-box {
-      background: #2a2a2a; 
-      padding: 10px; 
-      border-radius: 8px; 
-      border: 1px solid #444;
-    }
-
-    .flex-between-center {
-      display: flex; 
-      justify-content: space-between; 
-      align-items: center; 
-      margin-top: 10px;
-    .modal-select-field {
-      width: 100%; 
-      padding: 6px; 
-      background: #333; 
-      color: white; 
-      border: 1px solid #555; 
-      border-radius: 5px; 
-      font-size: 1em; 
-      margin-bottom: 5px;
-    }
-
-    .modal-input-field {
-      width: 100%; 
-      padding: 10px; 
-      margin-bottom: 10px; 
-      background: #222; 
-      color: white; 
-      border: 1px solid #555; 
-      border-radius: 4px;
-    }
-
-    .btn-gold {
-      background: linear-gradient(to bottom, #FFD700, #D4AF37); 
-      color: black; 
-      border: none; 
-      padding: 8px 15px; 
-      border-radius: 5px; 
-      font-weight: bold; 
-      cursor: pointer;
-    }
   </style>
 </head>
 
@@ -2647,7 +2519,8 @@
 
         <div class="menu-item-row">
           <i class="fas fa-paint-brush" style="width:25px;"></i>
-          <select id="cardColor" onchange="changeCardColor(this.value)" class="menu-select">
+          <select id="cardColor" onchange="changeCardColor(this.value)"
+            style="background:#000; color:white; border:1px solid #555; width:100%;">
             <option value="white">Cor do Card</option>
             <option value="white">Branco</option>
             <option value="#121212">Preto Suave (Dark)</option>
@@ -2662,7 +2535,8 @@
 
         <div class="menu-item-row">
           <i class="fas fa-font" style="width:25px;"></i>
-          <select id="textColor" onchange="changeTextColor(this.value)" class="menu-select">
+          <select id="textColor" onchange="changeTextColor(this.value)"
+            style="background:#000; color:white; border:1px solid #555; width:100%;">
             <option value="black">Cor da Fonte</option>
             <option value="black">Preto</option>
             <option value="white">Branco</option>
@@ -2689,7 +2563,8 @@
 
         <div class="menu-item-row">
           <i class="fas fa-glasses" style="width:25px;"></i>
-          <select id="fontModeSelect" onchange="setFontMode(this.value)" class="menu-select">
+          <select id="fontModeSelect" onchange="setFontMode(this.value)"
+            style="background:#000; color:white; border:1px solid #555; width:100%;">
             <option value="roboto">Modo Padrão</option>
             <option value="serif">Modo Livro</option>
           </select>
@@ -2734,7 +2609,8 @@
       style="background: none; border: none; color: #a78bfa; font-size: 1.2em; cursor: pointer; margin-left: 5px;">
       <i class="fas fa-robot" aria-hidden="true"></i>
     </button>
-    <span id="mobileCardCounter" aria-live="polite" aria-atomic="true">0/0</span>
+    <span id="mobileCardCounter" aria-live="polite" aria-atomic="true"
+      style="display:none; font-size: 0.9em; margin: 0 8px; color: gold; font-weight: bold;">0/0</span>
     <span id="desktopTimer" class="tooltip" data-tooltip="Zerar Tempo" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="resetTimer()" style="cursor:pointer;">⏱️ <span
         id="timer">00:00</span></span>
@@ -2794,33 +2670,34 @@
     <input type="number" id="goToCard" placeholder="#" onchange="goToSpecificCard()" style="margin: 0 5px;" />
     <span id="cardCounter" aria-live="polite" aria-atomic="true">0/0</span>
     <button id="evalMenuBtn" data-tooltip="Menu de Avaliação" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="openEvalModal()" class="eval-menu-btn"><i
+      onmouseleave="hideTooltipOnLeave(this)" onclick="openEvalModal()"
+      style="color: gold; border: 1px solid #444; border-radius: 5px; padding: 0 10px; margin-right: 5px;"><i
         class="fas fa-bars"></i></button>
-    <div id="srsButtons">
+    <div id="srsButtons" style="display: none; gap: 8px; justify-content: center; align-items: center;">
 
       <button id="btnDontKnow" class="accuracy-button" data-tooltip="Revisar em 10 min"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        class="accuracy-button srs-btn srs-btn-dontknow"
+        style="position: relative; color: #d8bfd8; border: 1px solid #d8bfd8; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
         onclick="rateCardSRS('again', this, '#d8bfd8')">Não Sei</button>
 
       <button id="btnAgain" class="accuracy-button" data-tooltip="Revisar em 10 min"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        class="accuracy-button srs-btn srs-btn-again"
+        style="position: relative; color: #ff5555; border: 1px solid #ff5555; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
         onclick="rateCardSRS('again', this, '#ff5555')">Errei</button>
 
       <button id="btnHard" class="accuracy-button" data-tooltip="Revisar em 2 dias"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        class="accuracy-button srs-btn srs-btn-hard"
+        style="position: relative; color: #ffa500; border: 1px solid #ffa500; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
         onclick="rateCardSRS('hard', this, '#ffa500')">Difícil</button>
 
       <button id="btnGood" class="accuracy-button" data-tooltip="Revisar em 4 dias"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        class="accuracy-button srs-btn srs-btn-good"
+        style="position: relative; color: #90ee90; border: 1px solid #90ee90; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
         onclick="rateCardSRS('good', this, '#90ee90')">Bom</button>
 
       <button id="btnEasy" class="accuracy-button" data-tooltip="Revisar em 7 dias"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        class="accuracy-button srs-btn srs-btn-easy"
+        style="position: relative; color: #00ff00; border: 1px solid #00ff00; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
         onclick="rateCardSRS('easy', this, '#00ff00')">Fácil</button>
     </div>
     <button class="accuracy-button" data-tooltip="Acertei (Tecla 1)" aria-label="Acertei" onmouseover="showTooltipOnHover(this)"
@@ -2899,7 +2776,8 @@
         <li>
           <strong>Áudio (TTS):</strong> Ative a leitura em voz alta no menu ou pela tecla 'S'. Você pode escolher a
           velocidade e a voz nas configurações.
-          <div class="tip-box-blue">
+          <div
+            style="margin-top: 8px; margin-bottom: 8px; background: rgba(0, 120, 215, 0.2); border: 1px solid #0078d7; padding: 10px; border-radius: 5px; font-size: 0.95em; color: #e1f0ff;">
             <strong>💡 Dica de Ouro:</strong> Para uma experiência superior, recomendamos usar o navegador
             <strong>Microsoft Edge</strong>. Ele possui vozes neurais ultra-realistas (quase humanas) que já vêm
             instaladas nativamente.
@@ -2912,7 +2790,7 @@
       </ul>
 
       <h3 style="color: #FFD700;">⌨️ Teclas de Atalho</h3>
-      <table class="full-width-table">
+      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
         <tr style="border-bottom: 1px solid #444;">
           <td style="padding: 8px; color: gold;">Enter</td>
           <td style="padding: 8px;">Virar Card / Avançar</td>
@@ -2975,7 +2853,7 @@
 
       <div style="text-align: center; margin-top: 20px;">
         <button onclick="toggleManualModal()"
-          class="btn-understand">Entendi</button>
+          style="background: gold; color: black; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; cursor: pointer;">Entendi</button>
       </div>
     </div>
   </div>
@@ -3035,10 +2913,10 @@
   <!-- INÍCIO DO NOVO MODAL DE CONFIGURAÇÕES (COLE AQUI) -->
   <div id="settingsModal" style="display:none;" role="dialog" aria-modal="true" aria-label="Configurações de estudo">
     <div id="settingsModalContent">
-      <h2 class="modal-title-gold">Configurações de Estudo</h2>
+      <h2 style="margin-top:0; margin-bottom: 15px; text-align:center; color:gold;">Configurações de Estudo</h2>
 
       <div class="settings-section">
-        <h3 class="modal-section-title">1. Escolha
+        <h3 style="color: #FFD700; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px;">1. Escolha
           o Modo de Estudo</h3>
 
         <div class="mode-grid-container">
@@ -3073,7 +2951,8 @@
         </div>
       </div>
 
-      <div id="simuladoOptions" class="settings-section settings-group-box" style="display: none;">
+      <div id="simuladoOptions" class="settings-section"
+        style="display: none; background: #2a2a2a; padding: 10px; border-radius: 8px; border: 1px solid #444;">
         <h3>2. Monte seu Simulado</h3>
         <div id="simuladoLoading" style="display: none; color: gold; margin-bottom: 10px;">Carregando disciplinas...
         </div>
@@ -3086,7 +2965,7 @@
               onkeyup="updateTotalQuestions()">
           </div>
         </div>
-        <div class="flex-between-center">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
           <button class="add-discipline-button" onclick="addDisciplineRow()">+ Disciplina</button>
           <p class="total-questions-display" style="margin:0;">Total: <span id="totalSimuladoQuestions">0</span></p>
         </div>
@@ -3260,7 +3139,8 @@
 
       <div style="margin-bottom: 15px; text-align: left;">
         <label style="display:block; color: gold; margin-bottom: 5px; font-weight: bold;">1. Disciplina</label>
-        <select id="modalDisciplineSelect" onchange="modalHandleDisciplineChange(this.value)" class="modal-select-field" style="padding: 12px; font-size: 1.1em; margin-bottom: 0;">
+        <select id="modalDisciplineSelect" onchange="modalHandleDisciplineChange(this.value)"
+          style="width: 100%; padding: 12px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1.1em;">
           <option value="">Selecione...</option>
         </select>
       </div>
@@ -3268,7 +3148,8 @@
       <div id="modalTopicContainer" style="margin-bottom: 8px; text-align: left; display: none;">
         <label style="display:block; color: gold; margin-bottom: 3px; font-size: 0.9em; font-weight: bold;">2.
           Tópico</label>
-        <select id="modalTopicSelect" onchange="modalHandleTopicChange(this.value)" class="modal-select-field" style="padding: 8px; margin-bottom: 0;">
+        <select id="modalTopicSelect" onchange="modalHandleTopicChange(this.value)"
+          style="width: 100%; padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1em;">
           <option value="todos">Todos os Tópicos</option>
         </select>
       </div>
@@ -3277,13 +3158,15 @@
         <label style="display:block; color: #00FFFF; margin-bottom: 3px; font-size: 0.9em; font-weight: bold;">3.
           Refinar Busca</label>
 
-        <select id="modalStep3TypeSelect" onchange="toggleStep3FilterType(this.value)" class="modal-select-field">
+        <select id="modalStep3TypeSelect" onchange="toggleStep3FilterType(this.value)"
+          style="width: 100%; padding: 6px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1em; margin-bottom: 5px;">
           <option value="nenhum">Sem refinamento</option>
           <option value="foco">Por Foco Específico</option>
           <option value="peso">Por Peso Mínimo</option>
         </select>
 
-        <select id="modalFocoSelect" class="modal-select-field" style="display: none; margin-bottom: 0;">
+        <select id="modalFocoSelect"
+          style="width: 100%; padding: 6px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1em; display: none;">
           <option value="todos">Todos os Focos</option>
         </select>
 
