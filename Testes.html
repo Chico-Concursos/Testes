@@ -1402,37 +1402,33 @@
     /* --- BARRA DE NAVEGAÇÃO MCQ (Mobile) --- */
     #mcqNavBar {
       display: none;
-      position: fixed;
-      bottom: 0;
-      left: 0;
       width: 100%;
       height: auto;
-      min-height: 65px;
-      padding-bottom: max(10px, env(safe-area-inset-bottom));
-      padding-top: 10px;
-      background-color: #222;
-      border-top: 2px solid #FFD700;
-      z-index: 9000;
+      min-height: 50px;
+      margin-top: 25px;
+      margin-bottom: 20px;
+      background-color: transparent;
       justify-content: center;
       align-items: center;
-      gap: 0;
-      box-shadow: 0 -5px 20px rgba(0, 0, 0, 0.5);
+      gap: 15px; /* Espaço entre os botões */
     }
 
     #mcqNavBar button {
       flex: 1;
-      padding: 15px;
-      background: none;
-      border: none;
+      padding: 12px;
+      background-color: #222;
+      border: 1px solid #FFD700;
+      border-radius: 8px; /* Cantos arredondados parecem mais modernos soltos na página */
       color: #FFD700;
-      font-size: 1.2em;
+      font-size: 1.1em;
       font-weight: bold;
       cursor: pointer;
       transition: background 0.2s ease;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.4);
     }
 
     #mcqNavBar button:first-child {
-      border-right: 1px solid #444;
+      border-right: 1px solid #FFD700;
     }
 
     #mcqNavBar button:active {
@@ -4408,6 +4404,14 @@
         textToShow = textToShow.replace(/{{(.*?)}}/g, "<span style='color:#00ff00; font-weight:bold; border-bottom:1px solid #00ff00;'>$1</span>");
       }
 
+      // --- SALVAGUARDA DA NAV BAR ANTES DE LIMPAR O HTML ---
+      // Como o mcqNavBar agora viverá dentro do flashcard-content, precisamos
+      // tirá-lo de lá temporariamente antes que o innerHTML dele seja apagado!
+      const mcqNav = document.getElementById('mcqNavBar');
+      if (mcqNav && mcqNav.parentNode === contentElement) {
+        document.body.appendChild(mcqNav); 
+      }
+
       contentElement.innerHTML = textToShow;
       // ---------------------------------
       // --- ALTERAÇÃO: Contador Relativo (Mostra posição no filtro atual) ---
@@ -4461,8 +4465,6 @@
       const srsDiv = document.getElementById('srsButtons');
 
       if (isMobile) {
-        const mcqNav = document.getElementById('mcqNavBar');
-
         if (showingFront) {
           if (isCurrentCardMCQ) {
             // ESTADO MCQ: Esconde "Mostrar Resposta" — as alternativas já são o mecanismo de resposta
@@ -4470,7 +4472,14 @@
             // Esconde botões SRS na frente
             if (srsDiv) srsDiv.style.display = 'none';
             // MCQ Respondido na frente: Mostra nav bar para o aluno poder avançar ou ver resposta
-            if (mcqNav) mcqNav.style.display = (typeof isMCQAnswered !== 'undefined' && isMCQAnswered) ? 'flex' : 'none';
+            if (mcqNav) {
+              if (typeof isMCQAnswered !== 'undefined' && isMCQAnswered) {
+                contentElement.appendChild(mcqNav);
+                mcqNav.style.display = 'flex';
+              } else {
+                mcqNav.style.display = 'none';
+              }
+            }
           } else {
             // ESTADO FLASHCARD NORMAL: Mostra botão grande "Mostrar Resposta"
             if (mobileBtn) mobileBtn.style.setProperty('display', 'block', 'important');
@@ -4487,7 +4496,10 @@
             // SEMPRE que for MCQ e estiver no verso, esconde SRS e mostra NAV bar.
             // Isso evita mostrar "Fácil/Difícil" caso o aluno tenha apenas avançado (bypass) sem clicar
             if (srsDiv) srsDiv.style.display = 'none';
-            if (mcqNav) mcqNav.style.display = 'flex';
+            if (mcqNav) {
+              contentElement.appendChild(mcqNav);
+              mcqNav.style.display = 'flex';
+            }
           } else {
             // Flashcard normal: Mostra botões SRS
             if (srsDiv) srsDiv.style.display = 'flex';
