@@ -7,7 +7,7 @@
   <title>Chico Concursos - Flashcards com Progresso</title>
   <meta name="apple-mobile-web-app-capable" content="yes">
   <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
-  <meta name="theme-color" content="#121212"">
+  <meta name="theme-color" content="#121212">
   <link rel=" apple-touch-icon" href="https://img.icons8.com/color/96/books.png">
   <link rel="icon" type="image/png" href="https://img.icons8.com/color/96/books.png">
   <!-- NOVA FONTE ROBOTO -->
@@ -21,6 +21,114 @@
       margin: 0;
       padding: 0;
       box-sizing: border-box;
+    }
+
+    /* --- COMPONENTES PADRONIZADOS (REFATORAÇÃO FASE 1) --- */
+    .chico-modal-overlay {
+      display: none;
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 2147483647 !important; /* CORREÇÃO 1: Z-Index MÁXIMO (Google Sites) */
+      justify-content: center;
+      backdrop-filter: blur(5px);
+      
+      /* CORREÇÃO 2: Alinha tudo no TOPO para não cortar na tela do Google Sites */
+      align-items: flex-start !important;
+      padding-top: 40px !important;
+      padding-bottom: 50px !important;
+      overflow-y: auto !important;
+    }
+
+    .chico-modal-box {
+      background: #222;
+      color: white;
+      padding: 25px;
+      border-radius: 10px;
+      max-width: 400px;
+      width: 90%;
+      box-shadow: 0 0 30px rgba(255, 215, 0, 0.4);
+      text-align: center;
+      border: 1px solid #444;
+      max-height: 90vh;
+      overflow-y: auto;
+      position: relative;
+    }
+
+    .chico-modal-box.wide {
+      max-width: 700px;
+      text-align: left;
+    }
+
+    .chico-modal-title {
+      color: gold;
+      margin-bottom: 20px;
+      border-bottom: 1px solid #444;
+      padding-bottom: 10px;
+      text-align: center;
+    }
+
+    .chico-modal-btn {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #333;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 5px;
+      font-size: 1.1em;
+      cursor: pointer;
+    }
+
+    .chico-modal-btn:hover {
+      background: #444;
+      border-color: gold;
+    }
+
+    .chico-modal-btn-primary {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: linear-gradient(to bottom, #FFD700, #D4AF37);
+      color: black;
+      border: none;
+      font-weight: bold;
+      border-radius: 5px;
+      cursor: pointer;
+      font-size: 1.1em;
+    }
+
+    .chico-modal-btn-primary:hover {
+      box-shadow: 0 0 15px rgba(255, 215, 0, 0.6);
+    }
+
+    .chico-modal-btn-danger {
+      width: 100%;
+      padding: 12px;
+      margin-bottom: 10px;
+      background: #444;
+      color: #aaa;
+      border: 1px solid #555;
+      border-radius: 5px;
+      font-size: 1.1em;
+      cursor: pointer;
+    }
+
+    .chico-modal-btn-close {
+      background: transparent;
+      border: none;
+      color: #888;
+      margin-top: 5px;
+      cursor: pointer;
+      text-decoration: underline;
+      font-size: 1em;
+    }
+    
+    .chico-modal-btn-close:hover {
+      color: gold;
     }
 
     /* --- MICRO-INTERAÇÕES (NOVO) --- */
@@ -383,40 +491,6 @@
       cursor: pointer;
     }
 
-    #helpModal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-    }
-
-    #helpModalContent {
-      background: #222;
-      color: white;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 600px;
-      width: 90%;
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
-      position: relative;
-      max-height: 80vh;
-      overflow-y: auto;
-      text-align: center;
-    }
-
-    #helpModalContent h2 {
-      color: gold;
-      margin-bottom: 20px;
-      font-size: 1.8em;
-    }
 
     #iconLegend p {
       display: flex;
@@ -563,41 +637,6 @@
       text-shadow: 0 0 5px rgba(0, 255, 0, 0.8);
     }
 
-    #statsModal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.9);
-      z-index: 9999;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      backdrop-filter: blur(5px);
-      -webkit-backdrop-filter: blur(5px);
-    }
-
-    #statsModalContent {
-      background: #222;
-      color: white;
-      padding: 30px;
-      border-radius: 10px;
-      max-width: 600px;
-      width: 90%;
-      box-shadow: 0 0 30px rgba(255, 215, 0, 0.7);
-      position: relative;
-      max-height: 80vh;
-      overflow-y: auto;
-      text-align: left;
-    }
-
-    #statsModalContent h2 {
-      color: gold;
-      margin-bottom: 20px;
-      font-size: 1.8em;
-      text-align: center;
-    }
 
     .stats-section {
       margin-bottom: 20px;
@@ -656,8 +695,8 @@
       height: 100%;
       background: black;
       border-radius: 10px;
-      padding: 50px 10px 10px 10px;
-      /* Adiciona respiro superior */
+      padding: 15px 10px 10px 10px;
+      /* Respiro superior reduzido para visibilidade no iframe */
       box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
       z-index: 10;
       text-align: center;
@@ -1177,13 +1216,7 @@
     /* === REGRA MESTRA: CORREÇÃO DE TODOS OS MODAIS (POSIÇÃO E VISIBILIDADE) === */
     /* Aplica a correção ao Configurações, Ajuda, Manual, Stats, Filtro, Reporte, etc. */
     #settingsModal,
-    #helpModal,
-    #manualModal,
-    #statsModal,
-    #filterModal,
-    #reportModal,
-    #handsFreeModal,
-    #evalModal {
+    #reportModal {
       position: fixed;
       top: 0;
       left: 0;
@@ -1918,6 +1951,56 @@
       animation: flash-red 0.4s ease-out;
     }
 
+    /* --- BOTÕES DE MÚLTIPLA ESCOLHA (MCQ) — ULTRA PREMIUM --- */
+    .mcq-btn {
+      display: block;
+      width: 100%;
+      text-align: left;
+      margin: 2px 0;
+      padding: 12px 15px;
+      background: #222;
+      color: white;
+      border: 1px solid #555;
+      border-radius: 8px;
+      cursor: pointer;
+      font-size: 1em;
+      transition: all 0.25s ease;
+      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
+      white-space: normal;       /* Garante quebra de texto no mobile */
+      word-wrap: break-word;     /* Palavra longa não foge da tela */
+      line-height: 1.4;
+    }
+
+    /* Hover Premium — Botão "levanta" ao passar o mouse */
+    .mcq-btn:hover:not(.mcq-disabled) {
+      background: #2a2a2a;
+      border-color: #FFD700;
+      box-shadow: 0 6px 12px rgba(255, 215, 0, 0.2);
+      transform: translateY(-2px);
+    }
+
+    /* Estado: Resposta CORRETA */
+    .mcq-btn.mcq-correct {
+      background: #152b15 !important;
+      border-color: #00ff00 !important;
+      color: #00ff00 !important;
+      box-shadow: 0 0 12px rgba(0, 255, 0, 0.3);
+    }
+
+    /* Estado: Resposta ERRADA */
+    .mcq-btn.mcq-wrong {
+      background: #2b1515 !important;
+      border-color: #ff5555 !important;
+      color: #ff5555 !important;
+      opacity: 0.8;
+    }
+
+    /* Bloqueio anti-trapaça */
+    .mcq-btn.mcq-disabled {
+      pointer-events: none;
+      cursor: default;
+    }
+
     /* --- ESTILO DO MODAL DE REPORTE --- */
     #reportModal {
       position: fixed;
@@ -2062,13 +2145,7 @@
 
     /* 1. Alinha Modais de Tela Cheia (Config, Ajuda, Stats, Login) no Topo */
     #settingsModal,
-    #helpModal,
-    #manualModal,
-    #statsModal,
-    #filterModal,
     #reportModal,
-    #handsFreeModal,
-    #evalModal,
     #customAlertModal,
     #loginModal,
     #sessionExpiredModal {
@@ -2219,7 +2296,8 @@
     .discipline-select,
     select,
     input[type="text"] {
-      <-- Só sobram o select e o texto padding: 6px 10px !important;
+      /* Só sobram o select e o texto */
+      padding: 6px 10px !important;
       /* Reduzido drasticamente o "ar" interno */
       height: auto !important;
       /* Altura automática baseada no texto */
@@ -2279,24 +2357,297 @@
       margin-top: 10px !important;
       padding-top: 10px !important;
     }
+
+    /* --- NOVAS CLASSES DE MODAIS (V2) --- */
+    .chico-modal-overlay-top {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background-color: rgba(0,0,0,0.95);
+      z-index: 2147483647; 
+      display: none;
+      justify-content: center;
+      align-items: flex-start;
+      padding-top: 30px;
+      overflow-y: auto;
+      backdrop-filter: blur(5px);
+    }
+    
+    .chico-modal-overlay-confirm {
+      position: fixed; 
+      top: 0; 
+      left: 0; 
+      width: 100%; 
+      height: 100%; 
+      background: rgba(0,0,0,0.85); 
+      z-index: 999999; 
+      display: none;
+      justify-content: center; 
+      align-items: flex-start;
+      padding-top: 50px;
+      overflow-y: auto;
+      backdrop-filter: blur(2px);
+    }
+
+    .chico-modal-box-danger {
+      border: 1px solid #ff4d4d; 
+      box-shadow: 0 0 40px rgba(255, 77, 77, 0.4);
+    }
+
+    .chico-modal-box-confirm {
+      background: #1e1e1e; 
+      border: 1px solid #ff4d4d; 
+      padding: 25px; 
+      border-radius: 12px; 
+      width: 90%; 
+      max-width: 350px; 
+      text-align: center; 
+      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      font-family: 'Roboto', sans-serif;
+    }
+
+    .ai-modal-overlay {
+      display: none; 
+      position: fixed; 
+      top: 20px; 
+      left: 50%; 
+      transform: translateX(-50%); 
+      width: 95%; 
+      max-width: 800px; 
+      max-height: 85vh; 
+      height: auto;     
+      background: #121212; 
+      border: 1px solid #333; 
+      border-radius: 12px; 
+      z-index: 99999; 
+      box-shadow: 0 10px 40px rgba(0,0,0,0.9); 
+      flex-direction: column; 
+      font-family: 'Roboto', sans-serif;
+      overflow: hidden;
+    }
+
+    .ai-modal-header {
+      padding: 18px; 
+      background: #1f1f1f; 
+      border-bottom: 1px solid #333; 
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center;
+    }
+
+    .ai-chat-history {
+      flex-grow: 1; 
+      padding: 20px; 
+      overflow-y: auto; 
+      display: flex; 
+      flex-direction: column; 
+      gap: 18px; 
+      background: #0d0d0d;
+      font-size: 16px; 
+      line-height: 1.6;
+      color: #e0e0e0;
+    }
+
+    .ai-modal-footer {
+      padding: 15px; 
+      background: #1f1f1f; 
+      border-top: 1px solid #333; 
+      display: flex; 
+      gap: 10px; 
+      align-items: center;
+    }
+
+    .ai-input-field {
+      flex-grow: 1; 
+      padding: 12px 18px; 
+      border-radius: 25px; 
+      border: 1px solid #444; 
+      background: #2a2a2a; 
+      color: white; 
+      outline: none;
+      font-size: 15px;
+    }
+
+    .ai-send-btn {
+      background: #FFD700;
+      color: #000; 
+      border: none; 
+      width: 45px; 
+      height: 45px; 
+      border-radius: 50%; 
+      cursor: pointer; 
+      display: flex; 
+      align-items: center; 
+      justify-content: center; 
+      font-size: 18px;
+      transition: transform 0.2s;
+      flex-shrink: 0;
+      box-shadow: 0 2px 10px rgba(167, 139, 250, 0.3);
+    }
+    
+    .ghost-ruler-tool {
+      display: none;
+      position: fixed;
+      bottom: 0;
+      right: 0;
+      background-color: #FFD700;
+      color: black;
+      font-family: monospace;
+      font-size: 16px;
+      font-weight: bold;
+      padding: 8px 12px;
+      z-index: 2147483647;
+      border-top-left-radius: 8px;
+      box-shadow: -2px -2px 10px rgba(0,0,0,0.5);
+      pointer-events: none;
+    }
+
+    /* --- ESTILOS EXTRAÍDOS DE BOTÕES E MENUS --- */
+    .menu-select {
+      background: #000; 
+      color: white; 
+      border: 1px solid #555; 
+      width: 100%;
+    }
+
+    .eval-menu-btn {
+      color: gold; 
+      border: 1px solid #444; 
+      border-radius: 5px; 
+      padding: 0 10px; 
+      margin-right: 5px;
+    }
+
+    #srsButtons {
+      display: none; 
+      gap: 8px; 
+      justify-content: center; 
+      align-items: center;
+    }
+    
+    .srs-btn {
+      position: relative; 
+      border-radius: 5px; 
+      font-size: 1em; 
+      padding: 0px 10px; 
+      min-width: 70px;
+    }
+    .srs-btn-dontknow { color: #d8bfd8; border: 1px solid #d8bfd8; }
+    .srs-btn-again    { color: #ff5555; border: 1px solid #ff5555; }
+    .srs-btn-hard     { color: #ffa500; border: 1px solid #ffa500; }
+    .srs-btn-good     { color: #90ee90; border: 1px solid #90ee90; }
+    .srs-btn-easy     { color: #00ff00; border: 1px solid #00ff00; }
+
+    #mobileCardCounter {
+      display: none; 
+      font-size: 0.9em; 
+      margin: 0 8px; 
+      color: gold; 
+      font-weight: bold;
+    }
+
+    .tip-box-blue {
+      margin-top: 8px; 
+      margin-bottom: 8px; 
+      background: rgba(0, 120, 215, 0.2); 
+      border: 1px solid #0078d7; 
+      padding: 10px; 
+      border-radius: 5px; 
+      font-size: 0.95em; 
+      color: #e1f0ff;
+    }
+
+    .full-width-table {
+      width: 100%; 
+      border-collapse: collapse; 
+      margin-bottom: 20px;
+    }
+
+    .btn-understand {
+      background: gold; 
+      color: black; 
+      border: none; 
+      padding: 10px 25px; 
+      border-radius: 5px; 
+      font-weight: bold; 
+      cursor: pointer;
+    }
+
+    .modal-title-gold {
+      margin-top: 0; 
+      margin-bottom: 15px; 
+      text-align: center; 
+      color: gold;
+    }
+
+    .modal-section-title {
+      color: #FFD700; 
+      border-bottom: 1px solid #444; 
+      padding-bottom: 5px; 
+      margin-bottom: 10px;
+    }
+
+    .settings-group-box {
+      background: #2a2a2a; 
+      padding: 10px; 
+      border-radius: 8px; 
+      border: 1px solid #444;
+    }
+
+    .flex-between-center {
+      display: flex; 
+      justify-content: space-between; 
+      align-items: center; 
+      margin-top: 10px;
+    .modal-select-field {
+      width: 100%; 
+      padding: 6px; 
+      background: #333; 
+      color: white; 
+      border: 1px solid #555; 
+      border-radius: 5px; 
+      font-size: 1em; 
+      margin-bottom: 5px;
+    }
+
+    .modal-input-field {
+      width: 100%; 
+      padding: 10px; 
+      margin-bottom: 10px; 
+      background: #222; 
+      color: white; 
+      border: 1px solid #555; 
+      border-radius: 4px;
+    }
+
+    .btn-gold {
+      background: linear-gradient(to bottom, #FFD700, #D4AF37); 
+      color: black; 
+      border: none; 
+      padding: 8px 15px; 
+      border-radius: 5px; 
+      font-weight: bold; 
+      cursor: pointer;
+    }
   </style>
 </head>
 
 <body>
   <button id="mobileAnswerBtn" onclick="flipCard()" style="display:none;">MOSTRAR RESPOSTA</button>
-  <div class="top-bar">
+  <div class="top-bar" role="toolbar" aria-label="Barra de ferramentas principal">
     <!-- 1. BOTÃO MENU (HAMBÚRGUER) -->
     <div style="position: relative;">
-      <button class="hamburger-btn tooltip" data-tooltip="Menu Principal" onmouseover="showTooltipOnHover(this)"
-        onmouseleave="hideTooltipOnLeave(this)" onclick="toggleHamburgerMenu()"><i class="fas fa-bars"></i></button>
+      <button class="hamburger-btn tooltip" data-tooltip="Menu Principal" aria-label="Menu Principal" aria-expanded="false" aria-controls="mainMenuDropdown" onmouseover="showTooltipOnHover(this)"
+        onmouseleave="hideTooltipOnLeave(this)" onclick="toggleHamburgerMenu()"><i class="fas fa-bars" aria-hidden="true"></i></button>
 
       <!-- GAVETA DO MENU (CONTEÚDO ESCONDIDO) -->
-      <div id="mainMenuDropdown" class="menu-dropdown">
+      <div id="mainMenuDropdown" class="menu-dropdown" role="menu" aria-label="Menu de opções">
 
         <div class="menu-item-row">
           <i class="fas fa-paint-brush" style="width:25px;"></i>
-          <select id="cardColor" onchange="changeCardColor(this.value)"
-            style="background:#000; color:white; border:1px solid #555; width:100%;">
+          <select id="cardColor" onchange="changeCardColor(this.value)" class="menu-select">
             <option value="white">Cor do Card</option>
             <option value="white">Branco</option>
             <option value="#121212">Preto Suave (Dark)</option>
@@ -2311,8 +2662,7 @@
 
         <div class="menu-item-row">
           <i class="fas fa-font" style="width:25px;"></i>
-          <select id="textColor" onchange="changeTextColor(this.value)"
-            style="background:#000; color:white; border:1px solid #555; width:100%;">
+          <select id="textColor" onchange="changeTextColor(this.value)" class="menu-select">
             <option value="black">Cor da Fonte</option>
             <option value="black">Preto</option>
             <option value="white">Branco</option>
@@ -2339,8 +2689,7 @@
 
         <div class="menu-item-row">
           <i class="fas fa-glasses" style="width:25px;"></i>
-          <select id="fontModeSelect" onchange="setFontMode(this.value)"
-            style="background:#000; color:white; border:1px solid #555; width:100%;">
+          <select id="fontModeSelect" onchange="setFontMode(this.value)" class="menu-select">
             <option value="roboto">Modo Padrão</option>
             <option value="serif">Modo Livro</option>
           </select>
@@ -2370,38 +2719,37 @@
 
     <!-- 2. ITENS VISÍVEIS (ESSENCIAIS) -->
     <!-- Filtro -->
-    <button id="filterBtn" class="tooltip" data-tooltip="Filtrar Cards" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="openFilterModal()"><i class="fas fa-folder-open"></i></button>
+    <button id="filterBtn" class="tooltip" data-tooltip="Filtrar Cards" aria-label="Filtrar Cards" onmouseover="showTooltipOnHover(this)"
+      onmouseleave="hideTooltipOnLeave(this)" onclick="openFilterModal()"><i class="fas fa-folder-open" aria-hidden="true"></i></button>
 
-    <button id="searchToggleBtn" class="tooltip" data-tooltip="Buscar (Ctrl+F)" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="toggleSearchBar()"><i class="fas fa-search"></i></button>
-    <input type="text" id="topSearchBar" placeholder="Buscar..." onkeyup="runRealTimeSearch(this.value)">
+    <button id="searchToggleBtn" class="tooltip" data-tooltip="Buscar (Ctrl+F)" aria-label="Buscar cards" onmouseover="showTooltipOnHover(this)"
+      onmouseleave="hideTooltipOnLeave(this)" onclick="toggleSearchBar()"><i class="fas fa-search" aria-hidden="true"></i></button>
+    <input type="text" id="topSearchBar" placeholder="Buscar..." aria-label="Campo de busca" onkeyup="runRealTimeSearch(this.value)">
 
     <span id="streakDisplay" class="tooltip" data-tooltip="Ofensiva (Dias seguidos)"
       onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
       style="color: #ff4500; font-weight: bold; cursor:default;">🔥 0</span>
-    <button id="aiBtn" class="tooltip" data-tooltip="Professor IA" onmouseover="showTooltipOnHover(this)"
+    <button id="aiBtn" class="tooltip" data-tooltip="Professor IA" aria-label="Professor IA" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="explainWithAI()"
       style="background: none; border: none; color: #a78bfa; font-size: 1.2em; cursor: pointer; margin-left: 5px;">
-      <i class="fas fa-robot"></i>
+      <i class="fas fa-robot" aria-hidden="true"></i>
     </button>
-    <span id="mobileCardCounter"
-      style="display:none; font-size: 0.9em; margin: 0 8px; color: gold; font-weight: bold;">0/0</span>
+    <span id="mobileCardCounter" aria-live="polite" aria-atomic="true">0/0</span>
     <span id="desktopTimer" class="tooltip" data-tooltip="Zerar Tempo" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="resetTimer()" style="cursor:pointer;">⏱️ <span
         id="timer">00:00</span></span>
 
-    <button id="notesBtn" class="tooltip" data-tooltip="Anotações (Atalho: A)" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="openNotesModal()"><i class="fas fa-sticky-note"></i></button>
+    <button id="notesBtn" class="tooltip" data-tooltip="Anotações (Atalho: A)" aria-label="Anotações" onmouseover="showTooltipOnHover(this)"
+      onmouseleave="hideTooltipOnLeave(this)" onclick="openNotesModal()"><i class="fas fa-sticky-note" aria-hidden="true"></i></button>
 
-    <button id="mobileTopTTS" class="tooltip" data-tooltip="Ler em Voz Alta" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="toggleSpeech()"><i class="fas fa-volume-up"></i></button>
+    <button id="mobileTopTTS" class="tooltip" data-tooltip="Ler em Voz Alta" aria-label="Ler em Voz Alta" onmouseover="showTooltipOnHover(this)"
+      onmouseleave="hideTooltipOnLeave(this)" onclick="toggleSpeech()"><i class="fas fa-volume-up" aria-hidden="true"></i></button>
 
-    <button id="reviewErrorsButton" class="tooltip" data-tooltip="Revisar Erros" onmouseover="showTooltipOnHover(this)"
+    <button id="reviewErrorsButton" class="tooltip" data-tooltip="Revisar Erros" aria-label="Revisar Erros" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="toggleReviewErrors()" style="display:none;"><i
-        class="fas fa-search"></i></button>
+        class="fas fa-search" aria-hidden="true"></i></button>
   </div>
-  <div id="progressBarContainer">
+  <div id="progressBarContainer" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso dos cards">
     <div id="progressBarFill"></div>
   </div>
   <div id="highlightFeedback"></div>
@@ -2414,15 +2762,14 @@
     </div>
   </div>
   <div id="autoAdvanceOverlay" onclick="cancelAutoAdvanceDelay()"></div>
-  <div id="card-container">
-    <div id="flashcard-content">
+  <div id="card-container" role="region" aria-label="Área do flashcard">
+    <div id="flashcard-content" aria-live="polite">
     </div>
     <div id="end-screen">
       <div id="end-message">Chico Concursos<br>Bloco de estudo concluído</div>
       <button id="restart-button">RECOMEÇAR</button>
       <div id="accuracy-results" style="font-size: 1.5em;"></div>
-      <button id="review-errors-button" class="review-button" style="margin-top: 15px; display: none;">REVISAR
-        ERROS</button>
+      <button id="review-errors-button" class="review-button" style="margin-top: 15px; display: none; white-space: nowrap;">REVISAR ERROS</button>
     </div>
   </div>
   <div class="bottom-bar">
@@ -2445,58 +2792,57 @@
       </div>
     </div>
     <input type="number" id="goToCard" placeholder="#" onchange="goToSpecificCard()" style="margin: 0 5px;" />
-    <span id="cardCounter">0/0</span>
+    <span id="cardCounter" aria-live="polite" aria-atomic="true">0/0</span>
     <button id="evalMenuBtn" data-tooltip="Menu de Avaliação" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="openEvalModal()"
-      style="color: gold; border: 1px solid #444; border-radius: 5px; padding: 0 10px; margin-right: 5px;"><i
+      onmouseleave="hideTooltipOnLeave(this)" onclick="openEvalModal()" class="eval-menu-btn"><i
         class="fas fa-bars"></i></button>
-    <div id="srsButtons" style="display: none; gap: 8px; justify-content: center; align-items: center;">
+    <div id="srsButtons">
 
       <button id="btnDontKnow" class="accuracy-button" data-tooltip="Revisar em 10 min"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        style="position: relative; color: #d8bfd8; border: 1px solid #d8bfd8; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
+        class="accuracy-button srs-btn srs-btn-dontknow"
         onclick="rateCardSRS('again', this, '#d8bfd8')">Não Sei</button>
 
       <button id="btnAgain" class="accuracy-button" data-tooltip="Revisar em 10 min"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        style="position: relative; color: #ff5555; border: 1px solid #ff5555; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
+        class="accuracy-button srs-btn srs-btn-again"
         onclick="rateCardSRS('again', this, '#ff5555')">Errei</button>
 
       <button id="btnHard" class="accuracy-button" data-tooltip="Revisar em 2 dias"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        style="position: relative; color: #ffa500; border: 1px solid #ffa500; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
+        class="accuracy-button srs-btn srs-btn-hard"
         onclick="rateCardSRS('hard', this, '#ffa500')">Difícil</button>
 
       <button id="btnGood" class="accuracy-button" data-tooltip="Revisar em 4 dias"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        style="position: relative; color: #90ee90; border: 1px solid #90ee90; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
+        class="accuracy-button srs-btn srs-btn-good"
         onclick="rateCardSRS('good', this, '#90ee90')">Bom</button>
 
       <button id="btnEasy" class="accuracy-button" data-tooltip="Revisar em 7 dias"
         onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-        style="position: relative; color: #00ff00; border: 1px solid #00ff00; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
+        class="accuracy-button srs-btn srs-btn-easy"
         onclick="rateCardSRS('easy', this, '#00ff00')">Fácil</button>
     </div>
-    <button class="accuracy-button" data-tooltip="Acertei (Tecla 1)" onmouseover="showTooltipOnHover(this)"
+    <button class="accuracy-button" data-tooltip="Acertei (Tecla 1)" aria-label="Acertei" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="markAsCorrect()" id="correctButton">✅</button>
-    <button class="accuracy-button" data-tooltip="Errei (Tecla 2)" onmouseover="showTooltipOnHover(this)"
+    <button class="accuracy-button" data-tooltip="Errei (Tecla 2)" aria-label="Errei" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="markAsIncorrect()" id="incorrectButton">❌</button>
-    <button id="shuffleButton" data-tooltip="Embaralhar cartas" onmouseover="showTooltipOnHover(this)"
+    <button id="shuffleButton" data-tooltip="Embaralhar cartas" aria-label="Embaralhar cartas" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="toggleShuffleMode()">🔀</button>
-    <button data-tooltip="Virar Card / Anterior (Alt)" onmouseover="showTooltipOnHover(this)"
+    <button data-tooltip="Virar Card / Anterior (Alt)" aria-label="Virar Card ou Anterior" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="reviewAndRetreat()">↩️</button>
-    <button data-tooltip="Voltar" onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
+    <button data-tooltip="Voltar" aria-label="Card anterior" onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
       onclick="prevCard()">⏪</button>
-    <button data-tooltip="Resposta/Perg." onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
+    <button data-tooltip="Resposta/Perg." aria-label="Virar card" onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
       onclick="flipCard()">⬇️</button>
-    <button data-tooltip="Avançar" onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
+    <button data-tooltip="Avançar" aria-label="Próximo card" onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
       onclick="nextCard()">⏩</button>
     <button id="nextAndShow" data-tooltip="Virar Card / Próximo" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="reviewAndAdvance()">↪️</button>
   </div>
-  <div id="helpModal" style="display:none;">
-    <div id="helpModalContent">
-      <h2>Ajuda - Significado dos Ícones</h2>
+  <div id="helpModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Atalhos do teclado">
+    <div id="helpModalContent" class="chico-modal-box wide">
+      <h2 class="chico-modal-title">Ajuda - Significado dos Ícones</h2>
       <div id="iconLegend">
         <p><span>⚙️</span> Configurações: Define o Modo de Estudo (Simulado, SRS, Provas), Pesos e Voz.</p>
         <p><span>⚠️</span> Reportar Erro: Abre uma janela para informar falhas no card sem parar o estudo.</p>
@@ -2535,13 +2881,9 @@
       <button class="close-button" onclick="toggleHelpModal()">Fechar</button>
     </div>
   </div>
-  <div id="manualModal"
-    style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 9999; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
-    <div id="manualModalContent"
-      style="background: #222; color: white; padding: 30px; border-radius: 10px; max-width: 700px; width: 90%; box-shadow: 0 0 30px rgba(255, 215, 0, 0.7); position: relative; max-height: 85vh; overflow-y: auto; text-align: left;">
-      <h2
-        style="color: gold; margin-bottom: 20px; text-align: center; border-bottom: 1px solid #444; padding-bottom: 10px;">
-        Manual do Usuário</h2>
+  <div id="manualModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Manual do usuário">
+    <div id="manualModalContent" class="chico-modal-box wide">
+      <h2 class="chico-modal-title">Manual do Usuário</h2>
 
       <h3 style="color: #FFD700;">📖 Como Usar</h3>
       <p style="margin-bottom: 15px;">Bem-vindo ao Chico Concursos! Este sistema utiliza repetição espaçada e
@@ -2557,8 +2899,7 @@
         <li>
           <strong>Áudio (TTS):</strong> Ative a leitura em voz alta no menu ou pela tecla 'S'. Você pode escolher a
           velocidade e a voz nas configurações.
-          <div
-            style="margin-top: 8px; margin-bottom: 8px; background: rgba(0, 120, 215, 0.2); border: 1px solid #0078d7; padding: 10px; border-radius: 5px; font-size: 0.95em; color: #e1f0ff;">
+          <div class="tip-box-blue">
             <strong>💡 Dica de Ouro:</strong> Para uma experiência superior, recomendamos usar o navegador
             <strong>Microsoft Edge</strong>. Ele possui vozes neurais ultra-realistas (quase humanas) que já vêm
             instaladas nativamente.
@@ -2571,7 +2912,7 @@
       </ul>
 
       <h3 style="color: #FFD700;">⌨️ Teclas de Atalho</h3>
-      <table style="width: 100%; border-collapse: collapse; margin-bottom: 20px;">
+      <table class="full-width-table">
         <tr style="border-bottom: 1px solid #444;">
           <td style="padding: 8px; color: gold;">Enter</td>
           <td style="padding: 8px;">Virar Card / Avançar</td>
@@ -2634,13 +2975,13 @@
 
       <div style="text-align: center; margin-top: 20px;">
         <button onclick="toggleManualModal()"
-          style="background: gold; color: black; border: none; padding: 10px 25px; border-radius: 5px; font-weight: bold; cursor: pointer;">Entendi</button>
+          class="btn-understand">Entendi</button>
       </div>
     </div>
   </div>
-  <div id="statsModal" style="display:none;">
-    <div id="statsModalContent">
-      <h2>Estatísticas de Estudo</h2>
+  <div id="statsModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Estatísticas de desempenho">
+    <div id="statsModalContent" class="chico-modal-box wide">
+      <h2 class="chico-modal-title">Estatísticas de Estudo</h2>
 
       <div class="stats-tabs">
         <div class="stats-tab active" onclick="changeStatsTab('time')">Tempo por Card</div>
@@ -2692,12 +3033,12 @@
     </div>
   </div>
   <!-- INÍCIO DO NOVO MODAL DE CONFIGURAÇÕES (COLE AQUI) -->
-  <div id="settingsModal" style="display:none;">
+  <div id="settingsModal" style="display:none;" role="dialog" aria-modal="true" aria-label="Configurações de estudo">
     <div id="settingsModalContent">
-      <h2 style="margin-top:0; margin-bottom: 15px; text-align:center; color:gold;">Configurações de Estudo</h2>
+      <h2 class="modal-title-gold">Configurações de Estudo</h2>
 
       <div class="settings-section">
-        <h3 style="color: #FFD700; border-bottom: 1px solid #444; padding-bottom: 5px; margin-bottom: 10px;">1. Escolha
+        <h3 class="modal-section-title">1. Escolha
           o Modo de Estudo</h3>
 
         <div class="mode-grid-container">
@@ -2732,8 +3073,7 @@
         </div>
       </div>
 
-      <div id="simuladoOptions" class="settings-section"
-        style="display: none; background: #2a2a2a; padding: 10px; border-radius: 8px; border: 1px solid #444;">
+      <div id="simuladoOptions" class="settings-section settings-group-box" style="display: none;">
         <h3>2. Monte seu Simulado</h3>
         <div id="simuladoLoading" style="display: none; color: gold; margin-bottom: 10px;">Carregando disciplinas...
         </div>
@@ -2746,7 +3086,7 @@
               onkeyup="updateTotalQuestions()">
           </div>
         </div>
-        <div style="display: flex; justify-content: space-between; align-items: center; margin-top: 10px;">
+        <div class="flex-between-center">
           <button class="add-discipline-button" onclick="addDisciplineRow()">+ Disciplina</button>
           <p class="total-questions-display" style="margin:0;">Total: <span id="totalSimuladoQuestions">0</span></p>
         </div>
@@ -2912,18 +3252,15 @@
     </div>
   </div>
   <!-- FIM DO NOVO MODAL DE CONFIGURAÇÕES -->
-  <div id="filterModal"
-    style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 9999; justify-content: center; align-items: center;">
-    <div id="filterModalContent"
-      style="background: #222; color: white; padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; box-shadow: 0 0 30px rgba(255, 215, 0, 0.7); text-align: center; border: 1px solid #444; max-height: 90vh; overflow-y: auto;">
+  <div id="filterModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Filtro inteligente de cards">
+    <div id="filterModalContent" class="chico-modal-box">
 
-      <h2 style="color: gold; margin-bottom: 20px; border-bottom: 1px solid #444; padding-bottom: 10px;">Filtrar Cards
+      <h2 class="chico-modal-title">Filtrar Cards
       </h2>
 
       <div style="margin-bottom: 15px; text-align: left;">
         <label style="display:block; color: gold; margin-bottom: 5px; font-weight: bold;">1. Disciplina</label>
-        <select id="modalDisciplineSelect" onchange="modalHandleDisciplineChange(this.value)"
-          style="width: 100%; padding: 12px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1.1em;">
+        <select id="modalDisciplineSelect" onchange="modalHandleDisciplineChange(this.value)" class="modal-select-field" style="padding: 12px; font-size: 1.1em; margin-bottom: 0;">
           <option value="">Selecione...</option>
         </select>
       </div>
@@ -2931,8 +3268,7 @@
       <div id="modalTopicContainer" style="margin-bottom: 8px; text-align: left; display: none;">
         <label style="display:block; color: gold; margin-bottom: 3px; font-size: 0.9em; font-weight: bold;">2.
           Tópico</label>
-        <select id="modalTopicSelect" onchange="modalHandleTopicChange(this.value)"
-          style="width: 100%; padding: 8px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1em;">
+        <select id="modalTopicSelect" onchange="modalHandleTopicChange(this.value)" class="modal-select-field" style="padding: 8px; margin-bottom: 0;">
           <option value="todos">Todos os Tópicos</option>
         </select>
       </div>
@@ -2941,15 +3277,13 @@
         <label style="display:block; color: #00FFFF; margin-bottom: 3px; font-size: 0.9em; font-weight: bold;">3.
           Refinar Busca</label>
 
-        <select id="modalStep3TypeSelect" onchange="toggleStep3FilterType(this.value)"
-          style="width: 100%; padding: 6px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1em; margin-bottom: 5px;">
+        <select id="modalStep3TypeSelect" onchange="toggleStep3FilterType(this.value)" class="modal-select-field">
           <option value="nenhum">Sem refinamento</option>
           <option value="foco">Por Foco Específico</option>
           <option value="peso">Por Peso Mínimo</option>
         </select>
 
-        <select id="modalFocoSelect"
-          style="width: 100%; padding: 6px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1em; display: none;">
+        <select id="modalFocoSelect" class="modal-select-field" style="display: none; margin-bottom: 0;">
           <option value="todos">Todos os Focos</option>
         </select>
 
@@ -2961,13 +3295,9 @@
       </div>
 
       <div style="display: flex; gap: 8px; justify-content: center; margin-top: 15px; flex-direction: column;">
-        <button onclick="applyModalFilter()"
-          style="background: linear-gradient(to bottom, #FFD700, #D4AF37); color: black; border: none; padding: 8px; font-weight: bold; border-radius: 5px; cursor: pointer; font-size: 1.1em;">APLICAR
-          FILTRO</button>
+        <button onclick="applyModalFilter()" class="chico-modal-btn-primary">APLICAR FILTRO</button>
 
-        <button onclick="clearAndCloseFilter()"
-          style="background: #444; color: white; border: 1px solid #666; padding: 6px; border-radius: 5px; cursor: pointer;">Limpar
-          Filtros (Ver Tudo)</button>
+        <button onclick="clearAndCloseFilter()" class="chico-modal-btn-danger">Limpar Filtros (Ver Tudo)</button>
 
         <button onclick="closeFilterModal()"
           style="background: transparent; border: none; color: #888; margin-top: 5px; cursor: pointer; text-decoration: underline;">Fechar</button>
@@ -2975,7 +3305,7 @@
     </div>
   </div>
 
-  <div id="loginModal" style="display: flex;">
+  <div id="loginModal" style="display: flex;" role="dialog" aria-modal="true" aria-label="Login">
     <div class="login-container-clean">
       <div class="login-logo-clean">CHICO <span>CONCURSOS</span></div>
       <div class="login-badge">ACESSO AOS FLASHCARDS</div>
@@ -3000,30 +3330,16 @@
     <div class="loading-spinner"></div>
     <div class="loading-text">Carregando flashcards...</div>
   </div>
-  <div id="sessionExpiredModal" style="display:none;">
+  <div id="sessionExpiredModal" style="display:none;" role="alertdialog" aria-modal="true" aria-label="Sessão expirada">
     <div class="session-expired-container">
       <h2><i class="fas fa-exclamation-triangle"></i> Sessão Expirada</h2>
       <p>Sua sessão expirou devido à inatividade. Por favor, faça login novamente.</p>
       <button class="login-button" onclick="location.reload()">Fazer Login Novamente</button>
     </div>
   </div>
-  <div id="concurrentSessionModal" style="
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background-color: rgba(0,0,0,0.95);
-      z-index: 2147483647; 
-      display: none;
-      justify-content: center;
-      align-items: flex-start; /* ◄--- Mudou de center para flex-start (Topo) */
-      padding-top: 30px;      /* ◄--- Adicionado espaçamento do teto */
-      overflow-y: auto;        /* ◄--- Adicionado rolagem se necessário */
-      backdrop-filter: blur(5px);">
+  <div id="concurrentSessionModal" role="alertdialog" aria-modal="true" aria-label="Acesso interrompido" class="chico-modal-overlay-top">
 
-    <div class="session-expired-container"
-      style="border: 1px solid #ff4d4d; box-shadow: 0 0 40px rgba(255, 77, 77, 0.4);">
+    <div class="session-expired-container chico-modal-box-danger">
       <h2 style="color: #ff4d4d; margin-bottom: 20px; font-size: 1.8em;">
         <i class="fas fa-user-lock"></i> Acesso Interrompido
       </h2>
@@ -3040,7 +3356,7 @@
       </button>
     </div>
   </div>
-  <div id="reportModal">
+  <div id="reportModal" role="dialog" aria-modal="true" aria-label="Reportar erro no card">
     <div id="reportModalContent">
       <h3 style="color: #FFD700; margin-bottom: 10px;">⚠️ Reportar Erro</h3>
       <p>O que há de errado com este card?</p>
@@ -3054,75 +3370,63 @@
       </div>
     </div>
   </div>
-  <div id="lightboxModal" onclick="closeLightbox()">
+  <div id="lightboxModal" onclick="closeLightbox()" role="dialog" aria-modal="true" aria-label="Visualização de imagem ampliada">
     <img id="lightboxImage" src="" alt="Zoom">
     <p style="position: absolute; bottom: 20px; color: #888; font-size: 0.9em;">Toque em qualquer lugar para fechar</p>
   </div>
-  <div id="customAlertModal">
+  <div id="customAlertModal" role="alertdialog" aria-modal="true" aria-label="Alerta">
     <div class="custom-alert-box">
       <h3 style="color: #FFD700; margin-bottom: 15px; font-size: 1.5em;">⚠️ Atenção</h3>
       <p id="customAlertMessage" style="color: white; font-size: 1.1em; line-height: 1.5;">Mensagem aqui</p>
       <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
     </div>
   </div>
-  <div id="evalModal"
-    style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.9); z-index: 21000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
-    <div
-      style="background: #222; color: white; padding: 25px; border-radius: 10px; max-width: 350px; width: 90%; border: 1px solid gold; text-align: center; box-shadow: 0 0 30px rgba(255, 215, 0, 0.3);">
-      <h3 style="color: gold; margin-bottom: 20px;">Escolha a Avaliação</h3>
+  <div id="evalModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Escolha de modo de avaliação">
+    <div class="chico-modal-box">
+      <h3 class="chico-modal-title">Escolha a Avaliação</h3>
 
-      <button onclick="setEvalMode('normal')"
-        style="width: 100%; padding: 12px; margin-bottom: 10px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1.1em; cursor: pointer;">
+      <button onclick="setEvalMode('normal')" class="chico-modal-btn">
         ✅ Certo / Errado
       </button>
 
-      <button onclick="setEvalMode('srs')"
-        style="width: 100%; padding: 12px; margin-bottom: 10px; background: #333; color: white; border: 1px solid #555; border-radius: 5px; font-size: 1.1em; cursor: pointer;">
+      <button onclick="setEvalMode('srs')" class="chico-modal-btn">
         🧠 SRS (Repetição Espaçada)
       </button>
 
-      <button onclick="setEvalMode('hidden')"
-        style="width: 100%; padding: 12px; margin-bottom: 20px; background: #444; color: #aaa; border: 1px solid #555; border-radius: 5px; font-size: 1.1em; cursor: pointer;">
+      <button onclick="setEvalMode('hidden')" class="chico-modal-btn-danger">
         ⛔ Limpar Botões (Ocultar)
       </button>
 
-      <button onclick="closeEvalModal()"
-        style="background: transparent; border: none; color: gold; font-weight: bold; cursor: pointer; text-decoration: underline;">
+      <button onclick="closeEvalModal()" class="chico-modal-btn-close" style="color: gold; font-weight: bold;">
         Fechar
       </button>
     </div>
   </div>
-  <div id="handsFreeModal"
-    style="display:none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 22000; justify-content: center; align-items: center; backdrop-filter: blur(5px);">
-    <div
-      style="background: #222; color: white; padding: 25px; border-radius: 10px; max-width: 400px; width: 90%; border: 1px solid #FFD700; box-shadow: 0 0 30px rgba(255, 215, 0, 0.4); text-align: center;">
+  <div id="handsFreeModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Modo mãos livres">
+    <div class="chico-modal-box">
 
       <div id="hfStep1">
-        <h3 style="color: #FFD700; margin-bottom: 15px;">Modo de Leitura 🗣️</h3>
+        <h3 class="chico-modal-title">Modo de Leitura 🗣️</h3>
         <p style="margin-bottom: 20px; font-size: 1.1em;">Deseja ativar o avanço automático (Mãos Livres)?</p>
 
-        <button onclick="showHfStep2()"
-          style="background: linear-gradient(to bottom, #FFD700, #D4AF37); color: black; border: none; padding: 12px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; width: 100%; margin-bottom: 10px;">
+        <button onclick="showHfStep2()" class="chico-modal-btn-primary">
           SIM (Automático)
         </button>
 
-        <button onclick="startManualTTS()"
-          style="background: #333; color: white; border: 1px solid #555; padding: 12px 20px; border-radius: 5px; cursor: pointer; width: 100%;">
+        <button onclick="startManualTTS()" class="chico-modal-btn">
           NÃO (Apenas Ler)
         </button>
-        <div style="margin-top:15px; cursor:pointer; color:#888; text-decoration:underline;"
-          onclick="closeHandsFreeModal()">Cancelar</div>
+        <div class="chico-modal-btn-close" onclick="closeHandsFreeModal()">Cancelar</div>
       </div>
 
       <div id="hfStep2" style="display:none;">
-        <h3 style="color: #FFD700; margin-bottom: 15px;">⏱️ Tempo de Espera</h3>
+        <h3 class="chico-modal-title">⏱️ Tempo de Espera</h3>
         <p style="margin-bottom: 10px;">Quantos segundos esperar após a resposta?</p>
 
         <input type="number" id="hfDelayInput" value="3" min="1" max="60"
           style="width: 80px; padding: 10px; font-size: 1.5em; text-align: center; border-radius: 5px; border: 1px solid gold; background: #000; color: white; margin-bottom: 20px;">
 
-        <button onclick="startHandsFreeTTS()"
-          style="background: linear-gradient(to bottom, #FFD700, #D4AF37); color: black; border: none; padding: 12px 20px; font-weight: bold; border-radius: 5px; cursor: pointer; width: 100%;">
+        <button onclick="startHandsFreeTTS()" class="chico-modal-btn-primary">
           INICIAR
         </button>
         <div style="margin-top:15px; cursor:pointer; color:#888; text-decoration:underline;" onclick="resetHfModal()">
@@ -3131,7 +3435,7 @@
 
     </div>
   </div>
-  <div id="notesModal" style="display:none;">
+  <div id="notesModal" style="display:none;" role="dialog" aria-modal="true" aria-label="Minhas anotações">
     <div id="notesModalContent">
       <h2 style="color: gold; margin-bottom: 15px; border-bottom: 1px solid #444; padding-bottom: 10px;">
         <i class="fas fa-sticky-note"></i> Minhas Anotações
@@ -3174,7 +3478,7 @@
       </div>
     </div>
   </div>
-  <div id="resumeModal" style="display:none;">
+  <div id="resumeModal" style="display:none;" role="dialog" aria-modal="true" aria-label="Retomar progresso">
     <div class="custom-alert-box" style="text-align: center;">
       <h3 style="color: #FFD700; margin-bottom: 15px; font-size: 1.5em;">Bem-vindo de volta! 👋</h3>
       <p id="resumeMessage" style="color: white; font-size: 1.1em; line-height: 1.5; margin-bottom: 20px;">
@@ -3188,6 +3492,10 @@
       </div>
     </div>
   </div>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 1: CONFIGURAÇÃO INICIAL E VARIÁVEIS GLOBAIS            -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
   <script>
     // --- CONFIGURAÇÃO INICIAL ---
     // Usuário e Senha
@@ -3258,7 +3566,12 @@
     let cardAccuracy = {};
     let isReviewErrorsMode = false;
     let loadedSettingsCards = []; // NOVA VARIÁVEL
+  </script>
 
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 2: AUTENTICAÇÃO, SESSÃO E LOGIN                       -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
     // Função para verificar autenticação e sessão
     function requireAuth() {
       if (!isAuthenticated) {
@@ -3759,6 +4072,12 @@
 
       }, 180000); // 180000 milissegundos = 3 minutos
     }
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 3: CACHE, DADOS E SINCRONIZAÇÃO (GALPÃO)               -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
     // --- FUNÇÕES PRINCIPAIS ---
     function getQueryParam(name) {
       const urlParams = new URLSearchParams(window.location.search);
@@ -4112,6 +4431,13 @@
     }
 
     // Alteração: Aceita parâmetro para pular o salvamento automático
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 4: CARDS — EXIBIÇÃO, NAVEGAÇÃO E MCQ                   -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
+    // Alteração: Aceita parâmetro para pular o salvamento automático
     function updateCard(skipAutoSave = false) {
       if (typeof handsFreeTimer !== 'undefined') clearTimeout(handsFreeTimer);
       stopSpeech();
@@ -4124,6 +4450,10 @@
       // Segurança básica contra injeção de HTML (Sanitize)
       textToShow = textToShow.replace(/</g, "&lt;").replace(/>/g, "&gt;");
 
+      // Restaura quebras de linha (<br> transformado em \n)
+      // O \n é ESSENCIAL aqui porque ativa o '^' do regex de opções múltiplas!
+      textToShow = textToShow.replace(/&lt;br\s*\/?&gt;/gi, "\n");
+
      if (showingFront) {
         // Na FRENTE: Substitui {{texto}} por uma caixa [...]
         // Regex explica: Pega tudo entre {{ e }}
@@ -4134,7 +4464,7 @@
         if (regexAlternativas.test(textToShow)) {
           textToShow = textToShow.replace(regexAlternativas, function(match, letra, textoAlternativa) {
              const letraUp = letra.toUpperCase();
-             return `<button class="mcq-btn" onclick="checkAnswer('${letraUp}', this)" style="display:block; width:100%; text-align:left; margin: 8px 0; padding: 12px 15px; background: #222; color: white; border: 1px solid #555; border-radius: 8px; cursor: pointer; font-size: 1em; transition: 0.2s; box-shadow: 0 4px 6px rgba(0,0,0,0.3);"><strong>${letraUp})</strong> ${textoAlternativa}</button>`;
+             return `<button class="mcq-btn" onclick="checkAnswer('${letraUp}', this)"><strong>${letraUp})</strong> ${textoAlternativa}</button>`;
           });
         }
         // --------------------------------------------------
@@ -4145,17 +4475,6 @@
       }
 
       contentElement.innerHTML = textToShow;
-
-      // --- SCROLL AUTOMÁTICO PARA O TOPO (Google Sites iframe fix) ---
-      // Quando o card muda, rola a página para o topo.
-      // scrollIntoView() dentro de um iframe também move a barra de
-      // rolagem do Google Sites (página pai) para mostrar o topo do iframe.
-      try {
-        const topBar = document.querySelector('.top-bar');
-        if (topBar) {
-          topBar.scrollIntoView({ block: 'start', behavior: 'smooth' });
-        }
-      } catch (e) { /* Silencia erros de cross-origin */ }
       // ---------------------------------
       // --- ALTERAÇÃO: Contador Relativo (Mostra posição no filtro atual) ---
       // Ex: Mostra "1 / 15" (sendo 15 o total do tópico filtrado)
@@ -4251,19 +4570,21 @@
       const card = cards[currentCard];
       const respostaVerso = card.back.trim().toUpperCase();
       
-      // O gabarito no verso deve começar com a letra. Ex: "B", "B)", "B - "
-      const regexGabarito = new RegExp(`^${letraClicada}[\\)\\-\\.\\s]|^${letraClicada}$`);
-      const isCorrect = regexGabarito.test(respostaVerso);
+      // --- REGEX ROBUSTO: Aceita "A", "A)", "Gabarito: A", "Resp: A", "Resposta: B)", "LETRA C" ---
+      const regexExtrair = /(?:^|GABARITO[\s:]*|RESP(?:OSTA)?[\s:]*|LETRA[\s:]*)([A-E])(?:[\)\-\.\s]|$)/i;
+      const matchGabarito = respostaVerso.match(regexExtrair);
+      // Fallback: se nenhum padrão bater, usa o primeiro caractere do verso
+      const gabaritoLetra = matchGabarito ? matchGabarito[1].toUpperCase() : respostaVerso.charAt(0).toUpperCase();
+      const isCorrect = (letraClicada === gabaritoLetra);
 
-      // Desativa todos os botões para evitar duplo clique e trapaça
+      // Desativa todos os botões (anti-trapaça via CSS)
       const allBtns = document.querySelectorAll('.mcq-btn');
-      allBtns.forEach(b => b.style.pointerEvents = 'none');
+      allBtns.forEach(b => b.classList.add('mcq-disabled'));
 
-      // Feedback Visual de Acerto/Erro
+      // --- FEEDBACK VISUAL INSTANTÂNEO ---
       if (isCorrect) {
-        btnElement.style.background = '#152b15';
-        btnElement.style.borderColor = '#00ff00';
-        btnElement.style.color = '#00ff00';
+        // ACERTOU: Pinta o botão clicado de verde
+        btnElement.classList.add('mcq-correct');
         triggerVisualFeedback('success');
         
         // Registra acerto no sistema nativo
@@ -4276,10 +4597,17 @@
           saveFlashcardState();
         }
       } else {
-        btnElement.style.background = '#2b1515';
-        btnElement.style.borderColor = '#ff5555';
-        btnElement.style.color = '#ff5555';
+        // ERROU: Pinta o clicado de VERMELHO...
+        btnElement.classList.add('mcq-wrong');
         triggerVisualFeedback('error');
+
+        // ...e REVELA o gabarito correto em VERDE (efeito "Revelação")
+        allBtns.forEach(b => {
+          const btnLetra = b.textContent.trim().charAt(0).toUpperCase();
+          if (btnLetra === gabaritoLetra) {
+            b.classList.add('mcq-correct');
+          }
+        });
 
         // Registra erro no sistema nativo
         const realIndex = (card._originalIndex !== undefined) ? card._originalIndex : initialCards.indexOf(card);
@@ -4465,6 +4793,12 @@
         saveFlashcardState();
       }
     }
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 5: AVALIAÇÃO, ESTATÍSTICAS E TELA FINAL                -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
     // --- LÓGICA DO MENU DE AVALIAÇÃO (COM MEMÓRIA) ---
     // 1. Ao iniciar, tenta recuperar o que estava salvo. Se não tiver nada, usa 'normal'.
     let currentEvalState = localStorage.getItem('chicoEvalMode') || 'normal';
@@ -5159,6 +5493,11 @@
       document.getElementById('end-screen').style.display = 'flex';
       isFinished = true;
 
+      // Rola para o topo do iframe (e do Google Sites pai)
+      try {
+        document.querySelector('.top-bar').scrollIntoView({ block: 'start', behavior: 'smooth' });
+      } catch (e) { }
+
       // --- INÍCIO DA ANIMAÇÃO DE CONFETES ---
       try {
         var duration = 3 * 1000; // Duração: 3 segundos
@@ -5400,6 +5739,12 @@
         }
       }
     }
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 6: TTS — LEITURA DE VOZ (NATIVO + PIPER + DICIONÁRIO) -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
     // --- SISTEMA HÍBRIDO TTS (NATIVO + PIPER WASM) ---
     // Detecta vozes neurais → se não tiver → oferece Piper Neural como opção
     let isAutoTTS = false;
@@ -6412,9 +6757,9 @@
         feedback.textContent = "Destaque ATIVADO";
         feedback.style.color = "#4CAF50"; // Verde
       } else {
-        const contentElement = document.getElementById("flashcard-content");
-        const currentText = showingFront ? cards[currentCard].front : cards[currentCard].back;
-        contentElement.textContent = currentText;
+        // Desativar destaque: recarrega o card pela via correta (updateCard)
+        // para que o <br> seja tratado e não apareça como texto literal
+        updateCard(true);
         feedback.textContent = "Destaque DESATIVADO";
         feedback.style.color = "#F44336"; // Vermelho
       }
@@ -6462,7 +6807,8 @@
             .replace(/>/g, '&gt;')
             .replace(/"/g, '&quot;')
             .replace(/'/g, '&#039;')
-            .replace(/\*/g, '&#42;'); // Trata * solto como caractere literal
+            .replace(/\*/g, '&#42;') // Trata * solto como caractere literal
+            .replace(/&lt;br\s*\/?&gt;/gi, '<br>'); // Restaura <br> para quebra de linha real
         }
       });
 
@@ -6588,6 +6934,12 @@
         activeGroup.style.display = 'none';
       }
     }
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 7: CONFIGURAÇÕES, FILTROS E MODOS DE ESTUDO            -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
     // --- FUNÇÕES PARA O NOVO MODAL DE CONFIGURAÇÕES ---
 
     // Abre a janela de configurações
@@ -7066,13 +7418,6 @@
     }
 
     // 4. Ao escolher Tópico -> Habilita Passo 3 (Refinar Busca)
-    // --- NOVA FUNÇÃO DE TROCA DO PASSO 3 ---
-    function toggleStep3FilterType(type) {
-      document.getElementById('modalFocoSelect').style.display = (type === 'foco') ? 'block' : 'none';
-      document.getElementById('modalPesoContainer').style.display = (type === 'peso') ? 'flex' : 'none';
-    }
-
-    // 4. Ao escolher Tópico -> Habilita Passo 3 (Refinar Busca)
     function modalHandleTopicChange(selectedTopic) {
       const step3Container = document.getElementById('modalStep3Container');
       const focoSelect = document.getElementById('modalFocoSelect');
@@ -7240,6 +7585,12 @@
       updateCard();
       saveFlashcardState();
     }
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 8: SRS — REPETIÇÃO ESPAÇADA (SM-2)                     -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
     // --- LÓGICA DO SISTEMA DE REPETIÇÃO ESPAÇADA (SRS) ---
 
     let userSRSProgress = {}; // Guarda o progresso carregado do servidor
@@ -7332,9 +7683,11 @@
         }
       }
 
-      let state = userSRSProgress[cardId] || { interval: 0, easeFactor: 2.5, nextReview: null };
+      let state = userSRSProgress[cardId] || { interval: 0, easeFactor: 2.5, reps: 0, nextReview: null };
       let newInterval = 0;
       let newEase = state.easeFactor;
+      if (newEase === undefined) newEase = 2.5;
+      let newReps = state.reps || 0;
       let nextReviewDate = new Date();
 
       const applyFuzz = (val) => {
@@ -7344,12 +7697,30 @@
         return val + shift;
       };
 
+      // ALGORITMO SM-2 REAL
+      // 1. Mapear o botão clicado para 'quality' (q) de 1 a 5
+      let q = 4; // Padrão: Good
+      if (rating === 'again') q = 1;
+      else if (rating === 'hard') q = 3;
+      else if (rating === 'good') q = 4;
+      else if (rating === 'easy') q = 5;
+
+      // 2. Atualizar Easiness Factor (EF)
+      newEase = newEase + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+      newEase = Math.max(1.3, newEase); // floor em 1.3 (Evita "ease hell")
+
+      // 3. Atualizar Repetições Bem Sucedidas (n)
+      if (q < 3) {
+        newReps = 0;
+      } else {
+        newReps++;
+      }
+
       if (rating === 'again') {
         const realIndexRef = initialCards.indexOf(cards[currentCard]);
         if (realIndexRef !== -1) checkLeech(realIndexRef);
 
         newInterval = 0;
-        newEase = Math.max(1.3, newEase - 0.2);
         nextReviewDate.setMinutes(nextReviewDate.getMinutes() + 10);
 
         const cardToRepeat = cards[currentCard];
@@ -7363,30 +7734,38 @@
           cards.push(cardToRepeat);
           showFeedback("↺ Reagendado para o FINAL da fila", colorHex);
         }
-      } else if (rating === 'hard') {
-        newInterval = state.interval === 0 ? 1 : Math.round(state.interval * 1.2);
-        newEase = Math.max(1.3, newEase - 0.15);
+      } else {
+        // SM-2: Calcular Novo Intervalo
+        if (newReps === 1) {
+          newInterval = 1;
+          if (rating === 'easy') newInterval = 4; // Bônus de primeiro acerto
+        } else if (newReps === 2) {
+          newInterval = 6;
+          if (rating === 'easy' && state.interval > 0) newInterval = Math.round(state.interval * newEase * 1.3);
+        } else {
+          let prevInterval = state.interval === 0 ? 1 : state.interval;
+          let intervalMultiplier = newEase;
+          if (rating === 'easy') intervalMultiplier += 0.15; // Leve bônus extra no SM-2 modificado
+          if (rating === 'hard') intervalMultiplier = 1.2; // Penalidade do botão 'Hard' (mantém o card mais próximo)
+          newInterval = Math.round(prevInterval * intervalMultiplier);
+        }
+
         newInterval = applyFuzz(newInterval);
         nextReviewDate.setDate(nextReviewDate.getDate() + Math.max(1, newInterval));
-      } else if (rating === 'good') {
-        let multiplier = state.easeFactor || 2.5;
-        newInterval = state.interval === 0 ? 1 : Math.round(state.interval * multiplier);
-        newInterval = applyFuzz(newInterval);
-        nextReviewDate.setDate(nextReviewDate.getDate() + Math.max(1, newInterval));
-      } else if (rating === 'easy') {
-        newInterval = state.interval === 0 ? 4 : Math.round(state.interval * newEase * 1.3);
-        newEase += 0.15;
-        newInterval = applyFuzz(newInterval);
-        nextReviewDate.setDate(nextReviewDate.getDate() + Math.max(4, newInterval));
+        
+        // Exibe o intervalo futuro sutilmente (1 dia, 6 dias, etc)
+        // Isso ajuda o usuário a confiar no algoritmo
+        // showFeedback(`📅 Agendado para daqui a ${newInterval} dia(s)`, colorHex);
       }
 
       userSRSProgress[cardId] = {
         interval: newInterval,
         easeFactor: newEase,
+        reps: newReps,
         nextReview: nextReviewDate.toISOString()
       };
 
-      saveSRSToBackend(cardId, nextReviewDate.toISOString(), newInterval, newEase);
+      saveSRSToBackend(cardId, nextReviewDate.toISOString(), newInterval, newEase, newReps);
 
       setTimeout(() => {
         nextCard();
@@ -7498,7 +7877,7 @@
     });
 
     // 4. Salvar no Backend (Atualizado para usar a Fila)
-    function saveSRSToBackend(cardId, nextReview, interval, ease) {
+    function saveSRSToBackend(cardId, nextReview, interval, ease, reps = 0) {
       if (!userEmail) return;
 
       // Cria um objeto simples com os dados
@@ -7509,7 +7888,8 @@
         cardId: cardId,
         nextReview: nextReview,
         interval: interval,
-        easeFactor: ease
+        easeFactor: ease,
+        reps: reps
       };
 
       // Manda para a fila (seguro) em vez de fetch direto
@@ -7665,6 +8045,12 @@
         savePositionToBackend();
       }
     });
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 9: EXTRAS — REPORTE, ZOOM, STREAK, MENU, ANOTAÇÕES     -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
     // --- NOVO SISTEMA DE EMBARALHAMENTO INTELIGENTE (INTERLEAVING) ---
     // --- FUNÇÃO DE REPORTAR ERRO (FLUXO CONTÍNUO) ---
     // --- NOVAS FUNÇÕES DE REPORTE (VISUAL E COM TEXTO) ---
@@ -8075,6 +8461,12 @@
     }
     // ============================================
     // ============================================
+  </script>
+
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <!-- MÓDULO 10: PROFESSOR IA E BUSCA                               -->
+  <!-- ═══════════════════════════════════════════════════════════════ -->
+  <script>
     // --- ÁREA DO PROFESSOR IA (VERSÃO FINAL - WIDESCREEN & FORMATADA) ---
 
     let chatHistoryContext = [];
@@ -8334,32 +8726,9 @@
       }
     };
   </script>
-  <div id="aiModal" style="
-    display: none; 
-    position: fixed; 
-    top: 20px; 
-    left: 50%; 
-    transform: translateX(-50%); 
-    width: 95%; 
-    max-width: 800px; /* <-- AUMENTADO PARA 800px (Era 450px) */
-    max-height: 85vh; /* Define altura máxima para não cortar na tela */
-    height: auto;     /* Altura automática: ajusta ao conteúdo */
-    background: #121212; /* Fundo mais escuro para contraste */
-    border: 1px solid #333; 
-    border-radius: 12px; 
-    z-index: 99999; 
-    box-shadow: 0 10px 40px rgba(0,0,0,0.9); 
-    flex-direction: column; 
-    font-family: 'Roboto', sans-serif;
-    overflow: hidden;">
+  <div id="aiModal" role="dialog" aria-modal="true" aria-label="Professor IA" class="ai-modal-overlay">
 
-    <div style="
-        padding: 18px; 
-        background: #1f1f1f; 
-        border-bottom: 1px solid #333; 
-        display: flex; 
-        justify-content: space-between; 
-        align-items: center;">
+    <div class="ai-modal-header">
 
       <div style="display: flex; align-items: center; gap: 12px; color: #f7ef8a;">
         <i class="fas fa-robot" style="font-size: 1.4rem;"></i>
@@ -8372,81 +8741,21 @@
       </button>
     </div>
 
-    <div id="aiChatHistory" style="
-        flex-grow: 1; 
-        padding: 20px; 
-        overflow-y: auto; 
-        display: flex; 
-        flex-direction: column; 
-        gap: 18px; 
-        background: #0d0d0d;
-        font-size: 16px; /* <-- FONTE MAIOR PARA LEGIBILIDADE */
-        line-height: 1.6;
-        color: #e0e0e0;">
+    <div id="aiChatHistory" class="ai-chat-history">
     </div>
 
-    <div style="
-        padding: 15px; 
-        background: #1f1f1f; 
-        border-top: 1px solid #333; 
-        display: flex; 
-        gap: 10px; 
-        align-items: center;">
+    <div class="ai-modal-footer">
 
-      <input type="text" id="aiUserInput" placeholder="Digite sua dúvida aqui..." style="
-               flex-grow: 1; 
-               padding: 12px 18px; 
-               border-radius: 25px; 
-               border: 1px solid #444; 
-               background: #2a2a2a; 
-               color: white; 
-               outline: none;
-               font-size: 15px;" onkeydown="if(event.key === 'Enter') sendUserMessage()">
+      <input type="text" id="aiUserInput" placeholder="Digite sua dúvida aqui..." class="ai-input-field" onkeydown="if(event.key === 'Enter') sendUserMessage()">
 
-      <button onclick="sendUserMessage()" style="
-            background: #FFD700;
-            color: #000; 
-            border: none; 
-            width: 45px; 
-            height: 45px; 
-            border-radius: 50%; 
-            cursor: pointer; 
-            display: flex; 
-            align-items: center; 
-            justify-content: center; 
-            font-size: 18px;
-            transition: transform 0.2s;
-            flex-shrink: 0;
-            box-shadow: 0 2px 10px rgba(167, 139, 250, 0.3);">
+      <button onclick="sendUserMessage()" class="ai-send-btn">
         <i class="fas fa-paper-plane"></i>
       </button>
     </div>
   </div>
-  <div id="customConfirmModal" style="
-    display: none; 
-    position: fixed; 
-    top: 0; 
-    left: 0; 
-    width: 100%; 
-    height: 100%; 
-    background: rgba(0,0,0,0.85); 
-    z-index: 999999; 
-    justify-content: center; 
-    align-items: flex-start; /* ← MUDOU DE center PARA flex-start (TOPO) */
-    padding-top: 50px;       /* ← ESPAÇO NO TOPO */
-    overflow-y: auto;        /* ← GARANTE ROLAGEM SE O IFRAME FOR PEQUENO */
-    backdrop-filter: blur(2px);">
+  <div id="customConfirmModal" role="alertdialog" aria-modal="true" aria-label="Confirmação de reiniciar sessão" class="chico-modal-overlay-confirm">
 
-    <div style="
-        background: #1e1e1e; 
-        border: 1px solid #ff4d4d; 
-        padding: 25px; 
-        border-radius: 12px; 
-        width: 90%; 
-        max-width: 350px; 
-        text-align: center; 
-        box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        font-family: 'Roboto', sans-serif;">
+    <div class="chico-modal-box-confirm">
 
       <i class="fas fa-exclamation-triangle" style="font-size: 3em; color: #ff4d4d; margin-bottom: 15px;"></i>
 
@@ -8484,22 +8793,7 @@
       </div>
     </div>
   </div>
-  <div id="ghostRuler" style="
-    display: none;
-    position: fixed;
-    bottom: 0;
-    right: 0;
-    background-color: #FFD700;
-    color: black;
-    font-family: monospace;
-    font-size: 16px;
-    font-weight: bold;
-    padding: 8px 12px;
-    z-index: 2147483647;
-    border-top-left-radius: 8px;
-    box-shadow: -2px -2px 10px rgba(0,0,0,0.5);
-    pointer-events: none;
-"></div>
+  <div id="ghostRuler" class="ghost-ruler-tool"></div>
 
   <script>
     (function () {
