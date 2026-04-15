@@ -4372,6 +4372,12 @@
       if (!requireAuth() || cards.length === 0 || isFinished) return;
       const card = cards[currentCard];
       const contentElement = document.getElementById("flashcard-content");
+
+      // --- DETECÇÃO UNIVERSAL DE MCQ ---
+      // Identifica se o card atual é múltipla escolha independentemente da face exibida
+      const regexAlternativasGeral = /^([a-eA-E])[\)\.]\s+(.+)$/gm;
+      let textFrontTemp = card.front.replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/&lt;br\s*\/?&gt;/gi, "\n");
+      const isCurrentCardMCQ = regexAlternativasGeral.test(textFrontTemp);
       // --- LÓGICA DE CLOZE (OMISSÃO) ---
       let textToShow = showingFront ? card.front : card.back;
 
@@ -4455,29 +4461,31 @@
       const srsDiv = document.getElementById('srsButtons');
 
       if (isMobile) {
-        // DETECÇÃO DE MCQ: Verifica se o card atual tem alternativas de múltipla escolha
-        const isMCQ = contentElement.querySelectorAll('.mcq-btn').length > 0;
         const mcqNav = document.getElementById('mcqNavBar');
 
         if (showingFront) {
-          if (isMCQ) {
+          if (isCurrentCardMCQ) {
             // ESTADO MCQ: Esconde "Mostrar Resposta" — as alternativas já são o mecanismo de resposta
             if (mobileBtn) mobileBtn.style.setProperty('display', 'none', 'important');
+            // Esconde botões SRS na frente
+            if (srsDiv) srsDiv.style.display = 'none';
+            // MCQ Respondido na frente: Mostra nav bar para o aluno poder avançar ou ver resposta
+            if (mcqNav) mcqNav.style.display = (typeof isMCQAnswered !== 'undefined' && isMCQAnswered) ? 'flex' : 'none';
           } else {
             // ESTADO FLASHCARD NORMAL: Mostra botão grande "Mostrar Resposta"
             if (mobileBtn) mobileBtn.style.setProperty('display', 'block', 'important');
+            // Esconde botões SRS na frente
+            if (srsDiv) srsDiv.style.display = 'none';
+            if (mcqNav) mcqNav.style.display = 'none';
           }
-          // Esconde botões SRS na frente
-          if (srsDiv) srsDiv.style.display = 'none';
-          // MCQ Respondido na frente: Mostra nav bar para o aluno poder avançar ou ver resposta
-          if (mcqNav) mcqNav.style.display = (typeof isMCQAnswered !== 'undefined' && isMCQAnswered && isMCQ) ? 'flex' : 'none';
         } else {
           // ESTADO 2: RESPOSTA (VERSO)
           // Esconde botão grande
           if (mobileBtn) mobileBtn.style.setProperty('display', 'none', 'important');
 
-          if (typeof isMCQAnswered !== 'undefined' && isMCQAnswered) {
-            // MCQ já avaliado: Esconde SRS (avaliação já foi feita pela alternativa), mostra nav bar
+          if (isCurrentCardMCQ) {
+            // SEMPRE que for MCQ e estiver no verso, esconde SRS e mostra NAV bar.
+            // Isso evita mostrar "Fácil/Difícil" caso o aluno tenha apenas avançado (bypass) sem clicar
             if (srsDiv) srsDiv.style.display = 'none';
             if (mcqNav) mcqNav.style.display = 'flex';
           } else {
@@ -4515,6 +4523,9 @@
 
     window.checkAnswer = function(letraClicada, btnElement) {
       if (!showingFront) return;
+      // Impede clique duplo ou cliques subsequentes enquanto o card prepara para virar
+      if (typeof isMCQAnswered !== 'undefined' && isMCQAnswered) return;
+      
       isMCQAnswered = true; // Marca que este card já foi avaliado via MCQ
 
       const card = cards[currentCard];
@@ -5565,6 +5576,14 @@
       touchArea.addEventListener('touchend', function (e) {
         touchEndX = e.changedTouches[0].screenX;
         touchEndY = e.changedTouches[0].screenY;
+        
+        // --- PREVENT FLIP-FLOP NO CLIQUE DE ALTERNATIVA ---
+        // Se o toque ocorreu em um botão MCQ, o evento onclick do botão vai rodar checkAnswer.
+        // Ignoramos a resposta de gesto aqui para não acionar um flipCard acidental e duplicado!
+        if (e.target && e.target.closest && e.target.closest('.mcq-btn')) {
+          return; 
+        }
+
         handleGesture();
       }, { passive: true });
     }
