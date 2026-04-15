@@ -4410,23 +4410,30 @@
       const srsDiv = document.getElementById('srsButtons');
 
       if (isMobile) {
+        // DETECÇÃO DE MCQ: Verifica se o card atual tem alternativas de múltipla escolha
+        const isMCQ = contentElement.querySelectorAll('.mcq-btn').length > 0;
+
         if (showingFront) {
-          // ESTADO 1: PERGUNTA (FRENTE)
-          // Mostra botão grande "Mostrar Resposta"
-          if (mobileBtn) mobileBtn.style.display = 'block';
+          if (isMCQ) {
+            // ESTADO MCQ: Esconde "Mostrar Resposta" — as alternativas já são o mecanismo de resposta
+            if (mobileBtn) mobileBtn.style.setProperty('display', 'none', 'important');
+          } else {
+            // ESTADO FLASHCARD NORMAL: Mostra botão grande "Mostrar Resposta"
+            if (mobileBtn) mobileBtn.style.setProperty('display', 'block', 'important');
+          }
           // Esconde botões SRS
           if (srsDiv) srsDiv.style.display = 'none';
         } else {
           // ESTADO 2: RESPOSTA (VERSO)
           // Esconde botão grande
-          if (mobileBtn) mobileBtn.style.display = 'none';
+          if (mobileBtn) mobileBtn.style.setProperty('display', 'none', 'important');
           // Mostra botões SRS (Se estiver no modo SRS ou Normal)
           // Nota: Forçamos o display flex para garantir que apareça no mobile
           if (srsDiv) srsDiv.style.display = 'flex';
         }
       } else {
         // No PC, esconde o botão mobile para não atrapalhar
-        if (mobileBtn) mobileBtn.style.display = 'none';
+        if (mobileBtn) mobileBtn.style.setProperty('display', 'none', 'important');
       }
       // Ajuste extra para o botão de embaralhar (Opcional: esconde no SRS visualmente)
       // Nota: A lógica principal de esconder botões já está dentro do updateEvalButtonsUI
