@@ -3425,7 +3425,7 @@
     // Usuário e Senha
     let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzYpyzD80XnRBr_PpBYHALEYJyjuD9Y0Yx2dlzZvtA6ePM8ihcqMMInlgtorEB_I0_-sw/exec";
     // Suporte acesso aos Cards
-    let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbyBRzGi8N8MGTWwonEIEAAOQTMM4Ik2QjLIt9NGQ2I7baavk9njpPjRmSmKUBJWhqcm/exec";
+    let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycby8YLzYgGt_mOX0o26c2ncewStz7MY61nhvXxsW7bU1haH1raA77gR70YMTaVRG6W9Lzg/exec";
     // URL do Backend das Anotações (Copiado do seu arquivo anotações.html)
     let NOTES_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyeWFpisAExqCY5FscF_tF5c_WUWavp3Y-8MPkgPhL3Mj0RoDikM4432hmnDhc-g79Y/exec";
     // Professor IA
@@ -4443,6 +4443,15 @@
         document.body.appendChild(mcqNav); 
       }
 
+      // --- ALTERAÇÃO: Alinhamento Ouro (Esquerda para textos longos, Centro para curtos) ---
+      // Calcula a quantidade de caracteres reais visíveis (ignorando o peso de dados de tags HTML invisíveis)
+      const rawTextLength = textToShow.replace(/<[^>]*>?/gm, '').trim().length;
+      if (rawTextLength < 45) {
+        contentElement.style.textAlign = 'center';
+      } else {
+        contentElement.style.textAlign = 'left';
+      }
+
       contentElement.innerHTML = textToShow;
       // ---------------------------------
       // --- ALTERAÇÃO: Contador Relativo (Mostra posição no filtro atual) ---
@@ -4490,6 +4499,8 @@
 
       // Chama a função que criamos no Passo 3 para decidir o que mostrar
       updateEvalButtonsUI();
+      // --- FSRS: Atualiza tooltips dos botões SRS com intervalos previstos ---
+      if (typeof updateSRSButtonTooltips === 'function') updateSRSButtonTooltips();
       // --- CONTROLE DE INTERFACE MOBILE (NOVO) ---
       const isMobile = window.innerWidth <= 768;
       const mobileBtn = document.getElementById('mobileAnswerBtn');
@@ -7618,13 +7629,182 @@
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- MÓDULO 8: SRS — REPETIÇÃO ESPAÇADA (SM-2)                     -->
+  <!-- MÓDULO 8: SRS — REPETIÇÃO ESPAÇADA (FSRS v5)                  -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <script>
-    // --- LÓGICA DO SISTEMA DE REPETIÇÃO ESPAÇADA (SRS) ---
+    // --- LÓGICA DO SISTEMA DE REPETIÇÃO ESPAÇADA (FSRS v5) ---
+    // Baseado no algoritmo FSRS (Free Spaced Repetition Scheduler)
+    // Modelo DSR: Difficulty, Stability, Retrievability
+    // Referência: https://github.com/open-spaced-repetition/fsrs4anki
 
     let userSRSProgress = {}; // Guarda o progresso carregado do servidor
     let isSRSMode = false;    // Indica se estamos no modo SRS
+
+    // ═══════════════════════════════════════════════════
+    // MOTOR FSRS v5 — FUNÇÕES MATEMÁTICAS PURAS
+    // (Não tocam em DOM, UI, ou qualquer outra função)
+    // ═══════════════════════════════════════════════════
+
+    // Constantes do modelo FSRS
+    const FSRS_DECAY = -0.5;
+    const FSRS_FACTOR = Math.pow(0.9, 1 / FSRS_DECAY) - 1; // ≈ 19/81
+    const FSRS_REQUEST_RETENTION = 0.9; // 90% de retenção desejada
+
+    // 19 parâmetros padrão do FSRS v5 (treináveis futuramente via optimizer)
+    const FSRS_W = [
+      0.4072, 1.1829, 3.1262, 15.4722,  // w0-w3: Estabilidade inicial por grade (Again..Easy)
+      7.2102,                             // w4: Dificuldade inicial (base)
+      0.5316,                             // w5: Fator de ajuste de dificuldade
+      1.0651,                             // w6: Fator de revisão de dificuldade
+      0.0046,                             // w7: Fator de penalidade de dificuldade
+      1.5418,                             // w8: Fator de crescimento de estabilidade (S_inc)
+      0.1618,                             // w9: Expoente de dificuldade em S_inc
+      1.0000,                             // w10: Expoente de estabilidade em S_inc
+      2.2395,                             // w11: Expoente de retrievabilidade em S_inc
+      0.0552,                             // w12: Fator de recuperação após lapse (S_fail)
+      0.2363,                             // w13: Expoente de dificuldade em S_fail
+      0.6317,                             // w14: Inverso de estabilidade em S_fail
+      2.1214,                             // w15: Expoente de retrievabilidade em S_fail
+      0.1030,                             // w16: Bônus Hard
+      0.3673,                             // w17: Bônus Easy
+      0.0000                              // w18: Reservado (short-term)
+    ];
+
+    // Grades FSRS: 1=Again, 2=Hard, 3=Good, 4=Easy
+    const FSRS_GRADE = { again: 1, hard: 2, good: 3, easy: 4 };
+
+    // Clamp: restringe valor entre min e max
+    function fsrsClamp(val, min, max) {
+      return Math.max(min, Math.min(max, val));
+    }
+
+    // Estabilidade inicial (S0) — baseada na grade da PRIMEIRA revisão
+    function fsrsInitStability(grade) {
+      // w0..w3 mapeiam diretamente para Again(1)..Easy(4)
+      return Math.max(0.1, FSRS_W[grade - 1]);
+    }
+
+    // Dificuldade inicial (D0) — baseada na grade da PRIMEIRA revisão
+    function fsrsInitDifficulty(grade) {
+      // D0 = w4 - e^(w5 * (grade - 1)) + 1
+      return fsrsClamp(
+        FSRS_W[4] - Math.exp(FSRS_W[5] * (grade - 1)) + 1,
+        1, 10
+      );
+    }
+
+    // Retrievabilidade (R) — probabilidade de recall após t dias
+    function fsrsRetrievability(elapsedDays, stability) {
+      if (stability <= 0) return 0;
+      return Math.pow(1 + FSRS_FACTOR * (elapsedDays / stability), FSRS_DECAY);
+    }
+
+    // Nova Dificuldade após revisão
+    function fsrsNextDifficulty(prevD, grade) {
+      // Componente de mean reversion para evitar extremos
+      const newD = FSRS_W[6] * fsrsInitDifficulty(FSRS_GRADE.good) +
+                   (1 - FSRS_W[6]) * (prevD - FSRS_W[7] * (grade - 3));
+      return fsrsClamp(newD, 1, 10);
+    }
+
+    // Nova Estabilidade após ACERTO (Hard, Good, Easy)
+    function fsrsNextStabilitySuccess(prevD, prevS, R, grade) {
+      // S_inc: Fator multiplicativo de crescimento
+      let hardBonus = (grade === FSRS_GRADE.hard) ? FSRS_W[16] : 1;
+      let easyBonus = (grade === FSRS_GRADE.easy) ? FSRS_W[17] : 1;
+
+      const sinc = prevS * (
+        1 + Math.exp(FSRS_W[8]) *
+        (11 - prevD) *
+        Math.pow(prevS, -FSRS_W[10]) *
+        (Math.exp((1 - R) * FSRS_W[11]) - 1) *
+        hardBonus * easyBonus
+      );
+
+      return Math.max(0.1, sinc);
+    }
+
+    // Nova Estabilidade após ERRO (Again)
+    function fsrsNextStabilityFail(prevD, prevS, R) {
+      const sfail = FSRS_W[12] *
+        Math.pow(prevD, -FSRS_W[13]) *
+        (Math.pow(prevS + 1, FSRS_W[14]) - 1) *
+        Math.exp((1 - R) * FSRS_W[15]);
+
+      // Garante que após erro a estabilidade sempre diminui
+      return fsrsClamp(sfail, 0.1, prevS);
+    }
+
+    // Calcular próximo intervalo com base na estabilidade
+    function fsrsNextInterval(stability) {
+      const interval = (stability / FSRS_FACTOR) *
+        (Math.pow(FSRS_REQUEST_RETENTION, 1 / FSRS_DECAY) - 1);
+      return Math.max(1, Math.round(interval));
+    }
+
+    // Previsão dos intervalos para todos os botões (para tooltips)
+    function fsrsPreviewIntervals(cardState) {
+      const now = new Date();
+      const lastReview = cardState.lastReview ? new Date(cardState.lastReview) : now;
+      const elapsedDays = Math.max(0, (now - lastReview) / (1000 * 60 * 60 * 24));
+      const S = cardState.stability || 0;
+      const D = cardState.difficulty || 5;
+      const R = S > 0 ? fsrsRetrievability(elapsedDays, S) : 0;
+      const isNew = !cardState.stability;
+
+      const results = {};
+      const grades = ['again', 'hard', 'good', 'easy'];
+
+      grades.forEach(gName => {
+        const g = FSRS_GRADE[gName];
+        if (isNew) {
+          // Card novo: usa init_stability
+          const newS = fsrsInitStability(g);
+          if (g === FSRS_GRADE.again) {
+            results[gName] = '10 min';
+          } else {
+            const days = fsrsNextInterval(newS);
+            results[gName] = days === 1 ? '1 dia' : days + ' dias';
+          }
+        } else {
+          // Card existente: calcula com base no estado atual
+          if (g === FSRS_GRADE.again) {
+            results[gName] = '10 min';
+          } else {
+            const newS = fsrsNextStabilitySuccess(D, S, R, g);
+            const days = fsrsNextInterval(newS);
+            results[gName] = days === 1 ? '1 dia' : days + ' dias';
+          }
+        }
+      });
+
+      return results;
+    }
+
+    // Atualiza os tooltips dos botões SRS com os intervalos previstos
+    function updateSRSButtonTooltips() {
+      if (!isSRSMode || cards.length === 0) return;
+      const card = cards[currentCard];
+      if (!card) return;
+      const cardId = generateCardId(card.front);
+      const state = userSRSProgress[cardId] || {};
+      const preview = fsrsPreviewIntervals(state);
+
+      const btnDontKnow = document.getElementById('btnDontKnow');
+      const btnAgain = document.getElementById('btnAgain');
+      const btnHard = document.getElementById('btnHard');
+      const btnGood = document.getElementById('btnGood');
+      const btnEasy = document.getElementById('btnEasy');
+
+      if (btnDontKnow) btnDontKnow.setAttribute('data-tooltip', preview.again);
+      if (btnAgain)    btnAgain.setAttribute('data-tooltip', preview.again);
+      if (btnHard)     btnHard.setAttribute('data-tooltip', preview.hard);
+      if (btnGood)     btnGood.setAttribute('data-tooltip', preview.good);
+      if (btnEasy)     btnEasy.setAttribute('data-tooltip', preview.easy);
+    }
+    // ═══════════════════════════════════════════════════
+    // FIM DO MOTOR FSRS v5
+    // ═══════════════════════════════════════════════════
 
     // 1. Gerador de ID Único (Robustez Aumentada)
     // Agora ignora maiúsculas, acentos e espaços extras para evitar perda de progresso ao corrigir erros simples.
@@ -7661,6 +7841,16 @@
 
         if (json.result === "success") {
           userSRSProgress = json.progress || {};
+
+          // FSRS: Garantir que campos antigos (sem stability) sejam aceitos
+          Object.keys(userSRSProgress).forEach(id => {
+            const p = userSRSProgress[id];
+            // Se não tem stability, converte do SM-2 legado
+            if (p.stability === undefined) {
+              p.stability = p.interval || 0;
+              p.difficulty = (p.easeFactor !== undefined && p.easeFactor <= 10) ? p.easeFactor : 5;
+            }
+          });
 
           // Lógica do Armazém (Continuar de onde parou)
           if (json.position && json.position.index > 0) {
@@ -7713,46 +7903,48 @@
         }
       }
 
-      let state = userSRSProgress[cardId] || { interval: 0, easeFactor: 2.5, reps: 0, nextReview: null };
-      let newInterval = 0;
-      let newEase = state.easeFactor;
-      if (newEase === undefined) newEase = 2.5;
-      let newReps = state.reps || 0;
-      let nextReviewDate = new Date();
+      // --- ALGORITMO FSRS v5 (Substitui o SM-2) ---
+      const grade = FSRS_GRADE[rating] || FSRS_GRADE.good;
+      const now = new Date();
 
+      // Carrega estado anterior (retrocompatível: aceita cards antigos sem FSRS)
+      let state = userSRSProgress[cardId] || {};
+      let prevS = state.stability || 0;   // Estabilidade (0 = card novo)
+      let prevD = state.difficulty || 5;   // Dificuldade (5 = neutra)
+      const lastReviewStr = state.lastReview || state.nextReview;
+      const lastReview = lastReviewStr ? new Date(lastReviewStr) : now;
+      const elapsedDays = Math.max(0, (now - lastReview) / (1000 * 60 * 60 * 24));
+      const isNewCard = (prevS === 0);
+
+      let newS, newD, newInterval, nextReviewDate;
+
+      // Fuzz: evita acúmulo de revisões no mesmo dia
       const applyFuzz = (val) => {
         if (val < 3) return val;
         const fuzz = Math.ceil(val * 0.05);
         const shift = Math.floor(Math.random() * (fuzz * 2 + 1)) - fuzz;
-        return val + shift;
+        return Math.max(1, val + shift);
       };
 
-      // ALGORITMO SM-2 REAL
-      // 1. Mapear o botão clicado para 'quality' (q) de 1 a 5
-      let q = 4; // Padrão: Good
-      if (rating === 'again') q = 1;
-      else if (rating === 'hard') q = 3;
-      else if (rating === 'good') q = 4;
-      else if (rating === 'easy') q = 5;
-
-      // 2. Atualizar Easiness Factor (EF)
-      newEase = newEase + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
-      newEase = Math.max(1.3, newEase); // floor em 1.3 (Evita "ease hell")
-
-      // 3. Atualizar Repetições Bem Sucedidas (n)
-      if (q < 3) {
-        newReps = 0;
-      } else {
-        newReps++;
-      }
-
       if (rating === 'again') {
+        // --- ERRO (Again) ---
         const realIndexRef = initialCards.indexOf(cards[currentCard]);
         if (realIndexRef !== -1) checkLeech(realIndexRef);
 
+        if (isNewCard) {
+          newS = fsrsInitStability(FSRS_GRADE.again);
+          newD = fsrsInitDifficulty(FSRS_GRADE.again);
+        } else {
+          const R = fsrsRetrievability(elapsedDays, prevS);
+          newS = fsrsNextStabilityFail(prevD, prevS, R);
+          newD = fsrsNextDifficulty(prevD, FSRS_GRADE.again);
+        }
+
         newInterval = 0;
+        nextReviewDate = new Date(now);
         nextReviewDate.setMinutes(nextReviewDate.getMinutes() + 10);
 
+        // Reinsere o card na fila (mantém comportamento anterior)
         const cardToRepeat = cards[currentCard];
         const offset = 20;
         const targetIndex = currentCard + 1 + offset;
@@ -7765,37 +7957,33 @@
           showFeedback("↺ Reagendado para o FINAL da fila", colorHex);
         }
       } else {
-        // SM-2: Calcular Novo Intervalo
-        if (newReps === 1) {
-          newInterval = 1;
-          if (rating === 'easy') newInterval = 4; // Bônus de primeiro acerto
-        } else if (newReps === 2) {
-          newInterval = 6;
-          if (rating === 'easy' && state.interval > 0) newInterval = Math.round(state.interval * newEase * 1.3);
+        // --- ACERTO (Hard, Good, Easy) ---
+        if (isNewCard) {
+          newS = fsrsInitStability(grade);
+          newD = fsrsInitDifficulty(grade);
         } else {
-          let prevInterval = state.interval === 0 ? 1 : state.interval;
-          let intervalMultiplier = newEase;
-          if (rating === 'easy') intervalMultiplier += 0.15; // Leve bônus extra no SM-2 modificado
-          if (rating === 'hard') intervalMultiplier = 1.2; // Penalidade do botão 'Hard' (mantém o card mais próximo)
-          newInterval = Math.round(prevInterval * intervalMultiplier);
+          const R = fsrsRetrievability(elapsedDays, prevS);
+          newS = fsrsNextStabilitySuccess(prevD, prevS, R, grade);
+          newD = fsrsNextDifficulty(prevD, grade);
         }
 
-        newInterval = applyFuzz(newInterval);
-        nextReviewDate.setDate(nextReviewDate.getDate() + Math.max(1, newInterval));
-        
-        // Exibe o intervalo futuro sutilmente (1 dia, 6 dias, etc)
-        // Isso ajuda o usuário a confiar no algoritmo
-        // showFeedback(`📅 Agendado para daqui a ${newInterval} dia(s)`, colorHex);
+        newInterval = applyFuzz(fsrsNextInterval(newS));
+        nextReviewDate = new Date(now);
+        nextReviewDate.setDate(nextReviewDate.getDate() + newInterval);
       }
 
+      // Salva o novo estado FSRS
       userSRSProgress[cardId] = {
         interval: newInterval,
-        easeFactor: newEase,
-        reps: newReps,
-        nextReview: nextReviewDate.toISOString()
+        easeFactor: newD,       // Retrocompat: easeFactor agora guarda Difficulty
+        stability: newS,
+        difficulty: newD,
+        reps: (state.reps || 0) + (rating !== 'again' ? 1 : 0),
+        nextReview: nextReviewDate.toISOString(),
+        lastReview: now.toISOString()
       };
 
-      saveSRSToBackend(cardId, nextReviewDate.toISOString(), newInterval, newEase, newReps);
+      saveSRSToBackend(cardId, nextReviewDate.toISOString(), newInterval, newD, newS);
 
       setTimeout(() => {
         nextCard();
@@ -7906,11 +8094,11 @@
       }
     });
 
-    // 4. Salvar no Backend (Atualizado para usar a Fila)
-    function saveSRSToBackend(cardId, nextReview, interval, ease, reps = 0) {
+    // 4. Salvar no Backend (Atualizado para FSRS + Fila)
+    function saveSRSToBackend(cardId, nextReview, interval, difficulty, stability) {
       if (!userEmail) return;
 
-      // Cria um objeto simples com os dados
+      // Cria um objeto com os dados FSRS
       const payload = {
         action: 'saveProgress',
         sheetId: SHEET_ID,
@@ -7918,8 +8106,9 @@
         cardId: cardId,
         nextReview: nextReview,
         interval: interval,
-        easeFactor: ease,
-        reps: reps
+        easeFactor: difficulty,   // Retrocompat: campo mantido para não quebrar backend antigo
+        stability: stability,    // NOVO: Estabilidade FSRS
+        difficulty: difficulty    // NOVO: Dificuldade FSRS
       };
 
       // Manda para a fila (seguro) em vez de fetch direto
