@@ -1514,11 +1514,6 @@
         max-width: 100%;
       }
 
-      #flashcard-content img {
-        max-height: 40vh;
-        width: auto;
-      }
-
       /* === 3. LIMPEZA DA BARRA SUPERIOR === */
       .top-bar {
         justify-content: space-between !important;
@@ -3467,7 +3462,7 @@
     let currentCard = 0;
     let showingFront = true;
     // Se for celular (tela pequena), usa fonte 14. Se for PC, mantém 22
-    let fontSize = window.innerWidth < 768 ? 14 : 22;
+    let fontSize = window.innerWidth < 768 ? 15 : 22;
     let timerSeconds = 0;
     const timerElement = document.getElementById("timer");
     const cardContainer = document.getElementById("card-container");
@@ -4345,44 +4340,7 @@
       }
     }
 
-    function filterByCategory(category, skipSave = false) {
-      if (!requireAuth()) return;
-
-      currentCategory = category;
-      document.getElementById("mainFilterSelect").value = ""; // Reseta para a palavra "Seleção"
-      document.getElementById("topicSelect").style.display = "none";
-      document.getElementById("focoSelect").style.display = "none";
-      categorySelect.title = category; // ← mostra o nome completo em tooltip
-
-      if (category === "Todas") {
-        cards = [...initialCards];
-      } else {
-        cards = initialCards.filter(card => card.category === category);
-      }
-
-      if (isReviewErrorsMode) {
-        cards = cards.filter((card, index) => {
-          const originalIndex = initialCards.indexOf(card);
-          return cardAccuracy[originalIndex] && cardAccuracy[originalIndex].incorrect > 0;
-        });
-      }
-
-      if (isShuffleActive) {
-        cards = [...cards].sort(() => Math.random() - 0.5);
-      }
-
-      if (!skipSave) {
-        currentCard = 0;
-        showingFront = true;
-      }
-
-      updateCard();
-      if (!skipSave) {
-        saveFlashcardState();
-      }
-    }
-
-    // Alteração: Aceita parâmetro para pular o salvamento automático
+ // Alteração: Aceita parâmetro para pular o salvamento automático
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
@@ -5090,20 +5048,6 @@
       }, 1000); // Fica visível por 1 segundo
 
       saveFlashcardState();
-    }
-
-    function toggleCardColorMenu() {
-      if (!requireAuth()) return;
-
-      const menu = document.getElementById("cardColor");
-      menu.style.display = menu.style.display === "none" ? "inline-block" : "none";
-    }
-
-    function toggleTextColorMenu() {
-      if (!requireAuth()) return;
-
-      const menu = document.getElementById("textColor");
-      menu.style.display = menu.style.display === "none" ? "inline-block" : "none";
     }
 
     function changeCardColor(color) {
@@ -7207,10 +7151,6 @@
           document.getElementById("flashcard-content").textContent = "Nenhum card encontrado para os critérios selecionados.";
           cardCounter.textContent = "0/0";
         } else {
-          currentCard = 0;
-          showingFront = true;
-          isFinished = false;
-          // Embaralha final para garantir mistura
           currentCard = 0;
           showingFront = true;
           isFinished = false;
