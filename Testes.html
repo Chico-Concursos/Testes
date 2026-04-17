@@ -32,10 +32,11 @@
       width: 100%;
       height: 100%;
       background: rgba(0, 0, 0, 0.9);
-      z-index: 2147483647 !important; /* CORREÇÃO 1: Z-Index MÁXIMO (Google Sites) */
+      z-index: 2147483647 !important;
+      /* CORREÇÃO 1: Z-Index MÁXIMO (Google Sites) */
       justify-content: center;
       backdrop-filter: blur(5px);
-      
+
       /* CORREÇÃO 2: Alinha tudo no TOPO para não cortar na tela do Google Sites */
       align-items: flex-start !important;
       padding-top: 40px !important;
@@ -126,7 +127,7 @@
       text-decoration: underline;
       font-size: 1em;
     }
-    
+
     .chico-modal-btn-close:hover {
       color: gold;
     }
@@ -439,6 +440,7 @@
       padding: 10px;
       box-sizing: border-box;
       word-wrap: break-word;
+      line-height: 1.15; /* Controle o espaço entre as linhas do caput e textos soltos aqui */
     }
 
     .bottom-bar {
@@ -1410,7 +1412,8 @@
       background-color: transparent;
       justify-content: center;
       align-items: center;
-      gap: 15px; /* Espaço entre os botões */
+      gap: 15px;
+      /* Espaço entre os botões */
     }
 
     #mcqNavBar button {
@@ -1418,7 +1421,8 @@
       padding: 12px;
       background-color: #222;
       border: 1px solid #FFD700;
-      border-radius: 8px; /* Cantos arredondados parecem mais modernos soltos na página */
+      border-radius: 8px;
+      /* Cantos arredondados parecem mais modernos soltos na página */
       color: #FFD700;
       font-size: 1.1em;
       font-weight: bold;
@@ -1495,7 +1499,7 @@
         /* Padding extra embaixo p/ não bater no botão */
         font-size: 1.5em;
         color: black;
-        line-height: 1.6;
+        line-height: 1; /* <-- O VILÃO ESTAVA AQUI! Ajustado para 1. */
         font-weight: 500;
 
         /* Solta o conteúdo para ocupar o espaço necessário */
@@ -1516,9 +1520,9 @@
       }
 
       /* === 3. LIMPEZA DA BARRA SUPERIOR === */
-     .top-bar {
+      .top-bar {
         justify-content: space-between !important;
-        padding: 2px 15px !important; 
+        padding: 2px 15px !important;
         /* ← REDUZIDO DE 10px PARA 2px PARA COLAR NO TETO */
         background-color: black !important;
         border-bottom: 1px solid #333;
@@ -1992,8 +1996,8 @@
       display: block;
       width: 100%;
       text-align: left;
-      margin: 2px 0;
-      padding: 12px 15px;
+      margin: 10px 0;
+      padding: 5px 12px;
       background: #222;
       color: white;
       border: 1px solid #555;
@@ -2001,10 +2005,12 @@
       cursor: pointer;
       font-size: 1em;
       transition: all 0.25s ease;
-      box-shadow: 0 4px 6px rgba(0,0,0,0.3);
-      white-space: normal;       /* Garante quebra de texto no mobile */
-      word-wrap: break-word;     /* Palavra longa não foge da tela */
-      line-height: 1.4;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.3);
+      white-space: normal;
+      /* Garante quebra de texto no mobile */
+      word-wrap: break-word;
+      /* Palavra longa não foge da tela */
+      line-height: 1.15;
     }
 
     /* Hover Premium — Botão "levanta" ao passar o mouse */
@@ -2401,8 +2407,8 @@
       left: 0;
       width: 100%;
       height: 100%;
-      background-color: rgba(0,0,0,0.95);
-      z-index: 2147483647; 
+      background-color: rgba(0, 0, 0, 0.95);
+      z-index: 2147483647;
       display: none;
       justify-content: center;
       align-items: flex-start;
@@ -2410,17 +2416,17 @@
       overflow-y: auto;
       backdrop-filter: blur(5px);
     }
-    
+
     .chico-modal-overlay-confirm {
-      position: fixed; 
-      top: 0; 
-      left: 0; 
-      width: 100%; 
-      height: 100%; 
-      background: rgba(0,0,0,0.85); 
-      z-index: 999999; 
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.85);
+      z-index: 999999;
       display: none;
-      justify-content: center; 
+      justify-content: center;
       align-items: flex-start;
       padding-top: 50px;
       overflow-y: auto;
@@ -2428,101 +2434,101 @@
     }
 
     .chico-modal-box-danger {
-      border: 1px solid #ff4d4d; 
+      border: 1px solid #ff4d4d;
       box-shadow: 0 0 40px rgba(255, 77, 77, 0.4);
     }
 
     .chico-modal-box-confirm {
-      background: #1e1e1e; 
-      border: 1px solid #ff4d4d; 
-      padding: 25px; 
-      border-radius: 12px; 
-      width: 90%; 
-      max-width: 350px; 
-      text-align: center; 
-      box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+      background: #1e1e1e;
+      border: 1px solid #ff4d4d;
+      padding: 25px;
+      border-radius: 12px;
+      width: 90%;
+      max-width: 350px;
+      text-align: center;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
       font-family: 'Roboto', sans-serif;
     }
 
     .ai-modal-overlay {
-      display: none; 
-      position: fixed; 
-      top: 20px; 
-      left: 50%; 
-      transform: translateX(-50%); 
-      width: 95%; 
-      max-width: 800px; 
-      max-height: 85vh; 
-      height: auto;     
-      background: #121212; 
-      border: 1px solid #333; 
-      border-radius: 12px; 
-      z-index: 99999; 
-      box-shadow: 0 10px 40px rgba(0,0,0,0.9); 
-      flex-direction: column; 
+      display: none;
+      position: fixed;
+      top: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 95%;
+      max-width: 800px;
+      max-height: 85vh;
+      height: auto;
+      background: #121212;
+      border: 1px solid #333;
+      border-radius: 12px;
+      z-index: 99999;
+      box-shadow: 0 10px 40px rgba(0, 0, 0, 0.9);
+      flex-direction: column;
       font-family: 'Roboto', sans-serif;
       overflow: hidden;
     }
 
     .ai-modal-header {
-      padding: 18px; 
-      background: #1f1f1f; 
-      border-bottom: 1px solid #333; 
-      display: flex; 
-      justify-content: space-between; 
+      padding: 18px;
+      background: #1f1f1f;
+      border-bottom: 1px solid #333;
+      display: flex;
+      justify-content: space-between;
       align-items: center;
     }
 
     .ai-chat-history {
-      flex-grow: 1; 
-      padding: 20px; 
-      overflow-y: auto; 
-      display: flex; 
-      flex-direction: column; 
-      gap: 18px; 
+      flex-grow: 1;
+      padding: 20px;
+      overflow-y: auto;
+      display: flex;
+      flex-direction: column;
+      gap: 18px;
       background: #0d0d0d;
-      font-size: 16px; 
+      font-size: 16px;
       line-height: 1.6;
       color: #e0e0e0;
     }
 
     .ai-modal-footer {
-      padding: 15px; 
-      background: #1f1f1f; 
-      border-top: 1px solid #333; 
-      display: flex; 
-      gap: 10px; 
+      padding: 15px;
+      background: #1f1f1f;
+      border-top: 1px solid #333;
+      display: flex;
+      gap: 10px;
       align-items: center;
     }
 
     .ai-input-field {
-      flex-grow: 1; 
-      padding: 12px 18px; 
-      border-radius: 25px; 
-      border: 1px solid #444; 
-      background: #2a2a2a; 
-      color: white; 
+      flex-grow: 1;
+      padding: 12px 18px;
+      border-radius: 25px;
+      border: 1px solid #444;
+      background: #2a2a2a;
+      color: white;
       outline: none;
       font-size: 15px;
     }
 
     .ai-send-btn {
       background: #FFD700;
-      color: #000; 
-      border: none; 
-      width: 45px; 
-      height: 45px; 
-      border-radius: 50%; 
-      cursor: pointer; 
-      display: flex; 
-      align-items: center; 
-      justify-content: center; 
+      color: #000;
+      border: none;
+      width: 45px;
+      height: 45px;
+      border-radius: 50%;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
       font-size: 18px;
       transition: transform 0.2s;
       flex-shrink: 0;
       box-shadow: 0 2px 10px rgba(167, 139, 250, 0.3);
     }
-    
+
     .ghost-ruler-tool {
       display: none;
       position: fixed;
@@ -2536,7 +2542,7 @@
       padding: 8px 12px;
       z-index: 2147483647;
       border-top-left-radius: 8px;
-      box-shadow: -2px -2px 10px rgba(0,0,0,0.5);
+      box-shadow: -2px -2px 10px rgba(0, 0, 0, 0.5);
       pointer-events: none;
     }
   </style>
@@ -2552,8 +2558,10 @@
   <div class="top-bar" role="toolbar" aria-label="Barra de ferramentas principal">
     <!-- 1. BOTÃO MENU (HAMBÚRGUER) -->
     <div style="position: relative;">
-      <button class="hamburger-btn tooltip" data-tooltip="Menu Principal" aria-label="Menu Principal" aria-expanded="false" aria-controls="mainMenuDropdown" onmouseover="showTooltipOnHover(this)"
-        onmouseleave="hideTooltipOnLeave(this)" onclick="toggleHamburgerMenu()"><i class="fas fa-bars" aria-hidden="true"></i></button>
+      <button class="hamburger-btn tooltip" data-tooltip="Menu Principal" aria-label="Menu Principal"
+        aria-expanded="false" aria-controls="mainMenuDropdown" onmouseover="showTooltipOnHover(this)"
+        onmouseleave="hideTooltipOnLeave(this)" onclick="toggleHamburgerMenu()"><i class="fas fa-bars"
+          aria-hidden="true"></i></button>
 
       <!-- GAVETA DO MENU (CONTEÚDO ESCONDIDO) -->
       <div id="mainMenuDropdown" class="menu-dropdown" role="menu" aria-label="Menu de opções">
@@ -2624,7 +2632,8 @@
         </div>
 
         <div style="grid-column: 1 / -1; text-align: center; margin-top: 5px; margin-bottom: -15px;">
-          <button onclick="toggleHamburgerMenu()" style="background: transparent; border: none; color: #888; cursor: pointer; text-decoration: underline; font-size: 1em;">Fechar</button>
+          <button onclick="toggleHamburgerMenu()"
+            style="background: transparent; border: none; color: #888; cursor: pointer; text-decoration: underline; font-size: 1em;">Fechar</button>
         </div>
 
         <div class="menu-item-row" onclick="logout()">
@@ -2635,18 +2644,21 @@
 
     <!-- 2. ITENS VISÍVEIS (ESSENCIAIS) -->
     <!-- Filtro -->
-    <button id="filterBtn" class="tooltip" data-tooltip="Filtrar Cards" aria-label="Filtrar Cards" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="openFilterModal()"><i class="fas fa-folder-open" aria-hidden="true"></i></button>
+    <button id="filterBtn" class="tooltip" data-tooltip="Filtrar Cards" aria-label="Filtrar Cards"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)" onclick="openFilterModal()"><i
+        class="fas fa-folder-open" aria-hidden="true"></i></button>
 
-    <button id="searchToggleBtn" class="tooltip" data-tooltip="Buscar (Ctrl+F)" aria-label="Buscar cards" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="toggleSearchBar()"><i class="fas fa-search" aria-hidden="true"></i></button>
-    <input type="text" id="topSearchBar" placeholder="Buscar..." aria-label="Campo de busca" onkeyup="runRealTimeSearch(this.value)">
+    <button id="searchToggleBtn" class="tooltip" data-tooltip="Buscar (Ctrl+F)" aria-label="Buscar cards"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)" onclick="toggleSearchBar()"><i
+        class="fas fa-search" aria-hidden="true"></i></button>
+    <input type="text" id="topSearchBar" placeholder="Buscar..." aria-label="Campo de busca"
+      onkeyup="runRealTimeSearch(this.value)">
 
     <span id="streakDisplay" class="tooltip" data-tooltip="Ofensiva (Dias seguidos)"
       onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
       style="color: #ff4500; font-weight: bold; cursor:default;">🔥 0</span>
-    <button id="aiBtn" class="tooltip" data-tooltip="Professor IA" aria-label="Professor IA" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="explainWithAI()"
+    <button id="aiBtn" class="tooltip" data-tooltip="Professor IA" aria-label="Professor IA"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)" onclick="explainWithAI()"
       style="background: none; border: none; color: #a78bfa; font-size: 1.2em; cursor: pointer; margin-left: 5px;">
       <i class="fas fa-robot" aria-hidden="true"></i>
     </button>
@@ -2656,17 +2668,20 @@
       onmouseleave="hideTooltipOnLeave(this)" onclick="resetTimer()" style="cursor:pointer;">⏱️ <span
         id="timer">00:00</span></span>
 
-    <button id="notesBtn" class="tooltip" data-tooltip="Anotações (Atalho: A)" aria-label="Anotações" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="openNotesModal()"><i class="fas fa-sticky-note" aria-hidden="true"></i></button>
+    <button id="notesBtn" class="tooltip" data-tooltip="Anotações (Atalho: A)" aria-label="Anotações"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)" onclick="openNotesModal()"><i
+        class="fas fa-sticky-note" aria-hidden="true"></i></button>
 
-    <button id="mobileTopTTS" class="tooltip" data-tooltip="Ler em Voz Alta" aria-label="Ler em Voz Alta" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="toggleSpeech()"><i class="fas fa-volume-up" aria-hidden="true"></i></button>
+    <button id="mobileTopTTS" class="tooltip" data-tooltip="Ler em Voz Alta" aria-label="Ler em Voz Alta"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)" onclick="toggleSpeech()"><i
+        class="fas fa-volume-up" aria-hidden="true"></i></button>
 
-    <button id="reviewErrorsButton" class="tooltip" data-tooltip="Revisar Erros" aria-label="Revisar Erros" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="toggleReviewErrors()" style="display:none;"><i
-        class="fas fa-search" aria-hidden="true"></i></button>
+    <button id="reviewErrorsButton" class="tooltip" data-tooltip="Revisar Erros" aria-label="Revisar Erros"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)" onclick="toggleReviewErrors()"
+      style="display:none;"><i class="fas fa-search" aria-hidden="true"></i></button>
   </div>
-  <div id="progressBarContainer" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" aria-label="Progresso dos cards">
+  <div id="progressBarContainer" role="progressbar" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"
+    aria-label="Progresso dos cards">
     <div id="progressBarFill"></div>
   </div>
   <div id="highlightFeedback"></div>
@@ -2686,7 +2701,8 @@
       <div id="end-message">Chico Concursos<br>Bloco de estudo concluído</div>
       <button id="restart-button">RECOMEÇAR</button>
       <div id="accuracy-results" style="font-size: 1.5em;"></div>
-      <button id="review-errors-button" class="review-button" style="margin-top: 15px; display: none; white-space: nowrap;">REVISAR ERROS</button>
+      <button id="review-errors-button" class="review-button"
+        style="margin-top: 15px; display: none; white-space: nowrap;">REVISAR ERROS</button>
     </div>
   </div>
   <div class="bottom-bar">
@@ -2741,24 +2757,29 @@
         style="position: relative; color: #00ff00; border: 1px solid #00ff00; border-radius: 5px; font-size: 1em; padding: 0px 10px; min-width: 70px;"
         onclick="rateCardSRS('easy', this, '#00ff00')">Fácil</button>
     </div>
-    <button class="accuracy-button" data-tooltip="Acertei (Tecla 1)" aria-label="Acertei" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="markAsCorrect()" id="correctButton">✅</button>
-    <button class="accuracy-button" data-tooltip="Errei (Tecla 2)" aria-label="Errei" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="markAsIncorrect()" id="incorrectButton">❌</button>
-    <button id="shuffleButton" data-tooltip="Embaralhar cartas" aria-label="Embaralhar cartas" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="toggleShuffleMode()">🔀</button>
-    <button data-tooltip="Virar Card / Anterior (Alt)" aria-label="Virar Card ou Anterior" onmouseover="showTooltipOnHover(this)"
-      onmouseleave="hideTooltipOnLeave(this)" onclick="reviewAndRetreat()">↩️</button>
-    <button data-tooltip="Voltar" aria-label="Card anterior" onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-      onclick="prevCard()">⏪</button>
-    <button data-tooltip="Resposta/Perg." aria-label="Virar card" onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-      onclick="flipCard()">⬇️</button>
-    <button data-tooltip="Avançar" aria-label="Próximo card" onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
-      onclick="nextCard()">⏩</button>
+    <button class="accuracy-button" data-tooltip="Acertei (Tecla 1)" aria-label="Acertei"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)" onclick="markAsCorrect()"
+      id="correctButton">✅</button>
+    <button class="accuracy-button" data-tooltip="Errei (Tecla 2)" aria-label="Errei"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)" onclick="markAsIncorrect()"
+      id="incorrectButton">❌</button>
+    <button id="shuffleButton" data-tooltip="Embaralhar cartas" aria-label="Embaralhar cartas"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
+      onclick="toggleShuffleMode()">🔀</button>
+    <button data-tooltip="Virar Card / Anterior (Alt)" aria-label="Virar Card ou Anterior"
+      onmouseover="showTooltipOnHover(this)" onmouseleave="hideTooltipOnLeave(this)"
+      onclick="reviewAndRetreat()">↩️</button>
+    <button data-tooltip="Voltar" aria-label="Card anterior" onmouseover="showTooltipOnHover(this)"
+      onmouseleave="hideTooltipOnLeave(this)" onclick="prevCard()">⏪</button>
+    <button data-tooltip="Resposta/Perg." aria-label="Virar card" onmouseover="showTooltipOnHover(this)"
+      onmouseleave="hideTooltipOnLeave(this)" onclick="flipCard()">⬇️</button>
+    <button data-tooltip="Avançar" aria-label="Próximo card" onmouseover="showTooltipOnHover(this)"
+      onmouseleave="hideTooltipOnLeave(this)" onclick="nextCard()">⏩</button>
     <button id="nextAndShow" data-tooltip="Virar Card / Próximo" onmouseover="showTooltipOnHover(this)"
       onmouseleave="hideTooltipOnLeave(this)" onclick="reviewAndAdvance()">↪️</button>
   </div>
-  <div id="helpModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Atalhos do teclado">
+  <div id="helpModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true"
+    aria-label="Atalhos do teclado">
     <div id="helpModalContent" class="chico-modal-box wide">
       <h2 class="chico-modal-title">Ajuda - Significado dos Ícones</h2>
       <div id="iconLegend">
@@ -2799,7 +2820,8 @@
       <button class="close-button" onclick="toggleHelpModal()">Fechar</button>
     </div>
   </div>
-  <div id="manualModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Manual do usuário">
+  <div id="manualModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true"
+    aria-label="Manual do usuário">
     <div id="manualModalContent" class="chico-modal-box wide">
       <h2 class="chico-modal-title">Manual do Usuário</h2>
 
@@ -2898,7 +2920,8 @@
       </div>
     </div>
   </div>
-  <div id="statsModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Estatísticas de desempenho">
+  <div id="statsModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true"
+    aria-label="Estatísticas de desempenho">
     <div id="statsModalContent" class="chico-modal-box wide">
       <h2 class="chico-modal-title">Estatísticas de Estudo</h2>
 
@@ -3172,7 +3195,8 @@
     </div>
   </div>
   <!-- FIM DO NOVO MODAL DE CONFIGURAÇÕES -->
-  <div id="filterModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Filtro inteligente de cards">
+  <div id="filterModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true"
+    aria-label="Filtro inteligente de cards">
     <div id="filterModalContent" class="chico-modal-box">
 
       <h2 class="chico-modal-title">Filtrar Cards
@@ -3261,7 +3285,8 @@
       <button class="login-button" onclick="location.reload()">Fazer Login Novamente</button>
     </div>
   </div>
-  <div id="concurrentSessionModal" role="alertdialog" aria-modal="true" aria-label="Acesso interrompido" class="chico-modal-overlay-top">
+  <div id="concurrentSessionModal" role="alertdialog" aria-modal="true" aria-label="Acesso interrompido"
+    class="chico-modal-overlay-top">
 
     <div class="session-expired-container chico-modal-box-danger">
       <h2 style="color: #ff4d4d; margin-bottom: 20px; font-size: 1.8em;">
@@ -3294,7 +3319,8 @@
       </div>
     </div>
   </div>
-  <div id="lightboxModal" onclick="closeLightbox()" role="dialog" aria-modal="true" aria-label="Visualização de imagem ampliada">
+  <div id="lightboxModal" onclick="closeLightbox()" role="dialog" aria-modal="true"
+    aria-label="Visualização de imagem ampliada">
     <img id="lightboxImage" src="" alt="Zoom">
     <p style="position: absolute; bottom: 20px; color: #888; font-size: 0.9em;">Toque em qualquer lugar para fechar</p>
   </div>
@@ -3305,7 +3331,8 @@
       <button class="custom-alert-btn" onclick="closeCustomAlert()">OK</button>
     </div>
   </div>
-  <div id="evalModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Escolha de modo de avaliação">
+  <div id="evalModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true"
+    aria-label="Escolha de modo de avaliação">
     <div class="chico-modal-box">
       <h3 class="chico-modal-title">Escolha a Avaliação</h3>
 
@@ -3326,7 +3353,8 @@
       </button>
     </div>
   </div>
-  <div id="handsFreeModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true" aria-label="Modo mãos livres">
+  <div id="handsFreeModal" class="chico-modal-overlay" style="display:none;" role="dialog" aria-modal="true"
+    aria-label="Modo mãos livres">
     <div class="chico-modal-box">
 
       <div id="hfStep1">
@@ -3425,7 +3453,7 @@
     // Usuário e Senha
     let WEB_APP_URL = "https://script.google.com/macros/s/AKfycbzYpyzD80XnRBr_PpBYHALEYJyjuD9Y0Yx2dlzZvtA6ePM8ihcqMMInlgtorEB_I0_-sw/exec";
     // Suporte acesso aos Cards
-    let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycby8YLzYgGt_mOX0o26c2ncewStz7MY61nhvXxsW7bU1haH1raA77gR70YMTaVRG6W9Lzg/exec";
+    let SRS_BACKEND_URL = "https://script.google.com/macros/s/AKfycbyBRzGi8N8MGTWwonEIEAAOQTMM4Ik2QjLIt9NGQ2I7baavk9njpPjRmSmKUBJWhqcm/exec";
     // URL do Backend das Anotações (Copiado do seu arquivo anotações.html)
     let NOTES_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbyeWFpisAExqCY5FscF_tF5c_WUWavp3Y-8MPkgPhL3Mj0RoDikM4432hmnDhc-g79Y/exec";
     // Professor IA
@@ -3860,7 +3888,7 @@
             loadAllDataFromBackend(userEmail),
             loadFlashcardsFromGoogleSheet(SHEET_ID, GID)
           ]);
-          
+
           hideLoadingIndicator();
 
           // Tenta recuperar a posição após ter certeza que baixou tudo
@@ -3957,11 +3985,11 @@
           if (!result.success) {
             // Verifica se o erro foi REALMENTE de duplo acesso
             if (result.error === 'concurrent_login') {
-              
+
               // Incrementa o contador de "Strikes"
               failedHeartbeatCount++;
               console.warn(`Tentativa falha de sessão (${failedHeartbeatCount}/3). Aguardando sincronização do Google...`);
-              
+
               // Só expulsa o usuário se falhar 3 vezes seguidas (quase 10 minutos de teimosia do servidor)
               if (failedHeartbeatCount >= 3) {
                 // 1. Para de verificar para não ficar repetindo
@@ -4013,7 +4041,7 @@
 
     function saveFlashcardState() {
       if (!requireAuth()) return;
-// NOVO: Renova o tempo da sessão a cada interação (Evita expulsão injusta)
+      // NOVO: Renova o tempo da sessão a cada interação (Evita expulsão injusta)
       localStorage.setItem('loginTime', Date.now().toString());
       const state = {
         currentCard,
@@ -4384,7 +4412,7 @@
       // O \n é ESSENCIAL aqui porque ativa o '^' do regex de opções múltiplas!
       textToShow = textToShow.replace(/&lt;br\s*\/?&gt;/gi, "\n");
 
-     if (showingFront) {
+      if (showingFront) {
         // Na FRENTE: Substitui {{texto}} por uma caixa [...]
         // Regex explica: Pega tudo entre {{ e }}
         textToShow = textToShow.replace(/{{(.*?)}}/g, "<span style='background:#333; color:gold; padding:2px 6px; border-radius:4px; border:1px solid #555; cursor:help;' title='Tente lembrar...'>[...]</span>");
@@ -4392,10 +4420,13 @@
         // --- NOVA LÓGICA: QUESTÕES DE MÚLTIPLA ESCOLHA ---
         const regexAlternativas = /^([a-eA-E])[\)\.]\s+(.+)$/gm;
         if (regexAlternativas.test(textToShow)) {
-          textToShow = textToShow.replace(regexAlternativas, function(match, letra, textoAlternativa) {
-             const letraUp = letra.toUpperCase();
-             return `<button class="mcq-btn" onclick="checkAnswer('${letraUp}', this)"><strong>${letraUp})</strong> ${textoAlternativa}</button>`;
+          textToShow = textToShow.replace(regexAlternativas, function (match, letra, textoAlternativa) {
+            const letraUp = letra.toUpperCase();
+            return `<button class="mcq-btn" onclick="checkAnswer('${letraUp}', this)"><strong>${letraUp})</strong> ${textoAlternativa}</button>`;
           });
+          // Remove espaços vazios e quebras de linha residuais APENAS entre os botões gerados
+          // Isso corrige o problema do 'white-space: pre-wrap' adicionando linhas em branco entre as alternativas
+          textToShow = textToShow.replace(/(<\/button>)\s+(<button class="mcq-btn")/g, "$1$2");
         }
         // --------------------------------------------------
       } else {
@@ -4409,28 +4440,31 @@
           const regexExtrair = /(?:^|GABARITO[\s:]*|RESP(?:OSTA)?[\s:]*|LETRA[\s:]*)([A-E])(?:[\)\-\.\s]|$)/i;
           const matchGabarito = respostaVerso.match(regexExtrair);
           const gabaritoLetra = matchGabarito ? matchGabarito[1].toUpperCase() : respostaVerso.charAt(0).toUpperCase();
-          
+
           // Regex definitiva de Força Bruta:
           // Engole silenciosamente qualquer tipo de espaço, tag escapada ou entidade HTML de indentação (mesmo as de duplo escape como &amp;nbsp;)
           // que costumam empurrar as alternativas para a direita (como no caso de A, B, C do print) escondendo a Letra do código.
           const regexAlternativasVerso = /^((?:\s|&[a-zA-Z0-9#]+;|&amp;[a-zA-Z0-9#]+;|<[^>]+>|&lt;.*?&gt;)*)([a-eA-E])([\)\.])(.*)$/gim;
-          
-          textToShow = textToShow.replace(regexAlternativasVerso, function(match, espacosInicio, letra, divisor, resto) {
-             const letraUp = letra.toUpperCase();
-             let style = 'padding: 4px 8px; border-radius: 4px; display: inline-block; box-sizing: border-box; margin: 4px 0; word-wrap: break-word; max-width: 100%;';
-             
-             // Fundo verde para a correta
-             if (letraUp === gabaritoLetra) {
-                 style += ' background: #152b15; border: 1px solid #00ff00; color: #00ff00; font-weight: bold;';
-             } 
-             // Fundo vermelho para a alternativa que o usuário escolheu e errou
-             else if (typeof window.lastMCQClickedOption !== 'undefined' && window.lastMCQClickedOption === letraUp) {
-                 style += ' background: #2b1515; border: 1px solid #ff5555; color: #ff5555; opacity: 0.9;';
-             } else {
-                 return match; // Devolve puro, sem marcações
-             }
-             
-             return `${espacosInicio}<span style="${style}"><strong>${letraUp}${divisor}</strong>${resto}</span>`;
+
+          textToShow = textToShow.replace(regexAlternativasVerso, function (match, espacosInicio, letra, divisor, resto) {
+            const letraUp = letra.toUpperCase();
+            // Ampliamos a margem vertical (margin: 10px 0) para dar aquele "respiro" na visão
+            // Isso permite que o usuário use apenas 1 <br> no Google Sheets, sem ficar nem super grudado, nem com buracos gigantes.
+            // line-height travado em 1.15
+            let style = 'padding: 4px 8px; border-radius: 4px; display: inline-block; box-sizing: border-box; margin: 10px 0; word-wrap: break-word; max-width: 100%; line-height: 1.15;';
+
+            // Fundo verde para a correta
+            if (letraUp === gabaritoLetra) {
+              style += ' background: #152b15; border: 1px solid #00ff00; color: #00ff00; font-weight: bold;';
+            }
+            // Fundo vermelho para a alternativa que o usuário escolheu e errou
+            else if (typeof window.lastMCQClickedOption !== 'undefined' && window.lastMCQClickedOption === letraUp) {
+              style += ' background: #2b1515; border: 1px solid #ff5555; color: #ff5555; opacity: 0.9;';
+            } else {
+              return match; // Devolve puro, sem marcações
+            }
+
+            return `${espacosInicio}<span style="${style}"><strong>${letraUp}${divisor}</strong>${resto}</span>`;
           });
         }
       }
@@ -4440,7 +4474,7 @@
       // tirá-lo de lá temporariamente antes que o innerHTML dele seja apagado!
       const mcqNav = document.getElementById('mcqNavBar');
       if (mcqNav && mcqNav.parentNode === contentElement) {
-        document.body.appendChild(mcqNav); 
+        document.body.appendChild(mcqNav);
       }
 
       // --- ALTERAÇÃO: Alinhamento Ouro (Esquerda para textos longos, Centro para curtos) ---
@@ -4499,8 +4533,6 @@
 
       // Chama a função que criamos no Passo 3 para decidir o que mostrar
       updateEvalButtonsUI();
-      // --- FSRS: Atualiza tooltips dos botões SRS com intervalos previstos ---
-      if (typeof updateSRSButtonTooltips === 'function') updateSRSButtonTooltips();
       // --- CONTROLE DE INTERFACE MOBILE (NOVO) ---
       const isMobile = window.innerWidth <= 768;
       const mobileBtn = document.getElementById('mobileAnswerBtn');
@@ -4576,17 +4608,17 @@
     let isMCQAnswered = false; // Flag: card já foi avaliado via alternativa MCQ
     window.lastMCQClickedOption = null;
 
-    window.checkAnswer = function(letraClicada, btnElement) {
+    window.checkAnswer = function (letraClicada, btnElement) {
       if (!showingFront) return;
       // Impede clique duplo ou cliques subsequentes enquanto o card prepara para virar
       if (typeof isMCQAnswered !== 'undefined' && isMCQAnswered) return;
-      
+
       isMCQAnswered = true; // Marca que este card já foi avaliado via MCQ
       window.lastMCQClickedOption = letraClicada; // Rastreia o clique para uso no verso
 
       const card = cards[currentCard];
       const respostaVerso = card.back.trim().toUpperCase();
-      
+
       // --- REGEX ROBUSTO: Aceita "A", "A)", "Gabarito: A", "Resp: A", "Resposta: B)", "LETRA C" ---
       const regexExtrair = /(?:^|GABARITO[\s:]*|RESP(?:OSTA)?[\s:]*|LETRA[\s:]*)([A-E])(?:[\)\-\.\s]|$)/i;
       const matchGabarito = respostaVerso.match(regexExtrair);
@@ -4603,7 +4635,7 @@
         // ACERTOU: Pinta o botão clicado de verde
         btnElement.classList.add('mcq-correct');
         triggerVisualFeedback('success');
-        
+
         // Registra acerto no sistema nativo
         const realIndex = (card._originalIndex !== undefined) ? card._originalIndex : initialCards.indexOf(card);
         if (realIndex !== -1) {
@@ -5319,7 +5351,7 @@
 
           // 1. Adiciona a velocidade atual no final da fila
           userLearningStats.recentSpeeds.push(currentSpeed);
-          
+
           // 2. Mantém o limite rígido de 20 posições (descarta a leitura mais antiga)
           if (userLearningStats.recentSpeeds.length > 20) {
             userLearningStats.recentSpeeds.shift();
@@ -5634,12 +5666,12 @@
       touchArea.addEventListener('touchend', function (e) {
         touchEndX = e.changedTouches[0].screenX;
         touchEndY = e.changedTouches[0].screenY;
-        
+
         // --- PREVENT FLIP-FLOP NO CLIQUE DE ALTERNATIVA ---
         // Se o toque ocorreu em um botão MCQ, o evento onclick do botão vai rodar checkAnswer.
         // Ignoramos a resposta de gesto aqui para não acionar um flipCard acidental e duplicado!
         if (e.target && e.target.closest && e.target.closest('.mcq-btn')) {
-          return; 
+          return;
         }
 
         handleGesture();
@@ -5806,7 +5838,7 @@
         piperAudioCtx = new (window.AudioContext || window.webkitAudioContext)();
       }
       if (piperAudioCtx.state === 'suspended') {
-        piperAudioCtx.resume().catch(() => {});
+        piperAudioCtx.resume().catch(() => { });
       }
     }
 
@@ -5948,7 +5980,7 @@
         if (!isAutoTTS) return;
 
         if (piperSourceNode) {
-          try { piperSourceNode.stop(); } catch (ignore) {}
+          try { piperSourceNode.stop(); } catch (ignore) { }
           piperSourceNode = null;
         }
 
@@ -5994,9 +6026,9 @@
       if (!indicator) return;
 
       const cfgs = {
-        neural:  { text: "🟢 Vozes neurais detectadas (Piper disponível ↓)", color: "#4CAF50", act: true, dis: false },
-        basic:   { text: "🟡 Vozes básicas — ative o Piper ↓", color: "#FFC107", act: true, dis: false },
-        piper:   { text: "🟢 Motor Piper Neural ativo", color: "#00ff00", act: false, dis: true },
+        neural: { text: "🟢 Vozes neurais detectadas (Piper disponível ↓)", color: "#4CAF50", act: true, dis: false },
+        basic: { text: "🟡 Vozes básicas — ative o Piper ↓", color: "#FFC107", act: true, dis: false },
+        piper: { text: "🟢 Motor Piper Neural ativo", color: "#00ff00", act: false, dis: true },
         loading: { text: "⏳ Carregando Piper...", color: "gold", act: false, dis: false }
       };
       const c = cfgs[status] || cfgs.basic;
@@ -6353,7 +6385,7 @@
       window.speechSynthesis.cancel();
       // Para o Piper AudioContext
       if (piperSourceNode) {
-        try { piperSourceNode.stop(); } catch (ignore) {}
+        try { piperSourceNode.stop(); } catch (ignore) { }
         piperSourceNode = null;
       }
     }
@@ -6362,7 +6394,7 @@
     // Formato: "Palavra Escrita" : "Jeito que deve ser falado",
     // --- DICIONÁRIO DE PRONÚNCIA
     const pronunciationDict = {
-            // === 1. SÍMBOLOS E PONTUAÇÃO ESPECIAL ===
+      // === 1. SÍMBOLOS E PONTUAÇÃO ESPECIAL ===
       "§": "parágrafo",
       "n.º": "número",
       "nº": "número",
@@ -6387,8 +6419,8 @@
       "LINDB": "Lei de Introdução às normas do Direito Brasileiro",
       "LEP": "Lei de Execução Penal",
       "Leman": "Lei do Mandado de Segurança",
-	  "CPP": "C-P-P",
-	  "CP": "C-P",
+      "CPP": "C-P-P",
+      "CP": "C-P",
 
       // === 3. TRIBUNAIS E ÓRGÃOS ===
       "TJMG": "Tribunal de Justiça de Minas Gerais",
@@ -6476,39 +6508,39 @@
       "ex.:": "Exemplo",
       "ex.": "Exemplo",
       "NYPD": "New York City Police Department",
-	  "GDO": "G-D-O",
-	  
-	  // === 9. Números e nomes entre parenteses ===
-	  "1 (um)": "1",
-	  "2 (dois)": "2",
-	  "3 (Três)": "3",
-	  "4 (quatro)": "4",
-	  "5 (cinco)": "5",
-	  "6 (seis)": "6",
-	  "7 (sete)": "7",
-	  "8 (oito)": "8",
-	  "9 (nove)": "9",
-	  "10 (dez)": "10",
-	  "24 (vinte e quatro)": "24",
+      "GDO": "G-D-O",
+
+      // === 9. Números e nomes entre parenteses ===
+      "1 (um)": "1",
+      "2 (dois)": "2",
+      "3 (Três)": "3",
+      "4 (quatro)": "4",
+      "5 (cinco)": "5",
+      "6 (seis)": "6",
+      "7 (sete)": "7",
+      "8 (oito)": "8",
+      "9 (nove)": "9",
+      "10 (dez)": "10",
+      "24 (vinte e quatro)": "24",
 
       // === 10. DIVERSOS ===
       "Pág.": "Página",
-	  "EPI": "E-P-I",
-	  "Profissional": "Profissionau",
-	  "Letal": "Letau",
-	  "Local": "Locau",
-	  "Transexuais": "Transeksuais",
-	  "Policial": "Policiau",
-	  "Funcional": "Funcionau",
-	  "Diagonal": "Diagonau",
-	  "Federal": "Federau",
-	  "Inicial": "Iniciau",
-	  "Social": "Sociau",
-	  "Federal": "Federau",
-	  "Penal": "Penau",
-	  "45º": "45 graus",
-	  "Perimetral": "Perimetrau",
-	  "Criminal": "Criminau",
+      "EPI": "E-P-I",
+      "Profissional": "Profissionau",
+      "Letal": "Letau",
+      "Local": "Locau",
+      "Transexuais": "Transeksuais",
+      "Policial": "Policiau",
+      "Funcional": "Funcionau",
+      "Diagonal": "Diagonau",
+      "Federal": "Federau",
+      "Inicial": "Iniciau",
+      "Social": "Sociau",
+      "Federal": "Federau",
+      "Penal": "Penau",
+      "45º": "45 graus",
+      "Perimetral": "Perimetrau",
+      "Criminal": "Criminau",
     };
 
     function applyPhoneticCorrections(text) {
@@ -7446,8 +7478,8 @@
         topicSelect.appendChild(option);
       });
 
-     topicContainer.style.display = 'block';
-      
+      topicContainer.style.display = 'block';
+
       // Força a abertura do Passo 3 com "Todos os Tópicos" pré-selecionado
       modalHandleTopicChange('todos');
     }
@@ -7470,7 +7502,7 @@
 
       // Busca cards que batem com a Disciplina
       let cardsOfTopic = initialCards.filter(c => c.disciplina === selectedDisc);
-      
+
       // Se o usuário escolheu um tópico específico (diferente de 'todos'), filtra mais uma vez
       if (selectedTopic !== 'todos') {
         cardsOfTopic = cardsOfTopic.filter(c => c.topico === selectedTopic);
@@ -7629,182 +7661,13 @@
   </script>
 
   <!-- ═══════════════════════════════════════════════════════════════ -->
-  <!-- MÓDULO 8: SRS — REPETIÇÃO ESPAÇADA (FSRS v5)                  -->
+  <!-- MÓDULO 8: SRS — REPETIÇÃO ESPAÇADA (SM-2)                     -->
   <!-- ═══════════════════════════════════════════════════════════════ -->
   <script>
-    // --- LÓGICA DO SISTEMA DE REPETIÇÃO ESPAÇADA (FSRS v5) ---
-    // Baseado no algoritmo FSRS (Free Spaced Repetition Scheduler)
-    // Modelo DSR: Difficulty, Stability, Retrievability
-    // Referência: https://github.com/open-spaced-repetition/fsrs4anki
+    // --- LÓGICA DO SISTEMA DE REPETIÇÃO ESPAÇADA (SRS) ---
 
     let userSRSProgress = {}; // Guarda o progresso carregado do servidor
     let isSRSMode = false;    // Indica se estamos no modo SRS
-
-    // ═══════════════════════════════════════════════════
-    // MOTOR FSRS v5 — FUNÇÕES MATEMÁTICAS PURAS
-    // (Não tocam em DOM, UI, ou qualquer outra função)
-    // ═══════════════════════════════════════════════════
-
-    // Constantes do modelo FSRS
-    const FSRS_DECAY = -0.5;
-    const FSRS_FACTOR = Math.pow(0.9, 1 / FSRS_DECAY) - 1; // ≈ 19/81
-    const FSRS_REQUEST_RETENTION = 0.9; // 90% de retenção desejada
-
-    // 19 parâmetros padrão do FSRS v5 (treináveis futuramente via optimizer)
-    const FSRS_W = [
-      0.4072, 1.1829, 3.1262, 15.4722,  // w0-w3: Estabilidade inicial por grade (Again..Easy)
-      7.2102,                             // w4: Dificuldade inicial (base)
-      0.5316,                             // w5: Fator de ajuste de dificuldade
-      1.0651,                             // w6: Fator de revisão de dificuldade
-      0.0046,                             // w7: Fator de penalidade de dificuldade
-      1.5418,                             // w8: Fator de crescimento de estabilidade (S_inc)
-      0.1618,                             // w9: Expoente de dificuldade em S_inc
-      1.0000,                             // w10: Expoente de estabilidade em S_inc
-      2.2395,                             // w11: Expoente de retrievabilidade em S_inc
-      0.0552,                             // w12: Fator de recuperação após lapse (S_fail)
-      0.2363,                             // w13: Expoente de dificuldade em S_fail
-      0.6317,                             // w14: Inverso de estabilidade em S_fail
-      2.1214,                             // w15: Expoente de retrievabilidade em S_fail
-      0.1030,                             // w16: Bônus Hard
-      0.3673,                             // w17: Bônus Easy
-      0.0000                              // w18: Reservado (short-term)
-    ];
-
-    // Grades FSRS: 1=Again, 2=Hard, 3=Good, 4=Easy
-    const FSRS_GRADE = { again: 1, hard: 2, good: 3, easy: 4 };
-
-    // Clamp: restringe valor entre min e max
-    function fsrsClamp(val, min, max) {
-      return Math.max(min, Math.min(max, val));
-    }
-
-    // Estabilidade inicial (S0) — baseada na grade da PRIMEIRA revisão
-    function fsrsInitStability(grade) {
-      // w0..w3 mapeiam diretamente para Again(1)..Easy(4)
-      return Math.max(0.1, FSRS_W[grade - 1]);
-    }
-
-    // Dificuldade inicial (D0) — baseada na grade da PRIMEIRA revisão
-    function fsrsInitDifficulty(grade) {
-      // D0 = w4 - e^(w5 * (grade - 1)) + 1
-      return fsrsClamp(
-        FSRS_W[4] - Math.exp(FSRS_W[5] * (grade - 1)) + 1,
-        1, 10
-      );
-    }
-
-    // Retrievabilidade (R) — probabilidade de recall após t dias
-    function fsrsRetrievability(elapsedDays, stability) {
-      if (stability <= 0) return 0;
-      return Math.pow(1 + FSRS_FACTOR * (elapsedDays / stability), FSRS_DECAY);
-    }
-
-    // Nova Dificuldade após revisão
-    function fsrsNextDifficulty(prevD, grade) {
-      // Componente de mean reversion para evitar extremos
-      const newD = FSRS_W[6] * fsrsInitDifficulty(FSRS_GRADE.good) +
-                   (1 - FSRS_W[6]) * (prevD - FSRS_W[7] * (grade - 3));
-      return fsrsClamp(newD, 1, 10);
-    }
-
-    // Nova Estabilidade após ACERTO (Hard, Good, Easy)
-    function fsrsNextStabilitySuccess(prevD, prevS, R, grade) {
-      // S_inc: Fator multiplicativo de crescimento
-      let hardBonus = (grade === FSRS_GRADE.hard) ? FSRS_W[16] : 1;
-      let easyBonus = (grade === FSRS_GRADE.easy) ? FSRS_W[17] : 1;
-
-      const sinc = prevS * (
-        1 + Math.exp(FSRS_W[8]) *
-        (11 - prevD) *
-        Math.pow(prevS, -FSRS_W[10]) *
-        (Math.exp((1 - R) * FSRS_W[11]) - 1) *
-        hardBonus * easyBonus
-      );
-
-      return Math.max(0.1, sinc);
-    }
-
-    // Nova Estabilidade após ERRO (Again)
-    function fsrsNextStabilityFail(prevD, prevS, R) {
-      const sfail = FSRS_W[12] *
-        Math.pow(prevD, -FSRS_W[13]) *
-        (Math.pow(prevS + 1, FSRS_W[14]) - 1) *
-        Math.exp((1 - R) * FSRS_W[15]);
-
-      // Garante que após erro a estabilidade sempre diminui
-      return fsrsClamp(sfail, 0.1, prevS);
-    }
-
-    // Calcular próximo intervalo com base na estabilidade
-    function fsrsNextInterval(stability) {
-      const interval = (stability / FSRS_FACTOR) *
-        (Math.pow(FSRS_REQUEST_RETENTION, 1 / FSRS_DECAY) - 1);
-      return Math.max(1, Math.round(interval));
-    }
-
-    // Previsão dos intervalos para todos os botões (para tooltips)
-    function fsrsPreviewIntervals(cardState) {
-      const now = new Date();
-      const lastReview = cardState.lastReview ? new Date(cardState.lastReview) : now;
-      const elapsedDays = Math.max(0, (now - lastReview) / (1000 * 60 * 60 * 24));
-      const S = cardState.stability || 0;
-      const D = cardState.difficulty || 5;
-      const R = S > 0 ? fsrsRetrievability(elapsedDays, S) : 0;
-      const isNew = !cardState.stability;
-
-      const results = {};
-      const grades = ['again', 'hard', 'good', 'easy'];
-
-      grades.forEach(gName => {
-        const g = FSRS_GRADE[gName];
-        if (isNew) {
-          // Card novo: usa init_stability
-          const newS = fsrsInitStability(g);
-          if (g === FSRS_GRADE.again) {
-            results[gName] = '10 min';
-          } else {
-            const days = fsrsNextInterval(newS);
-            results[gName] = days === 1 ? '1 dia' : days + ' dias';
-          }
-        } else {
-          // Card existente: calcula com base no estado atual
-          if (g === FSRS_GRADE.again) {
-            results[gName] = '10 min';
-          } else {
-            const newS = fsrsNextStabilitySuccess(D, S, R, g);
-            const days = fsrsNextInterval(newS);
-            results[gName] = days === 1 ? '1 dia' : days + ' dias';
-          }
-        }
-      });
-
-      return results;
-    }
-
-    // Atualiza os tooltips dos botões SRS com os intervalos previstos
-    function updateSRSButtonTooltips() {
-      if (!isSRSMode || cards.length === 0) return;
-      const card = cards[currentCard];
-      if (!card) return;
-      const cardId = generateCardId(card.front);
-      const state = userSRSProgress[cardId] || {};
-      const preview = fsrsPreviewIntervals(state);
-
-      const btnDontKnow = document.getElementById('btnDontKnow');
-      const btnAgain = document.getElementById('btnAgain');
-      const btnHard = document.getElementById('btnHard');
-      const btnGood = document.getElementById('btnGood');
-      const btnEasy = document.getElementById('btnEasy');
-
-      if (btnDontKnow) btnDontKnow.setAttribute('data-tooltip', preview.again);
-      if (btnAgain)    btnAgain.setAttribute('data-tooltip', preview.again);
-      if (btnHard)     btnHard.setAttribute('data-tooltip', preview.hard);
-      if (btnGood)     btnGood.setAttribute('data-tooltip', preview.good);
-      if (btnEasy)     btnEasy.setAttribute('data-tooltip', preview.easy);
-    }
-    // ═══════════════════════════════════════════════════
-    // FIM DO MOTOR FSRS v5
-    // ═══════════════════════════════════════════════════
 
     // 1. Gerador de ID Único (Robustez Aumentada)
     // Agora ignora maiúsculas, acentos e espaços extras para evitar perda de progresso ao corrigir erros simples.
@@ -7841,16 +7704,6 @@
 
         if (json.result === "success") {
           userSRSProgress = json.progress || {};
-
-          // FSRS: Garantir que campos antigos (sem stability) sejam aceitos
-          Object.keys(userSRSProgress).forEach(id => {
-            const p = userSRSProgress[id];
-            // Se não tem stability, converte do SM-2 legado
-            if (p.stability === undefined) {
-              p.stability = p.interval || 0;
-              p.difficulty = (p.easeFactor !== undefined && p.easeFactor <= 10) ? p.easeFactor : 5;
-            }
-          });
 
           // Lógica do Armazém (Continuar de onde parou)
           if (json.position && json.position.index > 0) {
@@ -7903,48 +7756,46 @@
         }
       }
 
-      // --- ALGORITMO FSRS v5 (Substitui o SM-2) ---
-      const grade = FSRS_GRADE[rating] || FSRS_GRADE.good;
-      const now = new Date();
+      let state = userSRSProgress[cardId] || { interval: 0, easeFactor: 2.5, reps: 0, nextReview: null };
+      let newInterval = 0;
+      let newEase = state.easeFactor;
+      if (newEase === undefined) newEase = 2.5;
+      let newReps = state.reps || 0;
+      let nextReviewDate = new Date();
 
-      // Carrega estado anterior (retrocompatível: aceita cards antigos sem FSRS)
-      let state = userSRSProgress[cardId] || {};
-      let prevS = state.stability || 0;   // Estabilidade (0 = card novo)
-      let prevD = state.difficulty || 5;   // Dificuldade (5 = neutra)
-      const lastReviewStr = state.lastReview || state.nextReview;
-      const lastReview = lastReviewStr ? new Date(lastReviewStr) : now;
-      const elapsedDays = Math.max(0, (now - lastReview) / (1000 * 60 * 60 * 24));
-      const isNewCard = (prevS === 0);
-
-      let newS, newD, newInterval, nextReviewDate;
-
-      // Fuzz: evita acúmulo de revisões no mesmo dia
       const applyFuzz = (val) => {
         if (val < 3) return val;
         const fuzz = Math.ceil(val * 0.05);
         const shift = Math.floor(Math.random() * (fuzz * 2 + 1)) - fuzz;
-        return Math.max(1, val + shift);
+        return val + shift;
       };
 
+      // ALGORITMO SM-2 REAL
+      // 1. Mapear o botão clicado para 'quality' (q) de 1 a 5
+      let q = 4; // Padrão: Good
+      if (rating === 'again') q = 1;
+      else if (rating === 'hard') q = 3;
+      else if (rating === 'good') q = 4;
+      else if (rating === 'easy') q = 5;
+
+      // 2. Atualizar Easiness Factor (EF)
+      newEase = newEase + (0.1 - (5 - q) * (0.08 + (5 - q) * 0.02));
+      newEase = Math.max(1.3, newEase); // floor em 1.3 (Evita "ease hell")
+
+      // 3. Atualizar Repetições Bem Sucedidas (n)
+      if (q < 3) {
+        newReps = 0;
+      } else {
+        newReps++;
+      }
+
       if (rating === 'again') {
-        // --- ERRO (Again) ---
         const realIndexRef = initialCards.indexOf(cards[currentCard]);
         if (realIndexRef !== -1) checkLeech(realIndexRef);
 
-        if (isNewCard) {
-          newS = fsrsInitStability(FSRS_GRADE.again);
-          newD = fsrsInitDifficulty(FSRS_GRADE.again);
-        } else {
-          const R = fsrsRetrievability(elapsedDays, prevS);
-          newS = fsrsNextStabilityFail(prevD, prevS, R);
-          newD = fsrsNextDifficulty(prevD, FSRS_GRADE.again);
-        }
-
         newInterval = 0;
-        nextReviewDate = new Date(now);
         nextReviewDate.setMinutes(nextReviewDate.getMinutes() + 10);
 
-        // Reinsere o card na fila (mantém comportamento anterior)
         const cardToRepeat = cards[currentCard];
         const offset = 20;
         const targetIndex = currentCard + 1 + offset;
@@ -7957,33 +7808,37 @@
           showFeedback("↺ Reagendado para o FINAL da fila", colorHex);
         }
       } else {
-        // --- ACERTO (Hard, Good, Easy) ---
-        if (isNewCard) {
-          newS = fsrsInitStability(grade);
-          newD = fsrsInitDifficulty(grade);
+        // SM-2: Calcular Novo Intervalo
+        if (newReps === 1) {
+          newInterval = 1;
+          if (rating === 'easy') newInterval = 4; // Bônus de primeiro acerto
+        } else if (newReps === 2) {
+          newInterval = 6;
+          if (rating === 'easy' && state.interval > 0) newInterval = Math.round(state.interval * newEase * 1.3);
         } else {
-          const R = fsrsRetrievability(elapsedDays, prevS);
-          newS = fsrsNextStabilitySuccess(prevD, prevS, R, grade);
-          newD = fsrsNextDifficulty(prevD, grade);
+          let prevInterval = state.interval === 0 ? 1 : state.interval;
+          let intervalMultiplier = newEase;
+          if (rating === 'easy') intervalMultiplier += 0.15; // Leve bônus extra no SM-2 modificado
+          if (rating === 'hard') intervalMultiplier = 1.2; // Penalidade do botão 'Hard' (mantém o card mais próximo)
+          newInterval = Math.round(prevInterval * intervalMultiplier);
         }
 
-        newInterval = applyFuzz(fsrsNextInterval(newS));
-        nextReviewDate = new Date(now);
-        nextReviewDate.setDate(nextReviewDate.getDate() + newInterval);
+        newInterval = applyFuzz(newInterval);
+        nextReviewDate.setDate(nextReviewDate.getDate() + Math.max(1, newInterval));
+
+        // Exibe o intervalo futuro sutilmente (1 dia, 6 dias, etc)
+        // Isso ajuda o usuário a confiar no algoritmo
+        // showFeedback(`📅 Agendado para daqui a ${newInterval} dia(s)`, colorHex);
       }
 
-      // Salva o novo estado FSRS
       userSRSProgress[cardId] = {
         interval: newInterval,
-        easeFactor: newD,       // Retrocompat: easeFactor agora guarda Difficulty
-        stability: newS,
-        difficulty: newD,
-        reps: (state.reps || 0) + (rating !== 'again' ? 1 : 0),
-        nextReview: nextReviewDate.toISOString(),
-        lastReview: now.toISOString()
+        easeFactor: newEase,
+        reps: newReps,
+        nextReview: nextReviewDate.toISOString()
       };
 
-      saveSRSToBackend(cardId, nextReviewDate.toISOString(), newInterval, newD, newS);
+      saveSRSToBackend(cardId, nextReviewDate.toISOString(), newInterval, newEase, newReps);
 
       setTimeout(() => {
         nextCard();
@@ -8015,7 +7870,7 @@
       if (isSyncing || saveQueue.length === 0 || !navigator.onLine) return;
 
       isSyncing = true;
-      
+
       // Pega um lote de até 20 itens para enviar tudo de uma vez
       const tamanhoLote = Math.min(saveQueue.length, 20);
       const lote = saveQueue.slice(0, tamanhoLote);
@@ -8029,29 +7884,29 @@
 
         const endpoint = lote[0].endpoint; // Usa a URL padrão
 
-            // NOVO CÓDIGO INÍCIO
-            const response = await fetch(endpoint, {
-              method: 'POST',
-              body: formData
-            });
+        // NOVO CÓDIGO INÍCIO
+        const response = await fetch(endpoint, {
+          method: 'POST',
+          body: formData
+        });
 
-            const result = await response.json();
+        const result = await response.json();
 
-            // SÓ apaga da mochila SE o Google confirmar o sucesso!
-            if (result.result === "success") {
-              console.log(`🚀 Lote de ${tamanhoLote} itens enviado e CONFIRMADO pelo servidor!`);
-              
-              // Remove apenas os itens enviados e confirmados
-              saveQueue.splice(0, tamanhoLote);
-              localStorage.setItem('chicoSaveQueue_v2', JSON.stringify(saveQueue));
-            } else {
-              console.warn("⚠️ O servidor não confirmou a gravação. O lote será mantido na mochila para a próxima tentativa.");
-            }
+        // SÓ apaga da mochila SE o Google confirmar o sucesso!
+        if (result.result === "success") {
+          console.log(`🚀 Lote de ${tamanhoLote} itens enviado e CONFIRMADO pelo servidor!`);
 
-            isSyncing = false;
-            // NOVO CÓDIGO FIM
+          // Remove apenas os itens enviados e confirmados
+          saveQueue.splice(0, tamanhoLote);
+          localStorage.setItem('chicoSaveQueue_v2', JSON.stringify(saveQueue));
+        } else {
+          console.warn("⚠️ O servidor não confirmou a gravação. O lote será mantido na mochila para a próxima tentativa.");
+        }
 
-          } catch (err) {
+        isSyncing = false;
+        // NOVO CÓDIGO FIM
+
+      } catch (err) {
         console.error("Erro na rede. O lote aguardará a próxima tentativa.", err);
         isSyncing = false;
       }
@@ -8083,7 +7938,7 @@
 
     // Loop de Atacado: O caminhão de entregas só passa a cada 15 segundos
     setInterval(() => {
-      processSaveQueue(); 
+      processSaveQueue();
     }, 15000);
 
     // Quando a internet voltar, força a sincronização e avisa o usuário
@@ -8094,11 +7949,11 @@
       }
     });
 
-    // 4. Salvar no Backend (Atualizado para FSRS + Fila)
-    function saveSRSToBackend(cardId, nextReview, interval, difficulty, stability) {
+    // 4. Salvar no Backend (Atualizado para usar a Fila)
+    function saveSRSToBackend(cardId, nextReview, interval, ease, reps = 0) {
       if (!userEmail) return;
 
-      // Cria um objeto com os dados FSRS
+      // Cria um objeto simples com os dados
       const payload = {
         action: 'saveProgress',
         sheetId: SHEET_ID,
@@ -8106,9 +7961,8 @@
         cardId: cardId,
         nextReview: nextReview,
         interval: interval,
-        easeFactor: difficulty,   // Retrocompat: campo mantido para não quebrar backend antigo
-        stability: stability,    // NOVO: Estabilidade FSRS
-        difficulty: difficulty    // NOVO: Dificuldade FSRS
+        easeFactor: ease,
+        reps: reps
       };
 
       // Manda para a fila (seguro) em vez de fetch direto
@@ -8128,13 +7982,13 @@
       // 🛡️ ESCUDO ANTI-FALHA: Bloqueia o salvamento se o aluno ainda estiver no Login ou no Modal de Retorno
       const resumeModal = document.getElementById('resumeModal');
       const loginModal = document.getElementById('loginModal');
-      
+
       // Se a janela de "Continuar de onde parou" estiver visível, aborta o salvamento
       if (resumeModal && resumeModal.style.display === 'flex') {
         console.log("🛡️ Salvamento bloqueado: Aguardando escolha do usuário no modal.");
         return;
       }
-      
+
       // Se a tela de Login estiver visível, aborta o salvamento
       if (loginModal && window.getComputedStyle(loginModal).display !== 'none') {
         return;
@@ -8181,7 +8035,7 @@
             break; // Achou o mais recente, pára de procurar
           }
         }
-      } catch(e) {
+      } catch (e) {
         console.log("Erro ao ler mochila local:", e);
       }
 
@@ -8194,12 +8048,12 @@
 
       // --- 3. EXIBE A MENSAGEM SE TIVERMOS UMA POSIÇÃO VÁLIDA ---
       if (targetIndex !== null && targetIndex > 0) {
-        
+
         // Segurança: O índice salvo ainda existe no baralho atual?
         if (targetIndex > cards.length) return;
 
         // Como o targetIndex é o número "humano" (1, 2, 3...), temos de subtrair 1 para achar no código (0, 1, 2...)
-        const card = cards[targetIndex - 1]; 
+        const card = cards[targetIndex - 1];
         if (!card) return;
 
         // Texto curto para mostrar no modal
@@ -8965,14 +8819,16 @@
 
     <div class="ai-modal-footer">
 
-      <input type="text" id="aiUserInput" placeholder="Digite sua dúvida aqui..." class="ai-input-field" onkeydown="if(event.key === 'Enter') sendUserMessage()">
+      <input type="text" id="aiUserInput" placeholder="Digite sua dúvida aqui..." class="ai-input-field"
+        onkeydown="if(event.key === 'Enter') sendUserMessage()">
 
       <button onclick="sendUserMessage()" class="ai-send-btn">
         <i class="fas fa-paper-plane"></i>
       </button>
     </div>
   </div>
-  <div id="customConfirmModal" role="alertdialog" aria-modal="true" aria-label="Confirmação de reiniciar sessão" class="chico-modal-overlay-confirm">
+  <div id="customConfirmModal" role="alertdialog" aria-modal="true" aria-label="Confirmação de reiniciar sessão"
+    class="chico-modal-overlay-confirm">
 
     <div class="chico-modal-box-confirm">
 
