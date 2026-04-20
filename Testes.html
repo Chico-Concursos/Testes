@@ -1,40 +1,61 @@
 <!DOCTYPE html>
-<html>
+<html lang="pt-br">
 <head>
-    <title>Teste Supabase</title>
-    <!-- A mágica: A biblioteca do Supabase -->
-    <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <meta charset="UTF-8">
+  <title>Teste Supabase</title>
 </head>
 <body>
-    <h2>Teste de Conexão...</h2>
-    <div id="resultado">Buscando dados...</div>
 
-    <script>
-    const URL_DO_PROJETO = 'https://undfpphyptxskeuffoqt.supabase.co'; 
-    const CHAVE_ANON = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InVuZGZwaGh5cHR4c2tldWZmb3F0Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2OTIzMTMsImV4cCI6MjA5MjI2ODMxM30.go7_zSrrDzXsGvE3hgbIbpD9mwxCzd_PkD8ec2R6ADs'; 
+  <h2>Teste de Conexão com Supabase</h2>
+  <div id="resultado">Buscando dados...</div>
 
-    // Agora é 'db' em vez de 'supabase'
-    const db = supabase.createClient(URL_DO_PROJETO, CHAVE_ANON);
+  <script type="module">
+    import { createClient } from 'https://esm.sh/@supabase/supabase-js@2'
+
+    // 🔐 CONFIGURAÇÃO
+    const URL = 'https://undfphhyptxskeuffoqt.supabase.co'
+    const KEY = 'sb_publishable_HJY9SONBEzOh4i4wSm-MgQ_2k7dh0hG'
+
+    const db = createClient(URL, KEY)
 
     async function buscarCards() {
-        // Aqui também é 'db'
+      try {
         const { data, error } = await db
-            .from('cards')
-            .select('*')
-            .limit(3); 
+          .from('cards')
+          .select('*')
+          .limit(3)
+
+        console.log('DATA:', data)
+        console.log('ERROR:', error)
 
         if (error) {
-            document.getElementById('resultado').innerText = 'ERRO: ' + error.message;
-        } else {
-            let textoNaTela = '';
-            data.forEach(card => {
-                textoNaTela += '<br><b>Pergunta:</b> ' + card.Side1;
-            });
-            document.getElementById('resultado').innerHTML = textoNaTela;
+          document.getElementById('resultado').innerText =
+            'ERRO: ' + error.message
+          return
         }
+
+        if (!data || data.length === 0) {
+          document.getElementById('resultado').innerText =
+            'Nenhum dado encontrado (verifique RLS/policy)'
+          return
+        }
+
+        // ⚠️ Ajuste aqui o nome da coluna se necessário
+        const html = data.map(card => {
+          return `<p><b>Pergunta:</b> ${card.Side1 ?? 'campo Side1 não encontrado'}</p>`
+        }).join('')
+
+        document.getElementById('resultado').innerHTML = html
+
+      } catch (err) {
+        console.error('Erro geral:', err)
+        document.getElementById('resultado').innerText =
+          'ERRO GERAL: ' + err.message
+      }
     }
 
-    buscarCards();
-</script>
+    buscarCards()
+  </script>
+
 </body>
 </html>
